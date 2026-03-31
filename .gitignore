@@ -4,7 +4,7 @@
 *.so
 *.out
 
-/lib
+/lib/rplidar_sdk
 
 /build/
 /bin/
