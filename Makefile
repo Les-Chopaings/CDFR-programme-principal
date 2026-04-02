@@ -98,14 +98,14 @@ lidar:
 
 lidar-arm:
 	@echo "[MAKE] lidarLib (ARM64)"
-	cd lib/rplidar_sdk && CROSS_COMPILE_PREFIX=$(CROSS_COMPILE) ./cross_compile.sh
+	cd lib/rplidar_sdk && CROSS_COMPILE_PREFIX=$(CROSS_COMPILE) sh ./cross_compile.sh
 
 
 # ======================
 #  Déploiement Raspberry Pi
 # ======================
 PI_USER := ubuntu
-PI_HOST := 192.168.1.29
+PI_HOST := 192.168.1.99
 PI_DIR  := /home/$(PI_USER)/CDFR_PROG
 
 install: arm
