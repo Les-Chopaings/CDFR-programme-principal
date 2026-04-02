@@ -23,10 +23,10 @@ int main(int argc, char *argv[]) {
     LOG_INIT();
 
 
-    // if(!lidarSetup("/dev/ttyAMA0",256000)){
-    //     LOG_ERROR("cannot find the lidar");
-    //     return -1;
-    // }
+    if(!lidarSetup("/dev/ttyUSB0",460800)){
+        LOG_ERROR("cannot find the lidar");
+        return -1;
+    }
 
 
     signal(SIGINT, ctrlc);
@@ -34,8 +34,6 @@ int main(int argc, char *argv[]) {
 
     // lidarAnalize_t lidarData[SIZEDATALIDAR];
     arduino.moveServo(0);
-
-
 
     while (1) {
 
@@ -64,8 +62,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    //lidarStop();
-    //sleep(2);
+    lidarStop();
+    sleep(2);
     LOG_DEBUG("PROCESS KILL");
 
     return 0;

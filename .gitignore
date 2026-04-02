@@ -4,8 +4,6 @@
 *.so
 *.out
 
-/lib/rplidar_sdk
-
 /build/
 /bin/
 /obj/

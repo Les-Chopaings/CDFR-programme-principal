@@ -9,5 +9,6 @@ class Arduino : public I2CDevice {
 
    public:
     Arduino(int slave_address);
+    void test(void);
     void moveServo(int position);
 };
