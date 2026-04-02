@@ -69,7 +69,6 @@ bool lidarSetup(const char* serialPort ,int baudrate){
 
 void lidarStop(void){
     drv->stop();
-	delay(200);
     drv->setMotorSpeed(0);
     lidarDelete();
 }

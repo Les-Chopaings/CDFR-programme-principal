@@ -2,6 +2,14 @@
 
 void getTableValid(lidarAnalize_t* data, int count);
 
+void rotateLidarData(lidarAnalize_t* data, int count, int angle){
+    for(int i = 0; i< count; i++){
+        data[i].angle = std::fmod(data[i].angle + angle, 360.0);
+        if (data[i].angle < 0)
+            data[i].angle += 360.0;
+    }
+}
+
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position){
     for(int i = 0; i< count; i++){
         if(data[i].valid){

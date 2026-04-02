@@ -10,6 +10,7 @@
 #define MAP(value, fromLow, fromHigh, toLow, toHigh) ((toLow) + (((value) - (fromLow)) * ((toHigh) - (toLow)) / ((fromHigh) - (fromLow))))
 
 
+void rotateLidarData(lidarAnalize_t* data, int count, int angle);
 
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position);
 

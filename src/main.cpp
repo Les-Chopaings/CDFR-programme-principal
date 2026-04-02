@@ -31,31 +31,40 @@ int main(int argc, char *argv[]) {
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
+    signal(SIGTSTP, ctrlz);
 
-    // lidarAnalize_t lidarData[SIZEDATALIDAR];
+    lidarAnalize_t lidarData[SIZEDATALIDAR];
     arduino.moveServo(0);
+    bool prev_collide = false;
 
     while (1) {
 
         LOG_SCOPE("Main");
-        sleep(0.01);
 
 
-        // int count = SIZEDATALIDAR;
-        // if(getlidarData(lidarData,count)){
-        //     int x, y, teta;
-        //     int distance;
-        //     //robotI2C->getCoords(x,y,teta);
-        //     x = 0; y = 0; teta = 0;
-        //     position_t position = {x,y,teta,0};
-        //     convertAngularToAxial(lidarData,count,position);
-        //     if(ctrl_z_pressed){
-        //         ctrl_z_pressed = false;
-        //         pixelArtPrint(lidarData,count,50,50,100,position);
-        //     }
-        //     distance = 0;
-        //     int distance_collide = collide(lidarData,count,distance);
-        // }
+        int count = SIZEDATALIDAR;
+        if(getlidarData(lidarData,count)){
+            int x, y, teta;
+            int distance;
+            //robotI2C->getCoords(x,y,teta);
+            x = 0; y = 0; teta = 0;
+            position_t position = {x,y,teta,0};
+            rotateLidarData(lidarData, count, -45);
+            convertAngularToAxial(lidarData,count,position);
+            if(ctrl_z_pressed){
+                ctrl_z_pressed = false;
+                pixelArtPrint(lidarData,count,50,50,100,position);
+            }
+            distance = -200;
+            int distance_collide = collide(lidarData,count,distance);
+            bool collide = distance_collide<0;
+            if(collide != prev_collide){
+              prev_collide = collide;
+              LOG_DEBUG("COLLIDE : ", collide);
+            }
+        }
+
+        sleep(0.1);
 
         if (ctrl_c_pressed){
             break;
@@ -63,7 +72,6 @@ int main(int argc, char *argv[]) {
     }
 
     lidarStop();
-    sleep(2);
     LOG_DEBUG("PROCESS KILL");
 
     return 0;

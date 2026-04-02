@@ -5,7 +5,6 @@ Arduino::Arduino(int slave_address) : I2CDevice (slave_address){
     if (i2cFile == -1) return; // Emulation
     uint8_t version;
     uint8_t message[] = {0};
-    LOG_GREEN_INFO("Protocol version ", version, " is compatible");
 }
 
 // [0;180]
