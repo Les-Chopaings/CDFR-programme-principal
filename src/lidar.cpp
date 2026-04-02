@@ -1,4 +1,5 @@
 #include "lidar.hpp"
+#include "logger.hpp"
 
 static bool checkSLAMTECLIDARHealth(ILidarDriver * drv);
 static void lidarDelete(void);
@@ -76,7 +77,8 @@ void lidarStop(void){
 void lidarDelete(void){
     if(drv) {
         delete drv;
-        drv = NULL;
+        drv = nullptr;
+        LOG_INFO("Lidar stop successfully");
     }
 }
 

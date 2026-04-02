@@ -71,8 +71,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    lidarStop();
     LOG_DEBUG("PROCESS KILL");
+    lidarStop();
 
     return 0;
 }
