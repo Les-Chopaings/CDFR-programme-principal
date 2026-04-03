@@ -5,15 +5,10 @@ CXX              := g++
 CXXFLAGS         := -std=c++17 -Wall -g -O0 -static
 INCLUDE_DIRS     := -Iinclude \
                     -Ilib/rplidar_sdk/sdk/include \
-                    -Ilib/rplidar_sdk/sdk/src \
-                    -I../librairie-commune/common/include \
-                    -I../librairie-commune/master/include
+                    -Ilib/rplidar_sdk/sdk/src
+
 LDFLAGS          := -Llib/rplidar_sdk/output/Linux/Release
 LDLIBS           := -pthread -li2c -lrt -lsl_lidar_sdk
-
-# Git commit hash découpé en 4 parties (pour versioning)
-GIT_SHA := $(shell git -C ../librairie-commune rev-parse --short HEAD)
-CXXFLAGS += $(foreach i,1 2 3 4, -DGIT_COMMIT_SHA_PART$(i)=0x$(shell echo $(GIT_SHA) | cut -c$$(($(i)*2-1))-$(($(i)*2))))
 
 # ======================
 #  Répertoires & fichiers
@@ -22,18 +17,14 @@ BINDIR      := bin
 ARMBINDIR   := arm_bin
 OBJDIR      := obj
 SRCDIR      := src
-SRCDIR_LIB  := ../librairie-commune/master/src
 TARGET      := $(BINDIR)/programCDFR
 ARM_TARGET  := $(ARMBINDIR)/programCDFR
 
 SRC         := $(shell find $(SRCDIR) -name "*.cpp")
-SRC_LIB     := $(shell find $(SRCDIR_LIB) -name "*.cpp")
 
-OBJ_NATIVE  := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/native/%.o,$(SRC)) \
-               $(patsubst $(SRCDIR_LIB)/%.cpp,$(OBJDIR)/native_lib/%.o,$(SRC_LIB))
+OBJ_NATIVE  := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/native/%.o,$(SRC))
 
-OBJ_ARM     := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/arm/%.o,$(SRC)) \
-               $(patsubst $(SRCDIR_LIB)/%.cpp,$(OBJDIR)/arm_lib/%.o,$(SRC_LIB))
+OBJ_ARM     := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/arm/%.o,$(SRC))
 
 DEPENDS     := $(OBJ_NATIVE:.o=.d) $(OBJ_ARM:.o=.d)
 
@@ -41,7 +32,7 @@ DEPENDS     := $(OBJ_NATIVE:.o=.d) $(OBJ_ARM:.o=.d)
 # ======================
 #  Compilation native
 # ======================
-all: check lidar $(TARGET)
+all: lidar $(TARGET)
 	@echo "Compilation native terminée. Lancez : (cd $(BINDIR) && sudo ./programCDFR)"
 
 $(TARGET): $(OBJ_NATIVE)
@@ -56,7 +47,7 @@ $(TARGET): $(OBJ_NATIVE)
 CROSS_COMPILE   := aarch64-linux-gnu
 ARM_CXX         := $(CROSS_COMPILE)-g++
 
-arm: check lidar-arm $(ARM_TARGET)
+arm: lidar-arm $(ARM_TARGET)
 	@echo "Compilation ARM terminée."
 
 $(ARM_TARGET): $(OBJ_ARM)
@@ -73,17 +64,8 @@ $(OBJDIR)/native/%.o: $(SRCDIR)/%.cpp
 	@echo "[CXX] $@"
 	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -MMD -MP -c $< -o $@
 
-$(OBJDIR)/native_lib/%.o: $(SRCDIR_LIB)/%.cpp
-	@mkdir -p $(dir $@)
-	@echo "[CXX] $@"
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -MMD -MP -c $< -o $@
 
 $(OBJDIR)/arm/%.o: $(SRCDIR)/%.cpp
-	@mkdir -p $(dir $@)
-	@echo "[ARM-CXX] $@"
-	$(ARM_CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -D__CROSS_COMPILE_ARM__ -MMD -MP -c $< -o $@
-
-$(OBJDIR)/arm_lib/%.o: $(SRCDIR_LIB)/%.cpp
 	@mkdir -p $(dir $@)
 	@echo "[ARM-CXX] $@"
 	$(ARM_CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -D__CROSS_COMPILE_ARM__ -MMD -MP -c $< -o $@
@@ -125,12 +107,6 @@ uninstall:
 # ======================
 #  Vérifs & Nettoyage
 # ======================
-check:
-	@if [ ! -d "$(SRCDIR_LIB)" ]; then \
-	  echo "Erreur: librairie-commune manquante ($(SRCDIR_LIB))"; \
-	  echo "Clonez https://github.com/Arviscube/CDFR"; \
-	  exit 1; \
-	fi
 
 clean:
 	@echo "[CLEAN] objets/binaires"
