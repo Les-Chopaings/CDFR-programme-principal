@@ -33,7 +33,7 @@ DEPENDS     := $(OBJ_NATIVE:.o=.d) $(OBJ_ARM:.o=.d)
 #  Compilation native
 # ======================
 all: lidar $(TARGET)
-	@echo "Compilation native terminée. Lancez : (cd $(BINDIR) && sudo ./programCDFR)"
+	@echo "Compilation native terminée. Lancez : (cd $(BINDIR) && ./programCDFR)"
 
 $(TARGET): $(OBJ_NATIVE)
 	@mkdir -p $(BINDIR)
