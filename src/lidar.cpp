@@ -1,9 +1,9 @@
 #include "lidar.hpp"
 #include "logger.hpp"
 
-static bool checkSLAMTECLIDARHealth(ILidarDriver * drv);
+static bool checkSLAMTECLIDARHealth(void);
 static void lidarDelete(void);
-static ILidarDriver* drv;
+static ILidarDriver* drv = nullptr;
 
 bool lidarSetup(const char* serialPort ,int baudrate){
 
@@ -54,7 +54,7 @@ bool lidarSetup(const char* serialPort ,int baudrate){
             , devinfo.firmware_version & 0xFF
             , (int)devinfo.hardware_version);
     // check health...
-    if (!checkSLAMTECLIDARHealth(drv)) {
+    if (!checkSLAMTECLIDARHealth()) {
         lidarDelete();
         return false;
     }
@@ -69,8 +69,10 @@ bool lidarSetup(const char* serialPort ,int baudrate){
 }
 
 void lidarStop(void){
-    drv->stop();
-    drv->setMotorSpeed(0);
+    if(drv) {
+      drv->stop();
+      drv->setMotorSpeed(0);
+    }
     lidarDelete();
 }
 
@@ -85,6 +87,8 @@ void lidarDelete(void){
 
 
 bool getlidarData(lidarAnalize_t* data, int& countdata){
+    if(drv == nullptr)
+        return false;
     sl_lidar_response_measurement_node_hq_t nodes[8192];
     size_t   count = _countof(nodes);
     sl_result     op_result;
@@ -105,8 +109,10 @@ bool getlidarData(lidarAnalize_t* data, int& countdata){
 }
 
 
-bool checkSLAMTECLIDARHealth(ILidarDriver * drv)
+bool checkSLAMTECLIDARHealth(void)
 {
+    if(drv == nullptr)
+        return false;
     sl_result     op_result;
     sl_lidar_response_device_health_t healthinfo;
 

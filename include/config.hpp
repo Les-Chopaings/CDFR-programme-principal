@@ -6,6 +6,10 @@
 #define ROBOT_X_OFFSET 155
 #define ROBOT_Y_OFFSET 60
 
+#if defined(__i386__) || defined(__x86_64__)
+    #define EMULATE
+#endif
+
 typedef struct
 {
     int   x;

@@ -1,15 +1,27 @@
 {
     "configurations": [
         {
-            "name": "CDFR25",
+            "name": "ARM",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/../librairie-commune/**",
-                "${workspaceFolder}/../librairie-commune/include",
-                "${workspaceFolder}/../cdfr2024-programme-Actionneur/include/common"
             ],
-            "defines": [],
+            "defines": [ "__aarch64__"],
+            "compilerPath": "/usr/bin/aarch64-linux-gnu-g++",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        },
+        {
+            "name": "x86",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/../librairie-commune/**",
+            ],
+            "defines": ["__x86_64__"],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "gnu++17",

@@ -3,6 +3,7 @@
 #include "lidarAnalize.hpp"
 #include "lidar.hpp"
 #include "Arduino.hpp"
+#include "asserv/asserv.h"
 
 #define SIZEDATALIDAR 10000
 
@@ -17,16 +18,21 @@ void ctrlz(int signal) {
     ctrl_z_pressed = true;
 }
 
-Arduino arduino(0x64);
 
 int main(int argc, char *argv[]) {
     LOG_INIT();
 
-
+#ifdef EMULATE
+    Arduino arduino(-1);
+    Asserv asserv(-1);
+#else
+    Arduino arduino(0x64);
+    Asserv asserv(42);
     if(!lidarSetup("/dev/ttyUSB0",460800)){
         LOG_ERROR("cannot find the lidar");
         return -1;
     }
+#endif
 
 
     signal(SIGINT, ctrlc);

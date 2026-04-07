@@ -53,7 +53,7 @@ arm: lidar-arm $(ARM_TARGET)
 $(ARM_TARGET): $(OBJ_ARM)
 	@mkdir -p $(ARMBINDIR)
 	@echo "[ARM-LINK] $@"
-	$(ARM_CXX) $(CXXFLAGS) -D__CROSS_COMPILE_ARM__ -o $@ $^ $(LDFLAGS) $(LDLIBS) -Llib/aarch64-linux-gnu
+	$(ARM_CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS) -Llib/aarch64-linux-gnu
 
 
 # ======================
@@ -68,7 +68,7 @@ $(OBJDIR)/native/%.o: $(SRCDIR)/%.cpp
 $(OBJDIR)/arm/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(dir $@)
 	@echo "[ARM-CXX] $@"
-	$(ARM_CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -D__CROSS_COMPILE_ARM__ -MMD -MP -c $< -o $@
+	$(ARM_CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -MMD -MP -c $< -o $@
 
 
 # ======================
