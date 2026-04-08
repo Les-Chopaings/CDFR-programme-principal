@@ -3,8 +3,6 @@
 
 Arduino::Arduino(int slave_address) : I2CDevice (slave_address){
     if (i2cFile == -1) return; // Emulation
-    uint8_t version;
-    uint8_t message[] = {0};
 }
 
 // [0;180]
@@ -42,6 +40,13 @@ void Arduino::stepperMove(int position){
     uint8_t *ptr = message;
     WriteUInt16(&ptr, position);
     I2cSendData(STEPPER_ENABLE, message, 2);
+}
+
+bool Arduino::readButton(button buttonNum){
+    if (i2cFile == -1) return false; // Emulation
+    uint8_t message [2];
+    I2cReceiveData((int)buttonNum, message, 2);
+    return (bool)message[0];
 }
 
 void Arduino::test(void) {

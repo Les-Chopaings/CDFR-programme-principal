@@ -25,6 +25,11 @@ enum class pompe{
     pompe3 = 32,
     pompe4 = 33
 };
+enum class button{
+    color = 101,
+    magnet = 102
+};
+
 
 inline const char* servo_to_string(servo p) {
     switch (p) {
@@ -61,4 +66,5 @@ public:
     void controlePompe(pompe pompeNum, bool enable);
     void stepperEnable(bool enable);
     void stepperMove(int position);
+    bool readButton(button buttonNum);
 };
