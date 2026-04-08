@@ -142,8 +142,9 @@ int main(int argc, char *argv[]) {
 
         LOG_SCOPE("Main");
 
-        bool rot[1]={false};
+        bool rot[4]={0, 1, 1, 1};
         test.TriNoisette(rot);
+        // LOG_DEBUG("miliseconde = ",millis());
 
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
