@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
     signal(SIGTSTP, ctrlz);
 
     lidarAnalize_t lidarData[SIZEDATALIDAR];
-    arduino.moveServo(0);
     bool prev_collide = false;
 
     while (1) {
@@ -70,7 +69,8 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        sleep(0.1);
+        usleep(10000);
+
 
         if (ctrl_c_pressed){
             break;
@@ -78,6 +78,10 @@ int main(int argc, char *argv[]) {
     }
 
     LOG_DEBUG("PROCESS KILL");
+    arduino.controlePompe(pompe::pompe1,0);
+    arduino.controlePompe(pompe::pompe2,0);
+    arduino.controlePompe(pompe::pompe3,0);
+    arduino.controlePompe(pompe::pompe4,0);
     lidarStop();
 
     return 0;
