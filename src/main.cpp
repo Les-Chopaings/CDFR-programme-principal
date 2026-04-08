@@ -11,6 +11,7 @@
 
 #include "path_finding.h"
 #include <chrono>
+#include "Minifsm.hpp"
 
 #define SIZEDATALIDAR 10000
 
@@ -121,6 +122,7 @@ int main(int argc, char *argv[]) {
     bool prev_collide = false;
     lidarAnalize_t lidarData[SIZEDATALIDAR];
     GlobalState globalState;
+    Minifsm test;
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
@@ -139,6 +141,9 @@ int main(int argc, char *argv[]) {
     while (1) {
 
         LOG_SCOPE("Main");
+
+        bool rot[1]={false};
+        test.TriNoisette(rot);
 
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
