@@ -1,6 +1,7 @@
 #pragma once
 
 #include "logger.hpp"
+#include "utils.h"
 
 
 class Minifsm

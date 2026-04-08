@@ -12,6 +12,7 @@
 
 #include "path_finding.h"
 #include <chrono>
+#include "Minifsm.hpp"
 
 #define SIZEDATALIDAR 10000
 

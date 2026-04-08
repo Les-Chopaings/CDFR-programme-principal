@@ -1,5 +1,4 @@
 #include "Minifsm.hpp"
-#include <chrono>
 using namespace std;
 
 Minifsm::Minifsm(/* args */)
@@ -14,39 +13,37 @@ Minifsm::~Minifsm()
 int Minifsm::TriNoisette(bool* rotate)
 {
 switch (currentState) {
-    typedef std::chrono::high_resolution_clock Time;
-    typedef std::chrono::milliseconds ms;
-    typedef std::chrono::duration<float> fsec;
-
-            case State::etape1:
-                auto T_start = Time::now();
+    
+            case State::etape1:{
+                //T_start = millis();
                 /*logger a inclure*/
                 LOG_DEBUG("étape 1");
-                currentState = State::etape3;
-                break;
+                currentState = State::etape2;
+                break;}
 
-            case State::etape3:
+            case State::etape3:{
                 /*logger a inclure*/                
                 LOG_DEBUG("étape 3");
-                currentState = State::etape2;
-                break;
+                currentState = State::idle;
+                break;}
 
-            case State::etape2:
+            case State::etape2:{
                 /*logger a inclure*/                
                 LOG_DEBUG("étape 2");
-                currentState = State::idle;
-                break;
+                currentState = State::etape3;
+                break;}
 
-            default:
+            default:{
                 /*Etat idle*/
-                fsec fs = T_start - Time::now();
+                //unsigned long fs = T_start - millis();
                 LOG_DEBUG("idle");
-                if (fs.count() > 2){
-                    currentState = State::etape1;
-                    return (0);}
-                break;
-        }
+                currentState = State::etape1;
+                // if (fs > 2000){
+                //     currentState = State::etape1;
+                //     return (0);}
+                break;}
     return (1);   /* sortie de idle (=1)*/
 
+    }
 }
 
