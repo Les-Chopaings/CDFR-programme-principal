@@ -4,7 +4,14 @@
     {
       "label": "localCompile",
       "type": "shell",
-      "command": "make",
+      "linux": {
+          "command": "make",
+          "args": ["-C", "${workspaceFolder}"]
+      },
+      "windows": {
+          "command": "wsl",
+          "args": ["make", "-C", "${workspaceFolder}"]
+      },
       "group": {
         "kind": "build",
         "isDefault": true
