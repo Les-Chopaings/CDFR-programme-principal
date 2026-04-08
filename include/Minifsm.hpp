@@ -8,14 +8,17 @@ class Minifsm
 {
 private:
     /* data */
-    
     int T_start;
+    int startSeconds;
+    bool toCopy;
+    bool rotCopied[4] = {0, 0, 0, 0};
     enum class State{
-        etape1,
-        etape2,
-        etape3,
-        idle
-    };
+        rotate1,
+        rotate2,
+        rotate3,
+        rotate4,
+        idle,
+        toProcess};
     State currentState = State::idle;
 
 
