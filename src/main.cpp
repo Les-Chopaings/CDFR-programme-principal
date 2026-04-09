@@ -8,6 +8,9 @@
 #include "GlobalState.h"
 #include "Function.hpp"
 
+#include "path_finding.h"
+#include <chrono>
+
 #define SIZEDATALIDAR 10000
 
 
@@ -46,6 +49,25 @@ void stopAndRest(Asserv asserv, Arduino arduino){
     arduino.stepperMove(0);
 };
 
+void test_path_finder() {
+    auto map = PathFindingMap();
+
+    const auto start = std::chrono::high_resolution_clock::now();
+    path_t path = map.find_path_between_points(
+        {98, -73, 255, M_PI_2},
+        {-142, -1, 255, -M_PI}
+    );
+    const auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << "cmpt time: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
+
+    for (auto [point, node_id, theta]: path.v) {
+        std::cout << "Node: " << static_cast<int>(node_id) << " (" << point.x << ", " << point.y << " @ "
+                << theta * 180 / M_PI << ")"
+                << std::endl;
+    }
+}
+
 
 int main(int argc, char *argv[]) {
     LOG_INIT();
@@ -75,6 +97,9 @@ int main(int argc, char *argv[]) {
 
     // TEST
     // asserv.go_to_point(1000, 0, 0);
+
+    // Demo path finding
+    test_path_finder();
 
     while (1) {
 
