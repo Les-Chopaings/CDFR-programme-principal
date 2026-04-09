@@ -5,6 +5,9 @@
 #include "Arduino.hpp"
 #include "asserv/asserv.h"
 
+#include "path_finding.h"
+#include <chrono>
+
 #define SIZEDATALIDAR 10000
 
 
@@ -16,6 +19,25 @@ void ctrlc(int)
 bool ctrl_z_pressed = false;
 void ctrlz(int signal) {
     ctrl_z_pressed = true;
+}
+
+void test_path_finder() {
+    auto map = PathFindingMap();
+
+    const auto start = std::chrono::high_resolution_clock::now();
+    path_t path = map.find_path_between_points(
+        {98, -73, 255, M_PI_2},
+        {-142, -1, 255, -M_PI}
+    );
+    const auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << "cmpt time: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
+
+    for (auto [point, node_id, theta]: path.v) {
+        std::cout << "Node: " << static_cast<int>(node_id) << " (" << point.x << ", " << point.y << " @ "
+                << theta * 180 / M_PI << ")"
+                << std::endl;
+    }
 }
 
 
@@ -41,6 +63,9 @@ int main(int argc, char *argv[]) {
 
     lidarAnalize_t lidarData[SIZEDATALIDAR];
     bool prev_collide = false;
+
+    // Demo path finding
+    test_path_finder();
 
     while (1) {
 
