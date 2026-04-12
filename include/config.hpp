@@ -27,3 +27,9 @@ typedef struct
     int   y;
     bool   onTable;
 }lidarAnalize_t;
+
+enum class ColorTeam{
+    NONE,
+    BLUE,
+    YELLOW
+};

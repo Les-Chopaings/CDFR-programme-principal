@@ -5,6 +5,7 @@
 #include "Arduino.hpp"
 #include "asserv/asserv.h"
 #include "utils.h"
+#include "GlobalState.h"
 
 #define SIZEDATALIDAR 10000
 
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
 #endif
     bool prev_collide = false;
     lidarAnalize_t lidarData[SIZEDATALIDAR];
+    GlobalState globalState;
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
@@ -99,7 +101,6 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        long unsigned int endTimestamp;
         switch (currentState) {
             //****************************************************************
             // wait to start the initialisation process
@@ -118,7 +119,12 @@ int main(int argc, char *argv[]) {
             case MainState::INITIALIZE:{
                 if(initStat){
                     LOG_STATE("INITIALIZE");
-                    bool colorTeam = arduino.readButton(button::color);
+                    if(arduino.readButton(button::color)){
+                        globalState.robotColor = ColorTeam::YELLOW;
+                    }
+                    else{
+                        globalState.robotColor = ColorTeam::BLUE;
+                    }
                     asserv.set_motor_state(true);
                     asserv.set_brake_state(false);
                     asserv.set_coordinates(0,0,0);
@@ -154,7 +160,7 @@ int main(int argc, char *argv[]) {
                 if(initStat){
                     LOG_STATE("START");
                 }
-                endTimestamp = millis() + 100000;
+                globalState.startTimestamp = millis();
                 nextState = MainState::RUN;
                 break;
             }
@@ -164,7 +170,7 @@ int main(int argc, char *argv[]) {
                 if(initStat) LOG_STATE("RUN");
                 bool finish;
                 // TODO
-                if(endTimestamp < millis() && finish){
+                if((globalState.startTimestamp + 100000) < millis() && finish){
                     LOG_GREEN_INFO("END BY TIMER");
                     nextState = MainState::FIN;
                 }
