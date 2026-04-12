@@ -12,6 +12,16 @@ class ActionContainer
 {
 private:
     Action* takeStock0;
+    Action* takeStock0bis;
+    Action* takeStock1;
+    Action* takeStock2;
+    Action* takeStock3;
+    Action* takeStock4;
+    Action* takeStock5;
+    Action* takeStock6;
+    Action* takeStock7;
+    Action* takeStock7bis;
+
     std::vector<Action*> listeAction;
     Action* currentAction;
 
