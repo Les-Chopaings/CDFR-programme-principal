@@ -1,3 +1,4 @@
+#pragma once
 #include "I2CDevice.hpp"
 #include <cstdint>
 #include "logger.hpp"

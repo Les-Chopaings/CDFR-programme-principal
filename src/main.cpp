@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
             // action to play during 100s
             case MainState::RUN:{
                 if(initStat) LOG_STATE("RUN");
-                bool finish;
+                bool finish = false;
                 // TODO
                 if((globalState.startTimestamp + 100000) < millis() && finish){
                     LOG_GREEN_INFO("END BY TIMER");

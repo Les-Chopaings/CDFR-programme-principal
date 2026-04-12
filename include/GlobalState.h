@@ -2,6 +2,12 @@
 #include "utils.h"
 #include "config.hpp"
 
+enum class ControlOwner{
+    None,
+    Friendly,
+    Enemy
+};
+
 
 //**************************************************************
 //         |                                        |         //
@@ -29,14 +35,9 @@
 class GlobalState
 {
 public:
-    enum class ControlOwner{
-        None,
-        Friendly,
-        Enemy
-    };
 
     //match
-    long unsigned int startTimestamp;
+    long unsigned int startTimestamp = 0;
 
     //table
     ControlOwner zoneStock[8];
