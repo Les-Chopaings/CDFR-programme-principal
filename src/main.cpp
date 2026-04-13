@@ -24,10 +24,19 @@ void ctrlz(int signal) {
 void test_path_finder() {
     auto map = PathFindingMap();
 
+    for (auto edge: map.found_edges_intersecting_rectangle(85, -40, 32, 70)) {
+        std::cout << "Removing edge: " << static_cast<int>(edge.start_node_id) << " <-> " << static_cast<int>(edge.end_node_id) << std::endl;
+        map.toggle_edge_between_two_nodes(edge.start_node_id, edge.end_node_id, false);
+    }
+
+    map.update_base_map();
+
+
     const auto start = std::chrono::high_resolution_clock::now();
     path_t path = map.find_path_between_points(
         {98, -73, 255, M_PI_2},
-        {-142, -1, 255, -M_PI}
+        {0, 10, 255, -M_PI},
+        true
     );
     const auto end = std::chrono::high_resolution_clock::now();
 
