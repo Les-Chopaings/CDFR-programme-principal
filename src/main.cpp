@@ -6,6 +6,7 @@
 #include "asserv/asserv.h"
 #include "utils.h"
 #include "GlobalState.h"
+#include "Function.hpp"
 
 #define SIZEDATALIDAR 10000
 
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]) {
     signal(SIGTSTP, ctrlz);
     usleep(100000);
     MainState currentState = MainState::INIT;
-    MainState nextState = MainState::INIT;
+    MainState nextState = currentState;
     bool initStat = true;
 
     // TEST
@@ -137,10 +138,10 @@ int main(int argc, char *argv[]) {
             // initialisation second step : set home
             case MainState::SETHOME:{
                 if(initStat){
-                     LOG_STATE("SETHOME");
-                    //TODO
+                    LOG_STATE("SETHOME");
+                    arduino.stepperMove(50);
                 }
-                nextState = MainState::SETHOME;
+                nextState = MainState::WAITSTART;
                 break;
             }
             //****************************************************************
@@ -169,9 +170,13 @@ int main(int argc, char *argv[]) {
             case MainState::RUN:{
                 if(initStat) LOG_STATE("RUN");
                 bool finish = false;
-                // TODO
-                if((globalState.startTimestamp + 100000) < millis() && finish){
+                finish = takeNuts(&globalState, &asserv, &arduino);
+                if((globalState.startTimestamp + 100000) < millis()){
                     LOG_GREEN_INFO("END BY TIMER");
+                    nextState = MainState::FIN;
+                }
+                if(finish){
+                    LOG_GREEN_INFO("END BY ACTION");
                     nextState = MainState::FIN;
                 }
                 break;

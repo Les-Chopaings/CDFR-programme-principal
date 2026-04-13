@@ -21,14 +21,14 @@ private:
         MOVEEND
     };
     const char* fsmAction_to_string(FsmAction p) {
-    switch (p) {
-        case FsmAction::INIT : return "INIT";
-        case FsmAction::MOVESTART : return "MOVESTART";
-        case FsmAction::ACTION : return "ACTION";
-        case FsmAction::MOVEEND : return "MOVEEND";
-        default:     return "inconnu";
+        switch (p) {
+            case FsmAction::INIT : return "INIT";
+            case FsmAction::MOVESTART : return "MOVESTART";
+            case FsmAction::ACTION : return "ACTION";
+            case FsmAction::MOVEEND : return "MOVEEND";
+            default:     return "inconnu";
+        }
     }
-}
 
 private:
     GlobalState* mGlobalState;
