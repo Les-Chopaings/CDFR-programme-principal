@@ -43,6 +43,7 @@ void stopAndRest(Asserv asserv, Arduino arduino){
     arduino.controlePompe(pompe::pompe3,0);
     arduino.controlePompe(pompe::pompe4,0);
     arduino.stepperEnable(false);
+    arduino.stepperMove(0);
 };
 
 
@@ -139,7 +140,7 @@ int main(int argc, char *argv[]) {
             case MainState::SETHOME:{
                 if(initStat){
                     LOG_STATE("SETHOME");
-                    arduino.stepperMove(50);
+                    arduino.stepperMove(150);
                 }
                 nextState = MainState::WAITSTART;
                 break;
@@ -217,6 +218,7 @@ int main(int argc, char *argv[]) {
     }
 
     LOG_DEBUG("PROCESS KILL");
+    stopAndRest(asserv,arduino);
     lidarStop();
 
     return 0;
