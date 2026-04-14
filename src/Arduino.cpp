@@ -30,7 +30,7 @@ void Arduino::stepperEnable(bool enable){
     uint8_t message [2];
     uint8_t *ptr = message;
     WriteUInt16(&ptr, enable);
-    I2cSendData(STEPPER_ENABLE, message, 2);
+    I2cSendData(STEPPER_MOVE_TO, message, 2);
 }
 
 void Arduino::stepperMove(int position){

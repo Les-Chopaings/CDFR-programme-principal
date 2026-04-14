@@ -4,8 +4,8 @@
 #include <iostream>
 #include "I2CDevice.hpp"
 
-#define STEPPER_ENABLE 20
-#define STEPPER_MOVE_TO 21
+#define STEPPER_MOVE_TO 20
+#define STEPPER_ENABLE 21
 
 enum class servo{
     bascule = 1,
