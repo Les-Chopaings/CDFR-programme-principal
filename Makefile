@@ -2,7 +2,7 @@
 #  Paramètres généraux
 # ======================
 CXX              := g++
-CXXFLAGS         := -std=c++17 -Wall -g -O0 -static
+CXXFLAGS         := -std=c++17 -Wall -g -O0 -static -O3 -ftree-vectorize
 INCLUDE_DIRS     := -Iinclude \
                     -Ilib/rplidar_sdk/sdk/include \
                     -Ilib/rplidar_sdk/sdk/src
