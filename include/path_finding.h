@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
-#include "map/simplified_map.h"
+#include "map/map.h"
 
 typedef struct {
     float x;
@@ -37,6 +37,13 @@ typedef struct {
     bool enabled;
 } edge_t;
 
+typedef struct {
+    point_t start_point;
+    point_t end_point;
+    float distance;
+    bool enabled;
+} edge_out_t;
+
 struct a_star_node {
     uint8_t id;
     float f;
@@ -47,6 +54,7 @@ struct a_star_node {
 };
 
 class PathFindingMap {
+private:
     std::vector<node_t> *nodes = new std::vector<node_t>{STANDARD_NODES_ARRAY};
     std::vector<edge_t> *edges = new std::vector<edge_t>{STANDARD_EDGES_ARRAY};
 
@@ -64,6 +72,8 @@ public:
     void enable_all_edges();
 
     std::vector<edge_t> found_edges_intersecting_rectangle(float rx, float ry, float rw, float rh);
+
+    std::vector<edge_out_t> get_edge_map();
 
     bool toggle_edge_between_two_nodes(uint8_t node1_id, uint8_t node2_id, bool enabled);
 

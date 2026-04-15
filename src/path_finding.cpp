@@ -76,6 +76,19 @@ std::vector<edge_t> PathFindingMap::found_edges_intersecting_rectangle(float rx,
     return result;
 }
 
+std::vector<edge_out_t> PathFindingMap::get_edge_map(){
+    std::vector<edge_out_t> result;
+    for (const edge_t &edge: *this->edges) {
+        edge_out_t edge_copy;
+        edge_copy.distance = edge.distance;
+        edge_copy.enabled = edge.enabled;
+        edge_copy.start_point = this->node_map[edge.start_node_id]->point;
+        edge_copy.end_point = this->node_map[edge.end_node_id]->point;
+        result.push_back(edge_copy);
+    }
+    return result;
+}
+
 float distance(const point_t *a, const point_t *b) {
     return sqrtf((a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y));
 }
@@ -83,6 +96,9 @@ float distance(const point_t *a, const point_t *b) {
 PathFindingMap::PathFindingMap() {
     this->enable_all_edges();
     this->update_base_map();
+    for (const edge_t &edge: *this->edges) {
+        distance(&(*nodes)[edge.start_node_id].point,&(*nodes)[edge.end_node_id].point);
+    }
 }
 
 void PathFindingMap::update_base_map() {

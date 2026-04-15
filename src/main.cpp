@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "GlobalState.h"
 #include "Function.hpp"
+#include "Traceur.hpp"
 
 #include "path_finding.h"
 #include <chrono>
@@ -52,7 +53,7 @@ void stopAndRest(Asserv asserv, Arduino arduino){
 void test_path_finder() {
     auto map = PathFindingMap();
 
-    for (auto edge: map.found_edges_intersecting_rectangle(85, -40, 32, 70)) {
+    for (auto edge: map.found_edges_intersecting_rectangle(1000,1000,500,500)) {
         std::cout << "Removing edge: " << static_cast<int>(edge.start_node_id) << " <-> " << static_cast<int>(edge.end_node_id) << std::endl;
         map.toggle_edge_between_two_nodes(edge.start_node_id, edge.end_node_id, false);
     }
@@ -62,8 +63,8 @@ void test_path_finder() {
 
     const auto start = std::chrono::high_resolution_clock::now();
     path_t path = map.find_path_between_points(
-        {98, -73, 255, M_PI_2},
-        {0, 10, 255, -M_PI},
+        {400, 1800, 255, M_PI_2},
+        {1150, 750, 255, -M_PI},
         true
     );
     const auto end = std::chrono::high_resolution_clock::now();
@@ -75,6 +76,31 @@ void test_path_finder() {
                 << theta * 180 / M_PI << ")"
                 << std::endl;
     }
+
+    Traceur mat(3000, 2000, 50);
+
+    // Test ligne
+    for (edge_out_t &edge: map.get_edge_map()) {
+        mat.drawLine(edge.start_point.x, edge.start_point.y, edge.end_point.x, edge.end_point.y, edge.enabled+1);
+    }
+    LOG_DEBUG("=>",path.length);
+
+    for (size_t i = 0; i < path.v.size(); ++i) {
+        auto [point, node_id, theta] = path.v[i];
+
+        uint8_t val = 3;
+
+        if (i == 0)
+            val = 4;           // premier point
+        else if (i == path.v.size() - 1)
+            val = 5;           // dernier point
+
+        mat.drawPoint(point.x,
+                    point.y,
+                    val);
+    }
+
+    mat.print();
 }
 
 
