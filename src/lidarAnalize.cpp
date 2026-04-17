@@ -248,7 +248,7 @@ void pixelArtPrint(lidarAnalize_t* data, int count,int sizeX,int sizeY,int scale
         posixNeg = (-1000)/scale + sizeX/2;
         posixPos = 1000/scale + sizeX/2;
         posiy = i;
-        if(posixPos < sizeX && posixPos >= 0 && posixNeg < sizeX && posixNeg >= 0  && posiyNeg < sizeY && posiyNeg >= 0){
+        if(posixPos < sizeX && posixPos >= 0 && posixNeg < sizeX && posixNeg >= 0  && posiy < sizeY && posiy >= 0){
             matriceAffichage[posixPos + sizeX * posiy] = 'Z';
             matriceAffichage[posixNeg + sizeX * posiy] = 'Z';
         }
