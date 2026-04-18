@@ -1,38 +1,24 @@
-#include "Function.hpp"
+#include "Fsm.hpp"
 
-enum class FsmTakeNuts{
-    INIT,
-    DOWN,
-    LEFT,
-    RiGHT,
-    UP,
-    PIVOT
-};
-const char* FsmTakeNuts_to_string(FsmTakeNuts p) {
-    switch (p) {
-        case FsmTakeNuts::INIT : return "INIT";
-        case FsmTakeNuts::DOWN : return "DOWN";
-        case FsmTakeNuts::LEFT : return "LEFT";
-        case FsmTakeNuts::RiGHT : return "RiGHT";
-        case FsmTakeNuts::UP : return "UP";
-        case FsmTakeNuts::PIVOT : return "PIVOT";
-        default:     return "inconnu";
-    }
+Fsm::Fsm(/* args */)
+{
 }
 
-bool takeNuts(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-    static FsmTakeNuts currentState = FsmTakeNuts::INIT;
+Fsm::~Fsm()
+{
+}
+
+
+bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
     FsmTakeNuts nextState = currentState;
-    static bool initStat = false;
-    static unsigned long startTime;
     bool bret = false;
 
     switch (currentState)
     {
     case FsmTakeNuts::INIT :
-        nextState = FsmTakeNuts::DOWN;
+        nextState = FsmTakeNuts::TAKE_DOWN;
         break;
-    case FsmTakeNuts::DOWN :
+    case FsmTakeNuts::TAKE_DOWN :
         if(initStat){
             startTime = millis()+200;
             arduino->controlePompe(pompe::pompe1,1);
@@ -42,10 +28,10 @@ bool takeNuts(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
             arduino->stepperMove(25);
         }
         if(startTime < millis()){
-            nextState = FsmTakeNuts::LEFT;
+            nextState = FsmTakeNuts::TAKE_LEFT;
         }
         break;
-    case FsmTakeNuts::LEFT :
+    case FsmTakeNuts::TAKE_LEFT :
         if(initStat){
             startTime = millis()+750;
             arduino->servoMove(servo::rotation1,10);
@@ -54,10 +40,10 @@ bool takeNuts(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
             arduino->servoMove(servo::rotation4,10);
         }
         if(startTime < millis()){
-            nextState = FsmTakeNuts::RiGHT;
+            nextState = FsmTakeNuts::TAKE_RIGHT;
         }
         break;
-    case FsmTakeNuts::RiGHT :
+    case FsmTakeNuts::TAKE_RIGHT :
         if(initStat){
             startTime = millis()+750;
             arduino->servoMove(servo::rotation1,0);
@@ -66,19 +52,19 @@ bool takeNuts(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
             arduino->servoMove(servo::rotation4,0);
         }
         if(startTime < millis()){
-            nextState = FsmTakeNuts::UP;
+            nextState = FsmTakeNuts::TAKE_UP;
         }
         break;
-    case FsmTakeNuts::UP :
+    case FsmTakeNuts::TAKE_UP :
         if(initStat){
             startTime = millis()+2000;
             arduino->stepperMove(1150);
         }
         if(startTime < millis()){
-            nextState = FsmTakeNuts::PIVOT;
+            nextState = FsmTakeNuts::TAKE_PIVOT_90;
         }
         break;
-    case FsmTakeNuts::PIVOT :
+    case FsmTakeNuts::TAKE_PIVOT_90 :
         if(initStat){
             startTime = millis()+2000;
             arduino->servoMove(servo::bascule,180);

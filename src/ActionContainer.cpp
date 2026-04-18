@@ -22,74 +22,64 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
 
     takeStock0->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[0] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock0bis->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[0] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock1->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[1] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock2->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[2] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock3->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[3] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock4->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[4] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock5->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[5] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock6->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[6] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock7->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[7] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
     takeStock7bis->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[7] = ControlOwner::Friendly;
-        globalState->robotFull = true;
     });
 
     takeStock0->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock0bis->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock1->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[1]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[1]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock2->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[2]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[2]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock3->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[3]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[3]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock4->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[4]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[4]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock5->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[5]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[5]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock6->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[6]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[6]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock7->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[7]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock7bis->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[7]==ControlOwner::None && globalState->robotFull==false ? 1 : -1;
+        return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
 
     takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
@@ -123,11 +113,40 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
         return 1;
     });
 
-    // takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-    //     // TODO
-    //     // return takeStock(*iRobot,iAsser,iarduino,itable,itable->plantPosition[0].y,itable->plantPosition[0].x - MARGESTOCKPLANT,itable->plantPosition[0].x + 400,0);
-    //     return 0;
-    // });
+    takeStock0->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock0bis->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock1->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock2->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock3->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock4->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock5->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock6->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock7->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+    takeStock7bis->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        globalState->commande = RobotStatus::full;
+    });
+
+    takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
     listeAction.push_back(takeStock0);
 
     //Choose first Action

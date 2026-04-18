@@ -17,6 +17,7 @@ private:
     enum class FsmAction{
         INIT,
         MOVESTART,
+        STARTACTION,
         ACTION,
         MOVEEND
     };
@@ -37,6 +38,7 @@ private:
 
 
     std::function<int(GlobalState*, Asserv*, Arduino*)> runActionPtr;
+    std::function<void(GlobalState*, Asserv*, Arduino*)> startActionPtr;
     std::function<int(GlobalState*)> costActionPtr;
     std::function<void(GlobalState*)> goodEndPtr;
     std::function<void(GlobalState*)> badEndPtr;
@@ -64,6 +66,7 @@ public:
     void setEndPoint(int x, int y, int teta, Direction Direction, Rotation rotation);
     int costAction(void);
     void setFunctRunAction(std::function<int(GlobalState*, Asserv*, Arduino*)> ptr);
+    void setFunctStartAction(std::function<void(GlobalState*, Asserv*, Arduino*)> ptr);
     void setFunctGoodEnd(std::function<void(GlobalState*)> ptr);
     void setFunctBadEnd(std::function<void(GlobalState*)> ptr);
     void setFunctCostAction(std::function<int(GlobalState*)> ptr);

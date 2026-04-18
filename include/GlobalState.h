@@ -39,6 +39,12 @@ inline int yzoneDepose[10] = {800, 1450,800,800,100, 100, 100,800,800,1450};
 //      D6        S4         D5       S3        D4            //
 //**************************************************************
 
+enum class RobotStatus{
+    empty,
+    full,
+    reseting,
+};
+
 class GlobalState
 {
 public:
@@ -53,8 +59,8 @@ public:
     bool termometre;
 
     //robot
-    bool robotFull;
-    bool robotIsSorted;
+    RobotStatus commande = RobotStatus::empty;
+    RobotStatus robotStatus = RobotStatus::empty;
     position_t robotPosition;
     ColorTeam robotColor;
 

@@ -47,6 +47,10 @@ int Action::runAction(void){
         }
         break;
 
+    case FsmAction::STARTACTION :
+        if(startActionPtr){
+            startActionPtr(mGlobalState,mAsserv,mArduino);
+        }
 
     case FsmAction::ACTION :
         deplacementreturn = runActionPtr(mGlobalState,mAsserv,mArduino);
@@ -110,6 +114,10 @@ void Action::setFunctCostAction(std::function<int(GlobalState*)> ptr){
 
 void Action::setFunctRunAction(std::function<int(GlobalState*, Asserv*, Arduino*)> ptr){
     runActionPtr = ptr;
+}
+
+void Action::setFunctStartAction(std::function<void(GlobalState*, Asserv*, Arduino*)> ptr){
+    startActionPtr = ptr;
 }
 
 void Action::setFunctGoodEnd(std::function<void(GlobalState*)> ptr){
