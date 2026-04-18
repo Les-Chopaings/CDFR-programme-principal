@@ -147,7 +147,44 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
         return globalState->robotStatus == RobotStatus::full;
     });
+    takeStock0bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock1->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock2->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock3->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock4->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock5->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock6->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock7->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+    takeStock7bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return globalState->robotStatus == RobotStatus::full;
+    });
+
     listeAction.push_back(takeStock0);
+    listeAction.push_back(takeStock0bis);
+    listeAction.push_back(takeStock1);
+    listeAction.push_back(takeStock2);
+    listeAction.push_back(takeStock3);
+    listeAction.push_back(takeStock4);
+    listeAction.push_back(takeStock5);
+    listeAction.push_back(takeStock6);
+    listeAction.push_back(takeStock7);
+    listeAction.push_back(takeStock7bis);
 
     //Choose first Action
     choosNextAction();

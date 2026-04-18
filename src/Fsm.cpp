@@ -16,7 +16,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
     switch (currentState)
     {
     case FsmTakeNuts::INIT :
-        nextState = FsmTakeNuts::TAKE_DOWN;
+        if(globalState->commande == RobotStatus::full){
+            nextState = FsmTakeNuts::TAKE_DOWN;
+        }
         break;
     case FsmTakeNuts::TAKE_DOWN :
         if(initStat){
@@ -70,12 +72,75 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             arduino->servoMove(servo::bascule,180);
         }
         if(startTime < millis()){
-            bret = true;
-            nextState = FsmTakeNuts::INIT;
+            nextState = FsmTakeNuts::SORT;
         }
         break;
+
+    case FsmTakeNuts::SORT :
+        nextState = FsmTakeNuts::WAIT_PUT; //TODO Nathan
+        break;
+
+    case FsmTakeNuts::WAIT_PUT:
+        if(initStat){
+            globalState->robotStatus = RobotStatus::full;
+        }
+        if(globalState->commande==RobotStatus::empty){
+            nextState = FsmTakeNuts::PUT_PIVOT_45;
+        }
+
+    case FsmTakeNuts::PUT_PIVOT_45 :
+        if(initStat){
+            startTime = millis()+200;
+            arduino->servoMove(servo::bascule,90);
+        }
+        if(startTime < millis()){
+            nextState = FsmTakeNuts::PUT_STOP_POMPE;
+        }
+        break;
+
+    case FsmTakeNuts::PUT_STOP_POMPE :
+        if(initStat){
+            startTime = millis()+1500;
+            arduino->servoMove(servo::bascule,90);
+            arduino->controlePompe(pompe::pompe1,0);
+            arduino->controlePompe(pompe::pompe2,0);
+            arduino->controlePompe(pompe::pompe3,0);
+            arduino->controlePompe(pompe::pompe4,0);
+        }
+        if(startTime < millis()){
+            nextState = FsmTakeNuts::PUT_STOP_POMPE;
+        }
+        break;
+
+    case FsmTakeNuts::PUT_PIVOT_90 :
+        if(initStat){
+            startTime = millis()+500;
+            arduino->servoMove(servo::bascule,90);
+        }
+        if(startTime < millis()){
+            nextState = FsmTakeNuts::RESET_SORT;
+            globalState->robotStatus = RobotStatus::reseting;
+        }
+        break;
+
+    case FsmTakeNuts::RESET_SORT :
+        nextState = FsmTakeNuts::RESET_DOWN; //TODO Nathan
+        break;
+
+    case FsmTakeNuts::RESET_DOWN :
+        if(initStat){
+            startTime = millis()+2000;
+            arduino->stepperMove(150);
+        }
+        if(startTime < millis()){
+            nextState = FsmTakeNuts::INIT;
+            globalState->robotStatus = RobotStatus::empty;
+        }
+        break;
+
     default:
         nextState = FsmTakeNuts::INIT;
+        globalState->robotStatus = RobotStatus::empty;
         break;
     }
 

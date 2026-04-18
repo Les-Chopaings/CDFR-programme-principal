@@ -14,11 +14,12 @@ DECLARE_ENUM_CLASS(FsmTakeNuts,
     TAKE_UP,        //<-- end : robot full
     TAKE_PIVOT_90,
     SORT,           // nathan job
+    WAIT_PUT,
     PUT_PIVOT_45,
     PUT_STOP_POMPE,
     PUT_PIVOT_90,   //<-- end : robot empty
     RESET_SORT,     // nathan job
-    RESET_DOWN     //<-- end : robot ready
+    RESET_DOWN      //<-- end : robot ready
 )
 
 
