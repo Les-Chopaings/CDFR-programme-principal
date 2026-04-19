@@ -142,16 +142,16 @@ int main(int argc, char *argv[]) {
 
         LOG_SCOPE("Main");
 
-        bool rot[4]={0, 1, 1, 1};
-        test.TriNoisette(rot);
+        bool rot[4]={1, 1, 1, 1};
+        test.TriNoisette(rot, &arduino);
         // LOG_DEBUG("miliseconde = ",millis());
 
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
             int16_t x, y, teta;
             int distance;
-            asserv.get_coordinates(x, y, teta);
-            LOG_DEBUG("xyt : ",x," ",y," ",teta);
+            // asserv.get_coordinates(x, y, teta);
+            // LOG_DEBUG("xyt : ",x," ",y," ",teta);
             x = 0; y = 0; teta = 0;
             position_t position = {x,y,teta,0};
             rotateLidarData(lidarData, count, -45);

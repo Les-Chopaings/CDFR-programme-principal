@@ -10,7 +10,7 @@ Minifsm::~Minifsm()
 }
 
 
-int Minifsm::TriNoisette(bool* rotate)
+int Minifsm::TriNoisette(bool* rotate, Arduino* arduino)
 {
 switch (currentState) {
 
@@ -26,10 +26,13 @@ switch (currentState) {
 
             default:{
                 /*Etat idle, vérification des kapla à retourner*/
+                toReset = 0;
                 LOG_DEBUG("idle");
                 LOG_DEBUG("verification de la liste initiale= ", rotate[0], rotate[1], rotate[2], rotate[3]);
-                toCopy = 1;
-                currentState = State::toProcess;
+                if (rotate[0] == 1 || rotate[1] == 1 || rotate[2] == 1 || rotate[3] == 1){
+                    toCopy = 1;
+                    servoToMove[0] = 0; servoToMove[1] = 180; servoToMove[2] = 180; servoToMove[3] = 180;
+                    currentState = State::init;}
                 break;}
 
             case State::toProcess:{
@@ -42,62 +45,158 @@ switch (currentState) {
 
                 // vérification des kaplas à retourner
                 LOG_DEBUG("verification de la liste en attente = ", rotCopied[0], rotCopied[1], rotCopied[2], rotCopied[3]);
+                /* retourne le servo 1 si nécessaire*/
                 if (rotCopied[0] == 1){
-                    currentState = State::rotate1;
+                    followupState = State::rotate1;
                     rotCopied[0] = 0;}
+                /* retourne le servo 2 si nécessaire*/
                 else if (rotCopied[1] == 1){
-                    currentState = State::rotate2;
+                    servoToMove[0] = 0; servoToMove[1] = 40; servoToMove[2] = 180; servoToMove[3] = 180;
+                    followupState = State::rotate2;
                     rotCopied[1] = 0;}
+                /* retourne le servo 3 si nécessaire*/
                 else if (rotCopied[2] == 1){
-                    currentState = State::rotate3;
+                    servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 40; servoToMove[3] = 180;
+                    followupState = State::rotate3;
                     rotCopied[2] = 0;}
+                /* retourne le servo 4 si nécessaire*/
                 else if (rotCopied[3] == 1){
-                    currentState = State::rotate4;
+                    servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 0; servoToMove[3] = 180;
+                    followupState = State::rotate4;
                     rotCopied[3] = 0;}
                 else {
-                    currentState = State::idle;
-                    return(1);}
-
-                T_start = millis();
+                    LOG_DEBUG("retourne à l'état init");
+                    servoToMove[0] = 90; servoToMove[1] = 90; servoToMove[2] = 90; servoToMove[3] = 90;
+                    toReset = 1;}
+                if(toReset){currentState = State::init;}
+                else{currentState = State::movement;}
                 break;}
 
             case State::rotate1:{
-                /*Retourne le kapla 1*/
-                int fs = millis() - T_start;
-                if (fs > 999){
-                    startSeconds++;
-                    LOG_DEBUG("étape 1, secondes écoulées = ", startSeconds);
-                    currentState = State::toProcess;}
+                LOG_DEBUG("retourne le kapla 1");
+                arduino->servoMove(servo::rotation1,180);
+                T_start =  millis();
+                currentState = State::rotwait;
                 break;}
 
             case State::rotate2:{
-                /*Retourne le kapla 2*/
-                int fs = millis() - T_start;
-                if (fs > 999){
-                    startSeconds++;
-                    LOG_DEBUG("étape 2, secondes écoulées = ", startSeconds);
-                    currentState = State::toProcess;}
+                LOG_DEBUG("retourne le kapla 2");
+                arduino->servoMove(servo::rotation2,180);
+                currentState = State::toProcess;
+                T_start =  millis();
+                currentState = State::rotwait;
                 break;}
 
             case State::rotate3:{
-                /*Retourne le kapla 3*/
-                int fs = millis() - T_start;
-                if (fs > 999){
-                    startSeconds++;
-                    LOG_DEBUG("étape 3, secondes écoulées = ", startSeconds);
-                    currentState = State::toProcess;}
+                LOG_DEBUG("retourne le kapla 3");
+                arduino->servoMove(servo::rotation3,180);
+                currentState = State::toProcess;
+                T_start =  millis();
+                currentState = State::rotwait;
                 break;}
 
             case State::rotate4:{
-                /*Retourne le kapla 4*/
-                int fs = millis() - T_start;
-                if (fs > 999){
-                    startSeconds++;
-                    LOG_DEBUG("étape 4, secondes écoulées = ", startSeconds);
-                    currentState = State::toProcess;}
+                LOG_DEBUG("retourne le kapla 4");
+                arduino->servoMove(servo::rotation4,180);
+                currentState = State::toProcess;
+                T_start =  millis();
+                currentState = State::rotwait;
                 break;}
+
+            case State::movement:{
+                /* bouge le servo 1 si nécessaire*/
+                if(servoToMove[0] != servoCurrentPos[0]){
+                    LOG_DEBUG("bouge servo 1 à ", servoToMove[0]);
+                    arduino->servoMove(servo::slider1, servoToMove[0]);
+                    servoCurrentPos[0] = servoToMove[0];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                /* bouge le servo 2 si nécessaire*/
+                else if(servoToMove[1] != servoCurrentPos[1]){
+                    LOG_DEBUG("bouge servo 2 à ", servoToMove[1]);
+                    arduino->servoMove(servo::slider2, servoToMove[1]);
+                    servoCurrentPos[1] = servoToMove[1];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                /* bouge le servo 3 si nécessaire*/
+                else if(servoToMove[2] != servoCurrentPos[2]){
+                    LOG_DEBUG("bouge servo 3 à ", servoToMove[2]);
+                    arduino->servoMove(servo::slider3, servoToMove[2]);
+                    servoCurrentPos[2] = servoToMove[2];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                /* bouge le servo 4 si nécessaire*/
+                else if(servoToMove[3] != servoCurrentPos[3]){
+                    LOG_DEBUG("bouge servo 4 à ", servoToMove[3]);
+                    arduino->servoMove(servo::slider4, servoToMove[3]);
+                    servoCurrentPos[3] = servoToMove[3];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                else{
+                    currentState = followupState;
+                }
+                break;}
+
+            case State::wait:{
+                int fs = millis() - T_start;
+                if(fs > TIMESLIDER){
+                    LOG_DEBUG("wait ", TIMESLIDER, " ms");
+                    if (toCopy || toReset){currentState = State::init;}
+                    else{currentState = State::movement;}
+                }
+            break;}
+
+            case State::rotwait:{
+                int fs = millis() - T_start;
+                if(fs > TIMEROTATE){
+                    LOG_DEBUG("wait ", TIMEROTATE, " ms");
+                    currentState = State::toProcess;
+                }
+            break;}
+
+            case State::init:{
+                /*On commence par le servo 4, puis 3 ,2 et 1*/
+                if(servoToMove[3] != servoCurrentPos[3]){
+                    LOG_DEBUG("bouge servo 4 à ", servoToMove[3]);
+                    arduino->servoMove(servo::slider4, servoToMove[3]);
+                    servoCurrentPos[3] = servoToMove[3];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                else if(servoToMove[2] != servoCurrentPos[2]){
+                    LOG_DEBUG("bouge servo 3 à ", servoToMove[2]);
+                    arduino->servoMove(servo::slider3, servoToMove[2]);
+                    servoCurrentPos[2] = servoToMove[2];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                else if(servoToMove[1] != servoCurrentPos[1]){
+                    LOG_DEBUG("bouge servo 2 à ", servoToMove[1]);
+                    arduino->servoMove(servo::slider2, servoToMove[1]);
+                    servoCurrentPos[1] = servoToMove[1];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                else if(servoToMove[0] != servoCurrentPos[0]){
+                    LOG_DEBUG("bouge servo 1 à ", servoToMove[0]);
+                    arduino->servoMove(servo::slider1, servoToMove[0]);
+                    servoCurrentPos[0] = servoToMove[0];
+                    T_start =  millis();
+                    currentState = State::wait;
+                }
+                else if(toReset){
+                    LOG_DEBUG("---Tri fini---");
+                    currentState = State::idle;
+                    return(1);
+                }
+                else {currentState = State::toProcess;}
+            break;}
     }
 
-    return (1);   /* sortie de la boucle (=1)*/
+    return (0);   /* sortie de la boucle (=0)*/
 }
 
