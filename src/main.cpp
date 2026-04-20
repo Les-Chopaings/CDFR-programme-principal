@@ -6,7 +6,6 @@
 #include "asserv/asserv.h"
 #include "utils.h"
 #include "GlobalState.h"
-#include "Function.hpp"
 #include "Traceur.hpp"
 
 #include "path_finding.h"
@@ -155,13 +154,15 @@ int main(int argc, char *argv[]) {
                 pixelArtPrint(lidarData,count,50,50,100,position);
             }
             distance = -200;
-            int distance_collide = collide(lidarData,count,distance);
-            bool collide = distance_collide<0;
+            globalState.collideDistance =  collide(lidarData,count,distance);
+            bool collide = globalState.collideDistance<0;
             if(collide != prev_collide){
               prev_collide = collide;
               LOG_DEBUG("COLLIDE : ", collide);
             }
         }
+
+        globalState.map
 
         switch (currentState) {
             //****************************************************************

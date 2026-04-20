@@ -79,5 +79,5 @@ public:
 
     node_t *find_closest_node_to_point(pose_t target_pose);
 
-    path_t find_path_between_points(pose_t start_point, pose_t end_point, bool remove_coax_nodes = false);
+    path_t find_path_between_points(pose_t start_point, pose_t end_point, bool remove_coax_nodes = true);
 };

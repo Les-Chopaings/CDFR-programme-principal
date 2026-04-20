@@ -3,16 +3,31 @@
 #include <functional>
 #include <string>
 
+#include <math.h>
 #include "logger.hpp"
 #include "GlobalState.h"
 #include "asserv/asserv.h"
 #include "Arduino.hpp"
+#include "path_finding.h"
 
 
 class Action
 {
 private:
 
+    enum class FsmGoToStart{
+        INIT,
+        WAIT,
+        COLIDE
+    };
+    const char* FsmGoToStart_to_string(FsmGoToStart p) {
+        switch (p) {
+            case FsmGoToStart::INIT : return "INIT";
+            case FsmGoToStart::WAIT : return "WAIT";
+            case FsmGoToStart::COLIDE : return "COLIDE";
+            default:     return "inconnu";
+        }
+    }
 
     enum class FsmAction{
         INIT,
@@ -35,6 +50,7 @@ private:
     GlobalState* mGlobalState;
     Asserv* mAsserv;
     Arduino* mArduino;
+    path_t mpath;
 
 
     std::function<int(GlobalState*, Asserv*, Arduino*)> runActionPtr;
@@ -51,12 +67,14 @@ private:
     position_t endPostion;
     Direction endDirection;
     Rotation endRotation;
+    uint16_t tetaEnd = 0;
+    bool noTetaStart = true;
 
     FsmAction currentState = FsmAction::INIT;
+    FsmGoToStart currentStateToStart = FsmGoToStart::INIT;
+    unsigned long mStartColide;
 
     std::string actionName;
-
-    bool noTetaStart = false;
 
 public:
     Action(std::string name, GlobalState* globalState, Asserv* asserv, Arduino* arduino);

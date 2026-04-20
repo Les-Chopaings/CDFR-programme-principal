@@ -133,6 +133,7 @@ void Action::setStartPoint(int x, int y, int teta, Direction Direction, Rotation
     startPostion.teta = teta;
     startDirection = Direction;
     startRotation = rotation;
+    noTetaStart = false;
 }
 
 void Action::setStartPoint(int x, int y, Direction Direction, Rotation rotation){
@@ -161,8 +162,79 @@ int Action::costAction(void){
 
 
 int Action::goToStart(void){
-    // TODO
-    return 0;
+    LOG_SCOPE("Action");
+    int ireturn = 0;
+    FsmGoToStart nextState = currentStateToStart;
+    int deplacementreturn;
+
+    switch (currentStateToStart)
+    {
+    case FsmGoToStart::INIT :
+        mpath = mGlobalState->map.find_path_between_points(
+            {(float)mGlobalState->robotPosition.x, (float)mGlobalState->robotPosition.y, 255, 0},
+            {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
+        );
+        if(mpath.length < 2){
+            deplacementreturn = -1;
+        }
+        else{
+            for (size_t i = 0; i < mpath.v.size(); ++i) {
+                auto [point, node_id, theta] = mpath.v[i];
+
+                uint8_t val = 3;
+
+                if (i == 0){
+                    mAsserv->go_to_point(point.x,point.y,endRotation,endDirection);
+                }
+                else if(i == mpath.v.size()-1){
+                    if(noTetaStart)
+                        mAsserv->go_to_point(point.x,point.y,startRotation,startDirection);
+                    else
+                        mAsserv->go_to_point(point.x,point.y,tetaEnd,Rotation::SHORTEST,startDirection,startRotation);
+                }
+                else{
+                    mAsserv->go_to_point(point.x,point.y);
+                }
+            }
+        }
+        nextState = FsmGoToStart::WAIT;
+        break;
+
+    case FsmGoToStart::WAIT :
+        if(mGlobalState->collideDistance<0){
+            nextState = FsmGoToStart::COLIDE;
+            mStartColide = millis() + 5000;
+            mAsserv->pause();
+        }
+        else if(mAsserv->get_moving_is_done()){
+            nextState = FsmGoToStart::INIT;
+            deplacementreturn = 1;
+        }
+        break;
+
+    case FsmGoToStart::COLIDE :
+        if(mGlobalState->collideDistance>50){
+            nextState = FsmGoToStart::WAIT;
+            mAsserv->resume();
+        }
+        else if(mStartColide<millis()){
+            nextState = FsmGoToStart::INIT;
+            mAsserv->stop();
+            deplacementreturn = -1;
+        }
+        break;
+
+    default:
+
+        nextState = FsmGoToStart::INIT;
+        break;
+    }
+
+    if(nextState != currentStateToStart){
+        LOG_STATE(FsmGoToStart_to_string(nextState));
+    }
+    currentStateToStart = nextState;
+    return deplacementreturn;
 }
 
 

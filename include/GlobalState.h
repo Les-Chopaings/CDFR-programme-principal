@@ -1,6 +1,7 @@
 #pragma once
 #include "utils.h"
 #include "config.hpp"
+#include "path_finding.h"
 
 enum class ControlOwner{
     None,
@@ -66,6 +67,9 @@ public:
 
     // robot ennemy
     position_t enemyPosition;
+
+    PathFindingMap map;
+    int collideDistance;
 
 public:
     GlobalState(/* args */);

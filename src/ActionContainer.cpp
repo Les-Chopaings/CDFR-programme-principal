@@ -3,7 +3,15 @@
 
 ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
 
-    takeStock0 = new Action("takeStock0",globalState,asserv,arduino);
+    takeStock0bis = new Action("takeStock0bis",globalState,asserv,arduino);
+    takeStock1    = new Action("takeStock1",globalState,asserv,arduino);
+    takeStock2    = new Action("takeStock2",globalState,asserv,arduino);
+    takeStock3    = new Action("takeStock3",globalState,asserv,arduino);
+    takeStock4    = new Action("takeStock4",globalState,asserv,arduino);
+    takeStock5    = new Action("takeStock5",globalState,asserv,arduino);
+    takeStock6    = new Action("takeStock6",globalState,asserv,arduino);
+    takeStock7    = new Action("takeStock7",globalState,asserv,arduino);
+    takeStock7bis = new Action("takeStock7bis",globalState,asserv,arduino);
 
 }
 void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
