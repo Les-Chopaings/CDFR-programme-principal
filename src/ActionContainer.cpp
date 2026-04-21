@@ -3,6 +3,7 @@
 
 ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
 
+    takeStock0    = new Action("takeStock0",globalState,asserv,arduino);
     takeStock0bis = new Action("takeStock0bis",globalState,asserv,arduino);
     takeStock1    = new Action("takeStock1",globalState,asserv,arduino);
     takeStock2    = new Action("takeStock2",globalState,asserv,arduino);
@@ -12,6 +13,8 @@ ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Ardui
     takeStock6    = new Action("takeStock6",globalState,asserv,arduino);
     takeStock7    = new Action("takeStock7",globalState,asserv,arduino);
     takeStock7bis = new Action("takeStock7bis",globalState,asserv,arduino);
+    currentAction = nullptr;
+    initAction(globalState, asserv, arduino);
 
 }
 void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
@@ -193,12 +196,13 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     listeAction.push_back(takeStock6);
     listeAction.push_back(takeStock7);
     listeAction.push_back(takeStock7bis);
-
-    //Choose first Action
-    choosNextAction();
 }
 
 int ActionContainer::actionContainerRun(void){
+    if(currentAction == nullptr){
+        //Choose first Action
+        return choosNextAction();
+    }
     int iActionReturn;
     int iChoosNextReturn = 0;
     int iRet = 0;

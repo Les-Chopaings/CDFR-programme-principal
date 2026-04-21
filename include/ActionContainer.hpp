@@ -23,7 +23,7 @@ private:
     Action* takeStock7bis;
 
     std::vector<Action*> listeAction;
-    Action* currentAction;
+    Action* currentAction = nullptr;
 
 public:
     ActionContainer(GlobalState* globalState, Asserv* asserv, Arduino* arduino);

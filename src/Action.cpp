@@ -7,6 +7,7 @@ Action::Action(std::string name, GlobalState* globalState, Asserv* asserv, Ardui
     mArduino = arduino;
     noEndPoint = true;
     currentState = FsmAction::INIT;
+    actionName = name;
 
     runActionPtr = nullptr;
     costActionPtr = nullptr;
@@ -165,7 +166,7 @@ int Action::goToStart(void){
     LOG_SCOPE("Action");
     int ireturn = 0;
     FsmGoToStart nextState = currentStateToStart;
-    int deplacementreturn;
+    int deplacementreturn = 0;
 
     switch (currentStateToStart)
     {

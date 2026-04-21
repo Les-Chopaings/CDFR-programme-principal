@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "GlobalState.h"
 #include "Traceur.hpp"
+#include "ActionContainer.hpp"
 
 #include "path_finding.h"
 #include <chrono>
@@ -109,6 +110,7 @@ int main(int argc, char *argv[]) {
 #ifdef EMULATE
     Arduino arduino(-1);
     Asserv asserv(-1);
+    bool emulate = true;
 #else
     Arduino arduino(0x64);
     Asserv asserv(42);
@@ -116,10 +118,12 @@ int main(int argc, char *argv[]) {
         LOG_ERROR("cannot find the lidar");
         return -1;
     }
+    bool emulate = false;
 #endif
     bool prev_collide = false;
     lidarAnalize_t lidarData[SIZEDATALIDAR];
     GlobalState globalState;
+    ActionContainer actionContainer(&globalState, &asserv, &arduino);
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
@@ -128,6 +132,8 @@ int main(int argc, char *argv[]) {
     MainState currentState = MainState::INIT;
     MainState nextState = currentState;
     bool initStat = true;
+    globalState.map = PathFindingMap();
+    globalState.map.update_base_map();
 
     // TEST
     // asserv.go_to_point(1000, 0, 0);
@@ -162,8 +168,6 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        globalState.map
-
         switch (currentState) {
             //****************************************************************
             // wait to start the initialisation process
@@ -172,7 +176,7 @@ int main(int argc, char *argv[]) {
                     LOG_STATE("INIT");
                     //TODO
                 }
-                if(arduino.readButton(button::magnet)){
+                if(arduino.readButton(button::magnet) || emulate){
                     nextState = MainState::INITIALIZE;
                 }
                 break;
@@ -212,7 +216,7 @@ int main(int argc, char *argv[]) {
                 if(initStat){
                     LOG_STATE("WAITSTART");
                 }
-                if(!arduino.readButton(button::magnet)){
+                if(!arduino.readButton(button::magnet) || emulate){
                     nextState = MainState::START;
                 }
                 break;
@@ -231,13 +235,13 @@ int main(int argc, char *argv[]) {
             // action to play during 100s
             case MainState::RUN:{
                 if(initStat) LOG_STATE("RUN");
-                bool finish = false;
-                finish = takeNuts(&globalState, &asserv, &arduino);
+                int finish = 0;
+                finish = actionContainer.actionContainerRun();
                 if((globalState.startTimestamp + 100000) < millis()){
                     LOG_GREEN_INFO("END BY TIMER");
                     nextState = MainState::FIN;
                 }
-                if(finish){
+                if(finish<0){
                     LOG_GREEN_INFO("END BY ACTION");
                     nextState = MainState::FIN;
                 }
