@@ -79,15 +79,15 @@ public:
     }
 
     std::string getPosition(void){
-        int x,y,teta;
+        int x,y,theta;
         x = 0;
         y = 0;
-        teta = 0;
+        theta = 0;
         std::ostringstream returnstring;
         if(!noLog){
             noLog = true;
             noLog = false;
-            returnstring << "[" << std::setw(5) << x << " " << std::setw(5) << y << " " << std::setw(4) << teta <<"]";
+            returnstring << "[" << std::setw(5) << x << " " << std::setw(5) << y << " " << std::setw(4) << theta <<"]";
         }
         return returnstring.str();
     }
@@ -105,7 +105,9 @@ public:
                 std::cout << "[INFO] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " " << oss.str() << std::endl;
                 break;
             case LogLevel::WARNING:
+                std::cout << "\033[33m";
                 std::cout << "[WARNING] " << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                std::cout << "\033[0m";
                 break;
             case LogLevel::ERROR:
                 std::cout << "\033[1;31m";

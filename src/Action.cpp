@@ -37,7 +37,7 @@ int Action::runAction(void){
     case FsmAction::MOVESTART :
         deplacementreturn = goToStart();
         if(deplacementreturn>0){
-            nextState = FsmAction::ACTION;
+            nextState = FsmAction::STARTACTION;
         }
         else if(deplacementreturn<0){
             nextState = FsmAction::INIT;
@@ -52,6 +52,7 @@ int Action::runAction(void){
         if(startActionPtr){
             startActionPtr(mGlobalState,mAsserv,mArduino);
         }
+        nextState = FsmAction::ACTION;
 
     case FsmAction::ACTION :
         deplacementreturn = runActionPtr(mGlobalState,mAsserv,mArduino);
@@ -128,10 +129,10 @@ void Action::setFunctBadEnd(std::function<void(GlobalState*)> ptr){
     badEndPtr = ptr;
 }
 
-void Action::setStartPoint(int x, int y, int teta, Direction Direction, Rotation rotation){
+void Action::setStartPoint(int x, int y, int theta, Direction Direction, Rotation rotation){
     startPostion.x = x;
     startPostion.y = y;
-    startPostion.teta = teta;
+    startPostion.theta = theta;
     startDirection = Direction;
     startRotation = rotation;
     noTetaStart = false;
@@ -145,10 +146,10 @@ void Action::setStartPoint(int x, int y, Direction Direction, Rotation rotation)
     noTetaStart = true;
 }
 
-void Action::setEndPoint(int x, int y, int teta, Direction Direction, Rotation rotation){
+void Action::setEndPoint(int x, int y, int theta, Direction Direction, Rotation rotation){
     endPostion.x = x;
     endPostion.y = y;
-    endPostion.teta = teta;
+    endPostion.theta = theta;
     endDirection = Direction;
     endRotation = rotation;
     noEndPoint = false;
@@ -164,7 +165,6 @@ int Action::costAction(void){
 
 int Action::goToStart(void){
     LOG_SCOPE("Action");
-    int ireturn = 0;
     FsmGoToStart nextState = currentStateToStart;
     int deplacementreturn = 0;
 
@@ -175,14 +175,14 @@ int Action::goToStart(void){
             {(float)mGlobalState->robotPosition.x, (float)mGlobalState->robotPosition.y, 255, 0},
             {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
         );
+        mGlobalState->map.print_Path(mpath);
         if(mpath.length < 2){
+            LOG_WARNING("Path not find");
             deplacementreturn = -1;
         }
         else{
             for (size_t i = 0; i < mpath.v.size(); ++i) {
                 auto [point, node_id, theta] = mpath.v[i];
-
-                uint8_t val = 3;
 
                 if (i == 0){
                     mAsserv->go_to_point(point.x,point.y,endRotation,endDirection);

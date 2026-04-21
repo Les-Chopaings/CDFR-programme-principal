@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 #include "map/map.h"
+#include "Traceur.hpp"
 
 typedef struct {
     float x;
@@ -80,4 +81,8 @@ public:
     node_t *find_closest_node_to_point(pose_t target_pose);
 
     path_t find_path_between_points(pose_t start_point, pose_t end_point, bool remove_coax_nodes = true);
+
+    void print_Map(void);
+
+    void print_Path(path_t path);
 };

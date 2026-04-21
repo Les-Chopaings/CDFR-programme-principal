@@ -241,3 +241,37 @@ path_t PathFindingMap::find_path_between_points(const pose_t start_point, const 
 
     return result_path;
 }
+
+void PathFindingMap::print_Map(void){
+    Traceur mat(3000, 2000, 50);
+
+    for (edge_out_t &edge: get_edge_map()) {
+        mat.drawLine(edge.start_point.x, edge.start_point.y, edge.end_point.x, edge.end_point.y, edge.enabled+1);
+    }
+
+    mat.print();
+}
+
+void PathFindingMap::print_Path(path_t path){
+    Traceur mat(3000, 2000, 50);
+    for (edge_out_t &edge: get_edge_map()) {
+        mat.drawLine(edge.start_point.x, edge.start_point.y, edge.end_point.x, edge.end_point.y, edge.enabled+1);
+    }
+
+    for (size_t i = 0; i < path.v.size(); ++i) {
+        auto [point, node_id, theta] = path.v[i];
+
+        uint8_t val = 3;
+
+        if (i == 0)
+            val = 4;           // premier point
+        else if (i == path.v.size() - 1)
+            val = 5;           // dernier point
+
+        mat.drawPoint(point.x,
+                    point.y,
+                    val);
+    }
+
+    mat.print();
+}

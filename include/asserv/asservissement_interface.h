@@ -3,6 +3,11 @@
 #include "asserv/DataPacker.h"
 #include "asserv/DataUnpacker.h"
 #include "asserv/type.h"
+#include "logger.hpp"
+#include "config.hpp"
+#include "utils.h"
+#include <math.h>
+#include <deque>
 
 
 class asservissement_interface
@@ -69,10 +74,20 @@ public:
     void set_all_parameter();
 
 private:
-
-    //Overloding function
-// End auto generation CMD_HEADER
-//***********************************************
+    #ifdef EMULATE
+        struct emulate_action {
+            int m_x;
+            int m_y;
+            emulate_action(int x, int y) : m_x(x), m_y(y) {}
+        };
+        int emulate_x = 0;
+        int emulate_y = 0;
+        int emulate_theta = 0;
+        unsigned long emulate_nextTimePop = 0;
+        bool emulate_nextValid = false;
+        std::deque<emulate_action> enumate_actionQueue;
+        void run_emulate(void);
+    #endif
 
 private:
     virtual void I2cSendData (uint8_t command, uint8_t* data, int length) = 0;

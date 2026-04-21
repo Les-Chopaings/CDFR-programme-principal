@@ -8,6 +8,7 @@
 #include "GlobalState.h"
 #include "Traceur.hpp"
 #include "ActionContainer.hpp"
+#include "Fsm.hpp"
 
 #include "path_finding.h"
 #include <chrono>
@@ -124,6 +125,7 @@ int main(int argc, char *argv[]) {
     lidarAnalize_t lidarData[SIZEDATALIDAR];
     GlobalState globalState;
     ActionContainer actionContainer(&globalState, &asserv, &arduino);
+    Fsm fsm;
 
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
@@ -139,20 +141,23 @@ int main(int argc, char *argv[]) {
     // asserv.go_to_point(1000, 0, 0);
 
     // Demo path finding
-    test_path_finder();
+    // test_path_finder();
 
     while (1) {
 
         LOG_SCOPE("Main");
 
+        //Aquistion
+        int16_t x, y, theta;
+        asserv.get_coordinates(x, y, theta);
+        globalState.robotPosition.x = x;
+        globalState.robotPosition.y = y;
+        globalState.robotPosition.theta = theta;
+
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
-            int16_t x, y, teta;
             int distance;
-            asserv.get_coordinates(x, y, teta);
-            LOG_DEBUG("xyt : ",x," ",y," ",teta);
-            x = 0; y = 0; teta = 0;
-            position_t position = {x,y,teta,0};
+            position_t position = {x,y,theta,0};
             rotateLidarData(lidarData, count, -45);
             convertAngularToAxial(lidarData,count,position);
             if(ctrl_z_pressed){
@@ -188,13 +193,14 @@ int main(int argc, char *argv[]) {
                     LOG_STATE("INITIALIZE");
                     if(arduino.readButton(button::color)){
                         globalState.robotColor = ColorTeam::YELLOW;
+                        asserv.set_coordinates(2600,1800,90);
                     }
                     else{
                         globalState.robotColor = ColorTeam::BLUE;
+                        asserv.set_coordinates(400,1800,90);
                     }
                     asserv.set_motor_state(true);
                     asserv.set_brake_state(false);
-                    asserv.set_coordinates(0,0,0);
                     arduino.stepperEnable(true);
                 }
                 nextState = MainState::SETHOME;
@@ -236,6 +242,7 @@ int main(int argc, char *argv[]) {
             case MainState::RUN:{
                 if(initStat) LOG_STATE("RUN");
                 int finish = 0;
+                fsm.takeNutsRun(&globalState, &asserv, &arduino);
                 finish = actionContainer.actionContainerRun();
                 if((globalState.startTimestamp + 100000) < millis()){
                     LOG_GREEN_INFO("END BY TIMER");
@@ -251,6 +258,7 @@ int main(int argc, char *argv[]) {
             // disable all actuator
             case MainState::FIN:
                 if(initStat){
+                    stopAndRest(asserv,arduino);
                     LOG_STATE("FIN");
                 }
                 nextState = MainState::STOP;

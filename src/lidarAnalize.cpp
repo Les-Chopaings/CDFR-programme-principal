@@ -13,8 +13,8 @@ void rotateLidarData(lidarAnalize_t* data, int count, int angle){
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position){
     for(int i = 0; i< count; i++){
         if(data[i].valid){
-            data[i].x = data[i].dist*cos((data[i].angle+position.teta)*DEG_TO_RAD) + position.x;
-            data[i].y = -data[i].dist*sin((data[i].angle+position.teta)*DEG_TO_RAD) + position.y;
+            data[i].x = data[i].dist*cos((data[i].angle+position.theta)*DEG_TO_RAD) + position.x;
+            data[i].y = -data[i].dist*sin((data[i].angle+position.theta)*DEG_TO_RAD) + position.y;
         }
     }
     getTableValid(data,count);
@@ -29,7 +29,7 @@ void printLidarAxial(lidarAnalize_t* data, int count){
         if(data[i].onTable){
             charMessage = "non Table ";
         }
-        printf("%s teta : %lf \t x : %d \ty : %d\n",charMessage,data[i].angle,data[i].x,data[i].y);
+        printf("%s theta : %lf \t x : %d \ty : %d\n",charMessage,data[i].angle,data[i].x,data[i].y);
     }
 }
 

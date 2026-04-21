@@ -29,18 +29,27 @@ void asservissement_interface::get_log(char* data, int length){
 }
 
 void asservissement_interface::set_led_1(bool status){
+    LOG_DEBUG("set_led_1 : ",status);
     DataPacker packer;
     packer.addUint16((int16_t)status);
     I2cSendData(10, packer.getData(), packer.getSize());
 }
 
 void asservissement_interface::set_led_2(bool status){
+    LOG_DEBUG("set_led_2 : ",status);
     DataPacker packer;
     packer.addUint16((int16_t)status);
     I2cSendData(11, packer.getData(), packer.getSize());
 }
 
 void asservissement_interface::get_coordinates(int16_t &x, int16_t &y, int16_t &theta){
+    #ifdef EMULATE
+        run_emulate();
+        x = emulate_x;
+        y = emulate_y;
+        theta = emulate_theta;
+        return;
+    #endif
     uint8_t data[6];
     int length = 6;
     I2cReceiveData(20, data, length);
@@ -51,6 +60,13 @@ void asservissement_interface::get_coordinates(int16_t &x, int16_t &y, int16_t &
 }
 
 void asservissement_interface::set_coordinates(int16_t x, int16_t y, int16_t theta){
+    LOG_DEBUG("set_coordinates : ",x," ",y," ",theta);
+    #ifdef EMULATE
+        emulate_x = x;
+        emulate_y = y;
+        emulate_theta = theta;
+        return;
+    #endif
     DataPacker packer;
     packer.addUint16((int16_t)x);
     packer.addUint16((int16_t)y);
@@ -59,24 +75,37 @@ void asservissement_interface::set_coordinates(int16_t x, int16_t y, int16_t the
 }
 
 void asservissement_interface::stop(){
+    #ifdef EMULATE
+        emulate_nextValid = false;
+        enumate_actionQueue.clear();
+    #endif
+    LOG_DEBUG("stop");
     uint8_t* data = nullptr;
     int length = 0;
     I2cSendData(30, data, length);
 }
 
 void asservissement_interface::pause(){
+    LOG_DEBUG("pause");
     uint8_t* data = nullptr;
     int length = 0;
     I2cSendData(31, data, length);
 }
 
 void asservissement_interface::resume(){
+    LOG_DEBUG("resume");
     uint8_t* data = nullptr;
     int length = 0;
     I2cSendData(32, data, length);
 }
 
 void asservissement_interface::go_to_point(int16_t x, int16_t y, Rotation rotation, Direction direction){
+    LOG_DEBUG("go_to_point : ",x," ",y," ",(int)rotation," ",(int)direction);
+    #ifdef EMULATE
+        enumate_actionQueue.push_back(emulate_action(x, y));
+        run_emulate();
+        return;
+    #endif
     DataPacker packer;
     packer.addUint16((int16_t)x);
     packer.addUint16((int16_t)y);
@@ -86,6 +115,12 @@ void asservissement_interface::go_to_point(int16_t x, int16_t y, Rotation rotati
 }
 
 void asservissement_interface::go_to_point(int16_t x, int16_t y, int16_t theta, Rotation rotationFirst, Direction direction, Rotation rotationSecond){
+    LOG_DEBUG("go_to_point : ",x," ",y," ",theta," ",(int)rotationFirst," ",(int)direction," ",(int)rotationSecond);
+    #ifdef EMULATE
+        enumate_actionQueue.push_back(emulate_action(x, y));
+        run_emulate();
+        return;
+    #endif
     DataPacker packer;
     packer.addUint16((int16_t)x);
     packer.addUint16((int16_t)y);
@@ -97,6 +132,7 @@ void asservissement_interface::go_to_point(int16_t x, int16_t y, int16_t theta, 
 }
 
 void asservissement_interface::consigne_angulaire(int16_t angle, Rotation rotation){
+    LOG_DEBUG("consigne_angulaire : ",angle," ",(int)rotation);
     DataPacker packer;
     packer.addUint16((int16_t)angle);
     packer.addUint16((int16_t)rotation);
@@ -104,6 +140,7 @@ void asservissement_interface::consigne_angulaire(int16_t angle, Rotation rotati
 }
 
 void asservissement_interface::consigne_angulaire(int16_t x, int16_t y, Rotation rotation, Direction direction){
+    LOG_DEBUG("consigne_angulaire : ",x," ",y," ",(int)rotation," ",(int)direction);
     DataPacker packer;
     packer.addUint16((int16_t)x);
     packer.addUint16((int16_t)y);
@@ -113,6 +150,7 @@ void asservissement_interface::consigne_angulaire(int16_t x, int16_t y, Rotation
 }
 
 void asservissement_interface::set_linear_max_speed(int16_t max_speed, int16_t max_acceleration, int16_t max_deceleration){
+    LOG_DEBUG("set_linear_max_speed : ",max_speed," ",max_acceleration," ",max_deceleration);
     DataPacker packer;
     packer.addUint16((int16_t)max_speed);
     packer.addUint16((int16_t)max_acceleration);
@@ -121,6 +159,7 @@ void asservissement_interface::set_linear_max_speed(int16_t max_speed, int16_t m
 }
 
 void asservissement_interface::set_angular_max_speed(int16_t max_speed, int16_t max_acceleration, int16_t max_deceleration){
+    LOG_DEBUG("set_angular_max_speed : ",max_speed," ",max_acceleration," ",max_deceleration);
     DataPacker packer;
     packer.addUint16((int16_t)max_speed);
     packer.addUint16((int16_t)max_acceleration);
@@ -138,6 +177,10 @@ int16_t asservissement_interface::get_braking_distance(){
 }
 
 int16_t asservissement_interface::get_command_buffer_size(){
+    #ifdef EMULATE
+        run_emulate();
+        return enumate_actionQueue.size();
+    #endif
     uint8_t data[2];
     int length = 2;
     I2cReceiveData(51, data, length);
@@ -175,6 +218,10 @@ void asservissement_interface::get_current_target(int16_t &x, int16_t &y, int16_
 }
 
 bool asservissement_interface::get_moving_is_done(){
+    #ifdef EMULATE
+        run_emulate();
+        return enumate_actionQueue.size()==0;
+    #endif
     uint8_t data[2];
     int length = 2;
     I2cReceiveData(55, data, length);
@@ -238,18 +285,21 @@ void asservissement_interface::get_speed(int16_t &speedRight, int16_t &speedLeft
 }
 
 void asservissement_interface::set_motor_state(bool motorEnable){
+    LOG_DEBUG("set_motor_state : ",motorEnable);
     DataPacker packer;
     packer.addUint16((int16_t)motorEnable);
     I2cSendData(90, packer.getData(), packer.getSize());
 }
 
 void asservissement_interface::set_brake_state(bool brakeEnable){
+    LOG_DEBUG("set_brake_state : ",brakeEnable);
     DataPacker packer;
     packer.addUint16((int16_t)brakeEnable);
     I2cSendData(91, packer.getData(), packer.getSize());
 }
 
 void asservissement_interface::set_max_torque(int16_t max_torque){
+    LOG_DEBUG("set_max_torque : ",max_torque);
     DataPacker packer;
     packer.addUint16((int16_t)max_torque);
     I2cSendData(100, packer.getData(), packer.getSize());
@@ -443,6 +493,31 @@ void asservissement_interface::set_all_parameter(){
     int length = 0;
     I2cSendData(203, data, length);
 }
+
+#ifdef EMULATE
+void asservissement_interface::run_emulate(void){
+    auto distance2p = [](int x1, int y1, int x2, int y2) -> int {
+        return sqrtf((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    };
+
+    if(emulate_nextTimePop < millis()){
+        if(emulate_nextValid == true){
+            emulate_action action = enumate_actionQueue.front();
+            enumate_actionQueue.pop_front();
+            emulate_x = action.m_x;
+            emulate_y = action.m_y;
+            emulate_nextValid = false;
+        }
+        if(!enumate_actionQueue.empty()){
+            emulate_action action = enumate_actionQueue.front();
+            int time = distance2p(emulate_x, emulate_y, action.m_x, action.m_y)*5;
+            LOG_DEBUG("Deplacement Time : ",time);
+            emulate_nextTimePop = millis() + time;
+            emulate_nextValid = true;
+        }
+    }
+}
+#endif
 
 // End auto generation CMD_FONCTION
 //***********************************************

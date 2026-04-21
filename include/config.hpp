@@ -14,7 +14,7 @@ typedef struct
 {
     int   x;
     int   y;
-    int   teta;
+    int   theta;
     int   time;
 }position_t;
 
