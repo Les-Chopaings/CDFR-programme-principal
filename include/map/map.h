@@ -77,12 +77,12 @@
 {12, {400, 400}},   /*acces 0*/\
 {13, {2600, 400}},  /*acces 0*/\
 {14, {STOCK_X_P0_0, STOCK_Y_P0_0}},  /*stock 0*/\
-{15, {STOCK_X_P0_1, STOCK_Y_P0_1}}, /*stock 1*/\
+{15, {STOCK_X_P0_1, STOCK_Y_P0_1}},  /*stock 1*/\
 {16, {STOCK_X_P0_2, STOCK_Y_P0_2}},  /*stock 2*/\
 {17, {STOCK_X_P0_3, STOCK_Y_P0_3}},  /*stock 3*/\
 {18, {STOCK_X_P0_4, STOCK_Y_P0_4}},  /*stock 4*/\
-{19, {STOCK_X_P0_5, STOCK_Y_P0_5}},   /*stock 5*/\
-{20, {STOCK_X_P0_6, STOCK_Y_P0_6}},  /*stock 6*/ \
+{19, {STOCK_X_P0_5, STOCK_Y_P0_5}},  /*stock 5*/\
+{20, {STOCK_X_P0_6, STOCK_Y_P0_6}},  /*stock 6*/\
 {21, {STOCK_X_P0_7, STOCK_Y_P0_7}},  /*stock 7*/\
 {22, {STOCK_X_P1_0, STOCK_Y_P1_0}},  /*stock 0*/\
 {23, {STOCK_X_P1_7, STOCK_Y_P1_7}}   /*stock 7*/
