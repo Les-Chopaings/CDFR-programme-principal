@@ -131,7 +131,8 @@ int main(int argc, char *argv[]) {
     MainState currentState = MainState::INIT;
     MainState nextState = currentState;
     bool initStat = true;
-
+    bool testtrinoisette = 1;
+    bool rot[4] = {1, 0, 1, 1};
     // TEST
     // asserv.go_to_point(1000, 0, 0);
 
@@ -141,9 +142,9 @@ int main(int argc, char *argv[]) {
     while (1) {
 
         LOG_SCOPE("Main");
-
-        bool rot[4]={1, 1, 1, 1};
-        test.TriNoisette(rot, &arduino);
+        testtrinoisette = test.TriNoisette(rot, &arduino);
+        if (testtrinoisette){rot[0] = 0; rot[1] = 0; rot[2] = 0; rot[3] = 0;}
+        else{rot[0] = 1; rot[1] = 0; rot[2] = 1; rot[3] = 1;}
         // LOG_DEBUG("miliseconde = ",millis());
 
         int count = SIZEDATALIDAR;
