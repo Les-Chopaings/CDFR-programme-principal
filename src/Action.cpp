@@ -159,7 +159,16 @@ void Action::setEndPoint(int x, int y, int theta, Direction Direction, Rotation 
 // execute Function
 //*******************************************************
 int Action::costAction(void){
-    return costActionPtr(mGlobalState);
+    int actionCost = costActionPtr(mGlobalState);
+    if(actionCost > 0){
+        path_t tmpPath = mGlobalState->map.find_path_between_points(
+            {(float)mGlobalState->robotPosition.x, (float)mGlobalState->robotPosition.y, 255, 0},
+            {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
+        );
+        actionCost = (actionCost*10000) / tmpPath.length;
+        actionCost = clip(actionCost,0,INT32_MAX);
+    }
+    return actionCost;
 }
 
 
@@ -185,7 +194,7 @@ int Action::goToStart(void){
                 auto [point, node_id, theta] = mpath.v[i];
 
                 if (i == 0){
-                    mAsserv->go_to_point(point.x,point.y,endRotation,endDirection);
+                    //Nothing
                 }
                 else if(i == mpath.v.size()-1){
                     if(noTetaStart)

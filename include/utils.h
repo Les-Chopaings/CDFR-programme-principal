@@ -53,6 +53,11 @@ inline void setProgramPriority(int val = 99) // Max priority
     printf("Program priority set to %d\n", val);
 }
 
+template<typename T>
+inline T clip(T x, T lo, T hi) {
+    return x < lo ? lo : (x > hi ? hi : x);
+}
+
 
 #define DECLARE_ENUM_CLASS(NAME, ...)                                \
     enum class NAME { __VA_ARGS__ };                                 \

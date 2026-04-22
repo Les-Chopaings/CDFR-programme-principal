@@ -153,7 +153,7 @@ path_t PathFindingMap::find_path_between_points(const pose_t start_point, const 
     const node_t *end_close_node = find_closest_node_to_point(end_point);
 
     if (!start_close_node || !end_close_node) {
-        return result_path;
+        return removeLast(result_path);
     }
 
     auto heuristic = [&](uint8_t node_id) {
@@ -209,7 +209,7 @@ path_t PathFindingMap::find_path_between_points(const pose_t start_point, const 
             result_path.v.push_back(start_point);
             std::reverse(result_path.v.begin(), result_path.v.end());
 
-            return result_path;
+            return removeLast(result_path);
         }
 
         if (closed_set.count(current_node_id)) {
@@ -239,6 +239,18 @@ path_t PathFindingMap::find_path_between_points(const pose_t start_point, const 
         }
     }
 
+    return removeLast(result_path);
+}
+
+path_t PathFindingMap::removeLast(path_t result_path){
+    if (result_path.v.size() >= 2) {
+        auto& last = result_path.v[result_path.v.size() - 1];
+        auto& prev = result_path.v[result_path.v.size() - 2];
+        if (last.point.x == prev.point.x &&
+            last.point.y == prev.point.y) {
+            result_path.v.pop_back();
+        }
+    }
     return result_path;
 }
 

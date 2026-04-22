@@ -85,4 +85,6 @@ public:
     void print_Map(void);
 
     void print_Path(path_t path);
+
+    path_t removeLast(path_t result_path);
 };
