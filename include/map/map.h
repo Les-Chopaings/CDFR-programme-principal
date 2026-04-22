@@ -1,5 +1,66 @@
 #pragma once
 
+
+#define STOCK_X_0 1850
+#define STOCK_Y_0 800
+#define STOCK_X_1 2825
+#define STOCK_Y_1 1200
+#define STOCK_X_2 2825
+#define STOCK_Y_2 400
+#define STOCK_X_3 1900
+#define STOCK_Y_3 175
+#define STOCK_X_4 1100
+#define STOCK_Y_4 175
+#define STOCK_X_5 175
+#define STOCK_Y_5 400
+#define STOCK_X_6 175
+#define STOCK_Y_6 1200
+#define STOCK_X_7 1150
+#define STOCK_Y_7 800
+
+#define OFFSET_STOCK 200
+
+#define STOCK_X_P0_0 STOCK_X_0
+#define STOCK_Y_P0_0 STOCK_Y_0+OFFSET_STOCK
+#define STOCK_T_P0_0 90
+
+#define STOCK_X_P1_0 STOCK_X_0
+#define STOCK_Y_P1_0 STOCK_Y_0-OFFSET_STOCK
+#define STOCK_T_P1_0 -90
+
+#define STOCK_X_P0_1 STOCK_X_1-OFFSET_STOCK
+#define STOCK_Y_P0_1 STOCK_Y_1
+#define STOCK_T_P0_1 0
+
+#define STOCK_X_P0_2 STOCK_X_2-OFFSET_STOCK
+#define STOCK_Y_P0_2 STOCK_Y_2
+#define STOCK_T_P0_2 0
+
+#define STOCK_X_P0_3 STOCK_X_3
+#define STOCK_Y_P0_3 STOCK_Y_3+OFFSET_STOCK
+#define STOCK_T_P0_3 90
+
+#define STOCK_X_P0_4 STOCK_X_4
+#define STOCK_Y_P0_4 STOCK_Y_4+OFFSET_STOCK
+#define STOCK_T_P0_4 90
+
+#define STOCK_X_P0_5 STOCK_X_5+OFFSET_STOCK
+#define STOCK_Y_P0_5 STOCK_Y_5
+#define STOCK_T_P0_5 180
+
+#define STOCK_X_P0_6 STOCK_X_6+OFFSET_STOCK
+#define STOCK_Y_P0_6 STOCK_Y_6
+#define STOCK_T_P0_6 180
+
+#define STOCK_X_P0_7 STOCK_X_7
+#define STOCK_Y_P0_7 STOCK_Y_7+OFFSET_STOCK
+#define STOCK_T_P0_7 90
+
+#define STOCK_X_P1_7 STOCK_X_7
+#define STOCK_Y_P1_7 STOCK_Y_7-OFFSET_STOCK
+#define STOCK_T_P1_7 -90
+
+
 #define STANDARD_NODES_ARRAY \
 {0, {400, 1800}},   /*yellow start*/ \
 {1, {2600, 1800}},  /*blue start*/ \
@@ -15,17 +76,16 @@
 {11, {1150, 1200}}, /*middle*/\
 {12, {400, 400}},   /*acces 0*/\
 {13, {2600, 400}},  /*acces 0*/\
-{14, {1850, 850}},  /*stock 0*/\
-{15, {2825, 1200}}, /*stock 1*/\
-{16, {2825, 400}},  /*stock 2*/\
-{17, {1900, 175}},  /*stock 3*/\
-{18, {1100, 175}},  /*stock 4*/\
-{19, {175, 400}},   /*stock 5*/\
-{20, {175, 1200}},  /*stock 6*/ \
-{21, {1150, 850}},  /*stock 7*/\
-{22, {1850, 750}},  /*stock 0*/\
-{23, {1150, 750}}   /*stock 7*/
-
+{14, {STOCK_X_P0_0, STOCK_Y_P0_0}},  /*stock 0*/\
+{15, {STOCK_X_P0_1, STOCK_Y_P0_1}}, /*stock 1*/\
+{16, {STOCK_X_P0_2, STOCK_Y_P0_2}},  /*stock 2*/\
+{17, {STOCK_X_P0_3, STOCK_Y_P0_3}},  /*stock 3*/\
+{18, {STOCK_X_P0_4, STOCK_Y_P0_4}},  /*stock 4*/\
+{19, {STOCK_X_P0_5, STOCK_Y_P0_5}},   /*stock 5*/\
+{20, {STOCK_X_P0_6, STOCK_Y_P0_6}},  /*stock 6*/ \
+{21, {STOCK_X_P0_7, STOCK_Y_P0_7}},  /*stock 7*/\
+{22, {STOCK_X_P1_0, STOCK_Y_P1_0}},  /*stock 0*/\
+{23, {STOCK_X_P1_7, STOCK_Y_P1_7}}   /*stock 7*/
 
 
 #define STANDARD_EDGES_ARRAY \

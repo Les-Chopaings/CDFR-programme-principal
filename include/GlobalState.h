@@ -9,10 +9,6 @@ enum class ControlOwner{
     Enemy
 };
 
-#define OFFSET_STOCK 200
-inline int xZoneStock[8] = {850,2825,2825,1900, 1100,175,175,1150};
-inline int yZoneStock[8] = {800,1200,400,175, 175,400,1200,800};
-
 inline int xzoneDepose[10] = {1500, 1750,2200,2900,2300, 1500, 700,100,800,1250};
 inline int yzoneDepose[10] = {800, 1450,800,800,100, 100, 100,800,800,1450};
 
