@@ -94,6 +94,9 @@ float distance(const point_t *a, const point_t *b) {
 }
 
 PathFindingMap::PathFindingMap() {
+    map creatMap;
+    nodes = creatMap.get_node_arry();
+    edges = creatMap.get_edge_arry();
     this->enable_all_edges();
     this->update_base_map();
     for (const edge_t &edge: *this->edges) {
@@ -243,14 +246,15 @@ path_t PathFindingMap::find_path_between_points(const pose_t start_point, const 
 }
 
 path_t PathFindingMap::removeLast(path_t result_path){
-    if (result_path.v.size() >= 2) {
-        auto& last = result_path.v[result_path.v.size() - 1];
-        auto& prev = result_path.v[result_path.v.size() - 2];
-        if (last.point.x == prev.point.x &&
-            last.point.y == prev.point.y) {
-            result_path.v.pop_back();
-        }
-    }
+    // if (result_path.v.size() >= 2) {
+    //     auto& last = result_path.v[result_path.v.size() - 1];
+    //     auto& prev = result_path.v[result_path.v.size() - 2];
+    //     if (last.point.x == prev.point.x &&
+    //         last.point.y == prev.point.y) {
+    //         result_path.v.pop_back();
+    //     }
+    // }
+    result_path.v.erase(result_path.v.end() - 2);
     return result_path;
 }
 

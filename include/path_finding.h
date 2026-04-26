@@ -11,11 +11,6 @@
 #include "Traceur.hpp"
 
 typedef struct {
-    float x;
-    float y;
-} point_t;
-
-typedef struct {
     point_t point;
     uint8_t node_id;
     float theta;
@@ -25,18 +20,6 @@ typedef struct {
     std::vector<pose_t> v;
     float length;
 } path_t;
-
-typedef struct {
-    uint8_t id;
-    point_t point;
-} node_t;
-
-typedef struct {
-    uint8_t start_node_id;
-    uint8_t end_node_id;
-    float distance;
-    bool enabled;
-} edge_t;
 
 typedef struct {
     point_t start_point;
@@ -56,8 +39,8 @@ struct a_star_node {
 
 class PathFindingMap {
 private:
-    std::vector<node_t> *nodes = new std::vector<node_t>{STANDARD_NODES_ARRAY};
-    std::vector<edge_t> *edges = new std::vector<edge_t>{STANDARD_EDGES_ARRAY};
+    std::vector<node_t> *nodes;
+    std::vector<edge_t> *edges;
 
     std::unordered_map<uint8_t,
         std::vector<std::pair<uint8_t,
