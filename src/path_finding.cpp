@@ -254,7 +254,9 @@ path_t PathFindingMap::removeLast(path_t result_path){
     //         result_path.v.pop_back();
     //     }
     // }
-    result_path.v.erase(result_path.v.end() - 2);
+    if (result_path.v.size() >= 2) {
+        result_path.v.erase(result_path.v.end() - 2);
+    }
     return result_path;
 }
 
