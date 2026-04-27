@@ -81,7 +81,7 @@ public:
     Action(std::string name, GlobalState* globalState, Asserv* asserv, Arduino* arduino);
     int runAction(void);
     void setStartPoint(int x, int y, int theta, Direction Direction, Rotation rotation);
-    void setStartPoint(int x, int y, Direction Direction, Rotation rotation);
+    void setStartPoint(int x, int y, Direction Direction);
     void setEndPoint(int x, int y, int theta, Direction Direction, Rotation rotation);
     int costAction(void);
     void setFunctRunAction(std::function<int(GlobalState*, Asserv*, Arduino*)> ptr);

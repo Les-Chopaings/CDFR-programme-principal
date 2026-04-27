@@ -138,11 +138,10 @@ void Action::setStartPoint(int x, int y, int theta, Direction Direction, Rotatio
     noTetaStart = false;
 }
 
-void Action::setStartPoint(int x, int y, Direction Direction, Rotation rotation){
+void Action::setStartPoint(int x, int y, Direction Direction){
     startPostion.x = x;
     startPostion.y = y;
     startDirection = Direction;
-    startRotation = rotation;
     noTetaStart = true;
 }
 
@@ -198,7 +197,7 @@ int Action::goToStart(void){
                 }
                 else if(i == mpath.v.size()-1){
                     if(noTetaStart)
-                        mAsserv->go_to_point(point.x,point.y,startRotation,startDirection);
+                        mAsserv->go_to_point(point.x,point.y,Rotation::SHORTEST,startDirection);
                     else
                         mAsserv->go_to_point(point.x,point.y,tetaEnd,Rotation::SHORTEST,startDirection,startRotation);
                 }

@@ -25,6 +25,15 @@ DECLARE_ENUM_CLASS(FsmTakeNuts,
     RESET_DOWN      //<-- end : robot ready
 )
 
+DECLARE_ENUM_CLASS(FsmTemp,
+    INIT,
+    DEPLOY,
+    FORWARD,
+    RETRACT,
+    WAIT,
+    COLIDE
+)
+
 
 class Fsm
 {
@@ -66,5 +75,7 @@ public:
 private:
     int TriNoisette(bool* rotate, Arduino* arduino);
 };
+
+int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
 
 

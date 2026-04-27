@@ -14,6 +14,8 @@ ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Ardui
     takeStock6    = new Action("takeStock6",globalState,asserv,arduino);
     takeStock7    = new Action("takeStock7",globalState,asserv,arduino);
     takeStock7bis = new Action("takeStock7bis",globalState,asserv,arduino);
+    temperatureYellow = new Action("temperatureYellow",globalState,asserv,arduino);
+    temperatureBlue = new Action("temperatureBlue",globalState,asserv,arduino);
     currentAction = nullptr;
     initAction(globalState, asserv, arduino);
 
@@ -197,6 +199,34 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     listeAction.push_back(takeStock6);
     listeAction.push_back(takeStock7);
     listeAction.push_back(takeStock7bis);
+
+
+    temperatureYellow->setStartPoint(TEMP_X_YELLOW_SART, TEMP_Y, 0, Direction::BACKWARD, Rotation::CLOCKWISE);
+    temperatureBlue->setStartPoint(TEMP_X_BLUE_SART, TEMP_Y, 0, Direction::BACKWARD, Rotation::CLOCKWISE);
+
+    temperatureYellow->setFunctGoodEnd([](GlobalState* globalState){
+        globalState->termometre = true;
+    });
+    temperatureBlue->setFunctGoodEnd([](GlobalState* globalState){
+        globalState->termometre = true;
+    });
+
+    temperatureYellow->setFunctCostAction([](GlobalState* globalState){
+        return globalState->termometre == false && globalState->robotColor==ColorTeam::YELLOW ? 1 : -1;
+    });
+    temperatureBlue->setFunctCostAction([](GlobalState* globalState){
+        return globalState->termometre == false && globalState->robotColor==ColorTeam::BLUE ? 1 : -1;
+    });
+
+    temperatureYellow->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return pushTemp(globalState, asserv, arduino);
+    });
+    temperatureBlue->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return pushTemp(globalState, asserv, arduino);;
+    });
+
+    listeAction.push_back(temperatureYellow);
+    listeAction.push_back(temperatureBlue);
 }
 
 int ActionContainer::actionContainerRun(void){

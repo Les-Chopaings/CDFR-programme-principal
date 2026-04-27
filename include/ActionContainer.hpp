@@ -6,6 +6,7 @@
 #include "GlobalState.h"
 #include "asserv/asserv.h"
 #include "Arduino.hpp"
+#include "Fsm.hpp"
 
 
 class ActionContainer
@@ -21,6 +22,9 @@ private:
     Action* takeStock6;
     Action* takeStock7;
     Action* takeStock7bis;
+
+    Action* temperatureYellow;
+    Action* temperatureBlue;
 
     std::vector<Action*> listeAction;
     Action* currentAction = nullptr;

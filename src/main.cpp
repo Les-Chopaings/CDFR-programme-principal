@@ -192,11 +192,11 @@ int main(int argc, char *argv[]) {
                 if(initStat){
                     LOG_STATE("INITIALIZE");
                     if(arduino.readButton(button::color)){
-                        globalState.robotColor = ColorTeam::YELLOW;
+                        globalState.robotColor = ColorTeam::BLUE;
                         asserv.set_coordinates(2600,1800,90);
                     }
                     else{
-                        globalState.robotColor = ColorTeam::BLUE;
+                        globalState.robotColor = ColorTeam::YELLOW;
                         asserv.set_coordinates(400,1800,90);
                     }
                     asserv.set_motor_state(true);
