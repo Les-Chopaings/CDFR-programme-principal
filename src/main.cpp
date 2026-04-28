@@ -42,13 +42,15 @@ void stopAndRest(Asserv asserv, Arduino arduino){
     asserv.stop();
     asserv.set_coordinates(0,0,0);
     asserv.set_motor_state(false);
-    asserv.set_brake_state(true);
+    asserv.set_brake_state(false);
     arduino.controlePompe(pompe::pompe1,0);
     arduino.controlePompe(pompe::pompe2,0);
     arduino.controlePompe(pompe::pompe3,0);
     arduino.controlePompe(pompe::pompe4,0);
     arduino.stepperEnable(false);
     arduino.stepperMove(0);
+    arduino.servoMove(servo::bascule,0);
+    arduino.servoMove(servo::temp,0);
 };
 
 void test_path_finder() {

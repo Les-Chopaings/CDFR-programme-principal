@@ -414,7 +414,7 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
                 startTime = millis() + 5000;
                 asserv->pause();
             }
-            else if(asserv->get_moving_is_done()){
+            else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
                 nextState = FsmTemp::RETRACT;
                 deplacementreturn = 1;
             }

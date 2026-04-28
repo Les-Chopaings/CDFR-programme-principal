@@ -215,7 +215,7 @@ int Action::goToStart(void){
             mStartColide = millis() + 5000;
             mAsserv->pause();
         }
-        else if(mAsserv->get_moving_is_done()){
+        else if(mAsserv->get_moving_is_done() && mAsserv->get_command_buffer_size() == 0){
             nextState = FsmGoToStart::INIT;
             deplacementreturn = 1;
         }

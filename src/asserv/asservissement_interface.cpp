@@ -46,7 +46,7 @@ void asservissement_interface::get_coordinates(int16_t &x, int16_t &y, int16_t &
     #ifdef EMULATE
         run_emulate();
         x = emulate_x;
-        y = emulate_y;
+        y = -emulate_y;
         theta = emulate_theta;
         return;
     #endif
@@ -55,7 +55,7 @@ void asservissement_interface::get_coordinates(int16_t &x, int16_t &y, int16_t &
     I2cReceiveData(20, data, length);
     DataUnpacker unpacker(data, length);
     x = (int16_t)unpacker.popUint16();
-    y = (int16_t)unpacker.popUint16();
+    y = -(int16_t)unpacker.popUint16();
     theta = (int16_t)unpacker.popUint16();
 }
 
@@ -63,13 +63,13 @@ void asservissement_interface::set_coordinates(int16_t x, int16_t y, int16_t the
     LOG_DEBUG("set_coordinates : ",x," ",y," ",theta);
     #ifdef EMULATE
         emulate_x = x;
-        emulate_y = y;
+        emulate_y = -y;
         emulate_theta = theta;
         return;
     #endif
     DataPacker packer;
     packer.addUint16((int16_t)x);
-    packer.addUint16((int16_t)y);
+    packer.addUint16((int16_t)-y);
     packer.addUint16((int16_t)theta);
     I2cSendData(21, packer.getData(), packer.getSize());
 }
@@ -102,13 +102,13 @@ void asservissement_interface::resume(){
 void asservissement_interface::go_to_point(int16_t x, int16_t y, Rotation rotation, Direction direction){
     LOG_DEBUG("go_to_point : ",x," ",y," ",(int)rotation," ",(int)direction);
     #ifdef EMULATE
-        enumate_actionQueue.push_back(emulate_action(x, y));
+        enumate_actionQueue.push_back(emulate_action(x, -y));
         run_emulate();
         return;
     #endif
     DataPacker packer;
     packer.addUint16((int16_t)x);
-    packer.addUint16((int16_t)y);
+    packer.addUint16((int16_t)-y);
     packer.addUint16((int16_t)rotation);
     packer.addUint16((int16_t)direction);
     I2cSendData(33, packer.getData(), packer.getSize());
@@ -117,13 +117,13 @@ void asservissement_interface::go_to_point(int16_t x, int16_t y, Rotation rotati
 void asservissement_interface::go_to_point(int16_t x, int16_t y, int16_t theta, Rotation rotationFirst, Direction direction, Rotation rotationSecond){
     LOG_DEBUG("go_to_point : ",x," ",y," ",theta," ",(int)rotationFirst," ",(int)direction," ",(int)rotationSecond);
     #ifdef EMULATE
-        enumate_actionQueue.push_back(emulate_action(x, y));
+        enumate_actionQueue.push_back(emulate_action(x,-y));
         run_emulate();
         return;
     #endif
     DataPacker packer;
     packer.addUint16((int16_t)x);
-    packer.addUint16((int16_t)y);
+    packer.addUint16((int16_t)-y);
     packer.addUint16((int16_t)theta);
     packer.addUint16((int16_t)rotationFirst);
     packer.addUint16((int16_t)direction);
@@ -143,7 +143,7 @@ void asservissement_interface::consigne_angulaire(int16_t x, int16_t y, Rotation
     LOG_DEBUG("consigne_angulaire : ",x," ",y," ",(int)rotation," ",(int)direction);
     DataPacker packer;
     packer.addUint16((int16_t)x);
-    packer.addUint16((int16_t)y);
+    packer.addUint16((int16_t)-y);
     packer.addUint16((int16_t)rotation);
     packer.addUint16((int16_t)direction);
     I2cSendData(36, packer.getData(), packer.getSize());
@@ -213,7 +213,7 @@ void asservissement_interface::get_current_target(int16_t &x, int16_t &y, int16_
     I2cReceiveData(54, data, length);
     DataUnpacker unpacker(data, length);
     x = (int16_t)unpacker.popUint16();
-    y = (int16_t)unpacker.popUint16();
+    y = -(int16_t)unpacker.popUint16();
     theta = (int16_t)unpacker.popUint16();
 }
 
