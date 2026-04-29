@@ -199,7 +199,7 @@ int Action::goToStart(void){
                     if(noTetaStart)
                         mAsserv->go_to_point(point.x,point.y,Rotation::SHORTEST,startDirection);
                     else
-                        mAsserv->go_to_point(point.x,point.y,tetaEnd,Rotation::SHORTEST,startDirection,startRotation);
+                        mAsserv->go_to_point(point.x,point.y,startPostion.theta, Rotation::SHORTEST,startDirection,startRotation);
                 }
                 else{
                     mAsserv->go_to_point(point.x,point.y);

@@ -68,7 +68,6 @@ private:
     position_t endPostion;
     Direction endDirection;
     Rotation endRotation;
-    uint16_t tetaEnd = 0;
     bool noTetaStart = true;
 
     FsmAction currentState = FsmAction::INIT;

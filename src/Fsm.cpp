@@ -96,6 +96,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(globalState->commande==RobotStatus::empty){
                 nextState = FsmTakeNuts::PUT_PIVOT_45;
             }
+            break;
 
         case FsmTakeNuts::PUT_PIVOT_45 :
             if(initStat){

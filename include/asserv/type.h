@@ -3,8 +3,8 @@
 enum class Rotation {
     NONE = 0,
     SHORTEST = 1,
-    ANTICLOCKWISE = 2,
-    CLOCKWISE = 3
+    ANTICLOCKWISE = 3,
+    CLOCKWISE = 2
 };
 
 enum class Direction {
