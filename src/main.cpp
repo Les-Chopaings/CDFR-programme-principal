@@ -3,6 +3,7 @@
 #include "lidarAnalize.hpp"
 #include "lidar.hpp"
 #include "Arduino.hpp"
+#include "Colorsensor.hpp"
 #include "asserv/asserv.h"
 #include "utils.h"
 #include "GlobalState.h"
@@ -117,6 +118,7 @@ int main(int argc, char *argv[]) {
     bool emulate = true;
 #else
     Arduino arduino(0x64);
+    Colorsensor Colorsensor(0x70);
     Asserv asserv(42);
     if(!lidarSetup("/dev/ttyUSB0",460800)){
         LOG_ERROR("cannot find the lidar");
@@ -149,6 +151,9 @@ int main(int argc, char *argv[]) {
     while (1) {
 
         LOG_SCOPE("Main");
+
+        Colorsensor.printColors(2);
+        delay(100);
 
         //Aquistion
         int16_t x, y, theta;
