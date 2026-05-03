@@ -224,7 +224,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 followupState = State::rotate4;
                 servoToRot[3] = 0;}
             /* si plus aucun  kapla a retourner*/
-                else {
+            else {
                 LOG_DEBUG("retourne à l'état init");
                 servoToMove[0] = 90; servoToMove[1] = 90; servoToMove[2] = 90; servoToMove[3] = 90;
                 finished = 1;}
@@ -360,7 +360,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         break;}
     }
 
-    return (finished);   /* sortie de la boucle (= 0)*/
+    return (0);   /* sortie de la boucle (= 0)*/
 }
 
 
