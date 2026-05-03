@@ -153,10 +153,23 @@ int main(int argc, char *argv[]) {
 
         LOG_SCOPE("Main");
 
-        colorsensor.printColors(0);
-        colorsensor.printColors(1);
-        colorsensor.printColors(2);
-        colorsensor.printColors(3);
+        RGBColor blue = {38,85,132};
+        RGBColor yellow = {110,103,42};
+        float similarBlue;
+        float similarYellow;
+        colorsensor.readAllSensor();
+        for (int i = 0; i < 4; i++){
+            similarBlue = colorsensor.compareColors(i,blue);
+            similarYellow = colorsensor.compareColors(i,yellow);
+            if(similarBlue>similarYellow){
+                LOG_DEBUG("BLUE : b:",similarBlue," y:",similarYellow);
+            }
+            else{
+                LOG_DEBUG("YELLOW : b:",similarBlue," y:",similarYellow);
+            }
+        }
+        //colorsensor.printColors(0);
+        LOG_DEBUG("");
         delay(1000);
 
         //Aquistion

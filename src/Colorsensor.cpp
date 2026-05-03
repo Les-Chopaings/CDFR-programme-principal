@@ -56,6 +56,45 @@ void Colorsensor::getRawData(uint8_t i, uint16_t *r, uint16_t *g, uint16_t *b, u
     *b = read16(TCS34725_BDATAL);
 }
 
+void Colorsensor::readAllSensor()
+{
+    for(int i = 0; i < 4; i ++){
+        uint16_t r, g, b, c;
+        getRawData(i, &r, &g, &b, &c);
+
+        uint32_t sum = r + g + b;
+
+        if (sum == 0){
+            color[i].r = 0;
+            color[i].g = 0;
+            color[i].b = 0;
+            return;
+        };
+
+        color[i].r = (uint8_t)((r * 255) / sum);
+        color[i].g = (uint8_t)((g * 255) / sum);
+        color[i].b = (uint8_t)((b * 255) / sum);
+    }
+}
+
+float Colorsensor::compareColors(int i, const RGBColor& c1)
+{
+    int dr = (int)c1.r - color[i].r;
+    int dg = (int)c1.g - color[i].g;
+    int db = (int)c1.b - color[i].b;
+
+    float distance = sqrtf(dr*dr + dg*dg + db*db);
+
+    // distance max possible en RGB
+    const float maxDistance = 441.67f;
+
+    float similarity = 100.0f * (1.0f - (distance / maxDistance));
+
+    if (similarity < 0) similarity = 0;
+
+    return similarity;
+}
+
 void Colorsensor::printColors(uint8_t i){
     uint16_t r, g, b, c;
     getRawData(i, &r, &g, &b, &c);

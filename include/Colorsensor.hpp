@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <unistd.h>
+#include <math.h>
 #include "I2CDevice.hpp"
 #define DEC 10
 
@@ -23,9 +24,15 @@
 #define TCS34725_BDATAL (0x1A) /**< Blue channel data low byte */
 #define TCS34725_BDATAH (0x1B) /**< Blue channel data high byte */
 
+struct RGBColor {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+};
 class Colorsensor{
     I2CDevice* i2cColorSensor;
     I2CDevice* i2cMulti;
+    RGBColor color[4];
 public:
     Colorsensor(int slave_addressSensor, int slave_addressMulti);
     void write8(uint8_t reg, uint8_t value);
@@ -34,4 +41,6 @@ public:
     void tcaSelect(uint8_t i);
     void getRawData(uint8_t i, uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c);
     void printColors(uint8_t i);
+    void readAllSensor();
+    float compareColors(int i, const RGBColor& c1);
 };
