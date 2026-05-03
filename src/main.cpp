@@ -115,10 +115,11 @@ int main(int argc, char *argv[]) {
 #ifdef EMULATE
     Arduino arduino(-1);
     Asserv asserv(-1);
+    Colorsensor colorsensor(-1, -1);
     bool emulate = true;
 #else
     Arduino arduino(0x64);
-    Colorsensor Colorsensor(0x70);
+    Colorsensor colorsensor(TCS34725_ADDRESS, TCAADDR);
     Asserv asserv(42);
     if(!lidarSetup("/dev/ttyUSB0",460800)){
         LOG_ERROR("cannot find the lidar");
@@ -152,8 +153,11 @@ int main(int argc, char *argv[]) {
 
         LOG_SCOPE("Main");
 
-        Colorsensor.printColors(2);
-        delay(100);
+        colorsensor.printColors(0);
+        colorsensor.printColors(1);
+        colorsensor.printColors(2);
+        colorsensor.printColors(3);
+        delay(1000);
 
         //Aquistion
         int16_t x, y, theta;

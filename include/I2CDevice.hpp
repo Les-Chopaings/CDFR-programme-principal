@@ -9,13 +9,11 @@ protected:
 public:
 
     // Returns diffent than 0 if error
+    I2CDevice(int slave_address);
+    ~I2CDevice();
     int I2cSendData (uint8_t command, uint8_t* data, int length, int tries = 5);
     int I2cReceiveData (uint8_t command, uint8_t* data, int length, int tries = 5);
     int I2cSendBlockReceiveData (uint8_t command, uint8_t* data, int length, uint8_t* out_data, int out_length, int tries = 5);
-
-protected:
-    I2CDevice(int slave_address);
-    ~I2CDevice();
 };
 
 
