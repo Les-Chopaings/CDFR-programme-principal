@@ -38,20 +38,20 @@ enum class MainState{
     STOP
 };
 
-void stopAndRest(Asserv asserv, Arduino arduino){
-    asserv.stop();
-    asserv.set_coordinates(0,0,0);
-    asserv.set_motor_state(false);
-    asserv.set_brake_state(false);
-    arduino.controlePompe(pompe::pompe1,0);
-    arduino.controlePompe(pompe::pompe2,0);
-    arduino.controlePompe(pompe::pompe3,0);
-    arduino.controlePompe(pompe::pompe4,0);
-    arduino.stepperEnable(false);
-    arduino.stepperMove(0);
-    arduino.servoMove(servo::bascule,0);
-    arduino.servoMove(servo::temp,0);
-    arduino.servoAllEnable(false);
+void stopAndRest(Asserv* asserv, Arduino* arduino){
+    asserv->stop();
+    asserv->set_coordinates(0,0,0);
+    asserv->set_motor_state(false);
+    asserv->set_brake_state(false);
+    arduino->controlePompe(pompe::pompe1,0);
+    arduino->controlePompe(pompe::pompe2,0);
+    arduino->controlePompe(pompe::pompe3,0);
+    arduino->controlePompe(pompe::pompe4,0);
+    arduino->stepperEnable(false);
+    arduino->stepperMove(0);
+    arduino->servoMove(servo::bascule,0);
+    arduino->servoMove(servo::temp,0);
+    arduino->servoAllEnable(false);
 };
 
 void test_path_finder() {
@@ -262,7 +262,7 @@ int main(int argc, char *argv[]) {
             // disable all actuator
             case MainState::FIN:
                 if(initStat){
-                    stopAndRest(asserv,arduino);
+                    stopAndRest(&asserv,&arduino);
                     LOG_STATE("FIN");
                 }
                 nextState = MainState::STOP;
@@ -295,7 +295,7 @@ int main(int argc, char *argv[]) {
     }
 
     LOG_DEBUG("PROCESS KILL");
-    stopAndRest(asserv,arduino);
+    stopAndRest(&asserv,&arduino);
     lidarStop();
 
     return 0;
