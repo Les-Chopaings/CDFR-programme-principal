@@ -17,6 +17,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::INIT :
             if(globalState->commande == RobotStatus::full){
                 nextState = FsmTakeNuts::TAKE_DOWN;
+                int16_t x, y, theta;
+                asserv->get_coordinates(x, y, theta);
+                LOG_DEBUG("COOR: ",x," ",y," ",theta);
             }
             break;
         case FsmTakeNuts::TAKE_DOWN :
@@ -34,7 +37,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         case FsmTakeNuts::TAKE_LEFT :
             if(initStat){
-                startTime = millis()+750;
+                startTime = millis()+1000;
                 arduino->servoMove(servo::rotation1,10);
                 arduino->servoMove(servo::rotation2,10);
                 arduino->servoMove(servo::rotation3,10);
@@ -46,7 +49,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         case FsmTakeNuts::TAKE_RIGHT :
             if(initStat){
-                startTime = millis()+750;
+                startTime = millis()+1000;
                 arduino->servoMove(servo::rotation1,0);
                 arduino->servoMove(servo::rotation2,0);
                 arduino->servoMove(servo::rotation3,0);
@@ -381,7 +384,7 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
         case FsmTemp::DEPLOY :
             if(initStat){
                 startTime = millis()+500;
-                arduino->servoMove(servo::temp,180);
+                arduino->servoMove(servo::temp,90);//TO REVERT
             }
             if(startTime < millis()){
                 nextState = FsmTemp::FORWARD;
