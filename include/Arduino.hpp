@@ -6,6 +6,7 @@
 
 #define STEPPER_MOVE_TO 20
 #define STEPPER_ENABLE 21
+#define SERVO_ENABLE 50
 
 enum class servo{
     bascule = 1,
@@ -63,6 +64,7 @@ public:
     Arduino(int slave_address);
     void test(void);
     void servoMove(servo servoNum, int position);
+    void servoAllEnable(bool enable);
     void controlePompe(pompe pompeNum, bool enable);
     void stepperEnable(bool enable);
     void stepperMove(int position);

@@ -24,6 +24,15 @@ void Arduino::controlePompe(pompe pompeNum, bool enable){
     I2cSendData((int)pompeNum, message, 2);
 }
 
+void Arduino::servoAllEnable(bool enable){
+    LOG_DEBUG("servo enable ", enable);
+    if (i2cFile == -1) return; // Emulation
+    uint8_t message [2];
+    uint8_t *ptr = message;
+    WriteUInt16(&ptr, enable);
+    I2cSendData(SERVO_ENABLE, message, 2);
+}
+
 void Arduino::stepperEnable(bool enable){
     LOG_DEBUG("stepper enable ", enable);
     if (i2cFile == -1) return; // Emulation

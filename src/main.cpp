@@ -51,6 +51,7 @@ void stopAndRest(Asserv asserv, Arduino arduino){
     arduino.stepperMove(0);
     arduino.servoMove(servo::bascule,0);
     arduino.servoMove(servo::temp,0);
+    arduino.servoAllEnable(false);
 };
 
 void test_path_finder() {
@@ -204,6 +205,7 @@ int main(int argc, char *argv[]) {
                     asserv.set_motor_state(true);
                     asserv.set_brake_state(false);
                     arduino.stepperEnable(true);
+                    arduino.servoAllEnable(true);
                 }
                 nextState = MainState::SETHOME;
                 break;
