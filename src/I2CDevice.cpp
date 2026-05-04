@@ -114,6 +114,10 @@ int I2CDevice::I2cSendBlockReceiveData (uint8_t command, uint8_t* data, int leng
     }
 }
 
+int I2CDevice::getI2cFile(){
+    return i2cFile;
+}
+
 // Pointer to an array pointer
 int8_t ReadInt8(uint8_t *buffer[]){
     int8_t val;

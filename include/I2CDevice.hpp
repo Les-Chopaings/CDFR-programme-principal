@@ -14,6 +14,7 @@ public:
     int I2cSendData (uint8_t command, uint8_t* data, int length, int tries = 5);
     int I2cReceiveData (uint8_t command, uint8_t* data, int length, int tries = 5);
     int I2cSendBlockReceiveData (uint8_t command, uint8_t* data, int length, uint8_t* out_data, int out_length, int tries = 5);
+    int getI2cFile();
 };
 
 

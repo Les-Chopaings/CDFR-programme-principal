@@ -4,6 +4,7 @@
 #include "asserv/asserv.h"
 #include "GlobalState.h"
 #include "logger.hpp"
+#include "Colorsensor.hpp"
 
 #define TIMESLIDER 500
 #define TIMEROTATE 1000
@@ -34,6 +35,19 @@ DECLARE_ENUM_CLASS(FsmTemp,
     COLIDE
 )
 
+DECLARE_ENUM_CLASS( State,
+    rotate1,
+    rotate2,
+    rotate3,
+    rotate4,
+    idle,
+    toProcess,
+    movement,
+    wait,
+    rotwait,
+    init
+)
+
 
 class Fsm
 {
@@ -47,18 +61,6 @@ private:
     bool servoToRot[4] = {0, 0, 0, 0};
     bool servoCurrentRot[4] = {0, 0, 0, 0};
     bool regular;
-    enum class State{
-        rotate1,
-        rotate2,
-        rotate3,
-        rotate4,
-        idle,
-        toProcess,
-        movement,
-        wait,
-        rotwait,
-        init
-    };
     State followupState = State::toProcess;
     State triCurrentState = State::idle;
 
@@ -71,9 +73,10 @@ private:
 public:
     Fsm(/* args */);
     ~Fsm();
-    bool takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
+    bool takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, Colorsensor* colorsensor);
 private:
     int TriNoisette(bool* rotate, Arduino* arduino);
+    void readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor);
 };
 
 int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);

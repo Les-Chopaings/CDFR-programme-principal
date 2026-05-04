@@ -1,5 +1,14 @@
 #include "Colorsensor.hpp"
 #include "logger.hpp"
+#include <random>
+
+int getRandomValue() {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 100); // entre 0 et 100
+
+    return distrib(gen);
+}
 
 Colorsensor::Colorsensor(int slave_addressSensor, int slave_addressMulti){
     // if (i2cFile == -1) return; // Emulation
@@ -37,6 +46,8 @@ void Colorsensor::write8(uint8_t reg, uint8_t value)
 }
 
 uint16_t Colorsensor::read16(uint8_t reg){
+    if(i2cColorSensor->getI2cFile() == -1)
+        return getRandomValue();
     uint8_t regAddr = (uint8_t)(TCS34725_COMMAND_BIT | reg);
     uint8_t buffer[2];
     i2cColorSensor->I2cReceiveData(regAddr, buffer, 2);

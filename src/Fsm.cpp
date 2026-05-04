@@ -9,7 +9,42 @@ Fsm::~Fsm()
 }
 
 
-bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+void Fsm::readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor){
+    RGBColor blue = {38,85,132};
+    RGBColor yellow = {110,103,42};
+    float similarBlue;
+    float similarYellow;
+    ColorTeam noisetteColor;
+    colorsensor->readAllSensor();
+    std::ostringstream debugColor;
+    std::ostringstream debugColorValue;
+    for (int i = 0; i < 4; i++){
+        similarBlue = colorsensor->compareColors(i,blue);
+        similarYellow = colorsensor->compareColors(i,yellow);
+        if(similarBlue>similarYellow){
+            noisetteColor = ColorTeam::BLUE;
+            debugColor << "\033[34m";
+            debugColor << "BLUE";
+            debugColor << "\033[0m";
+        }
+        else{
+            noisetteColor = ColorTeam::YELLOW;
+            debugColor << "\033[33m";
+            debugColor << "YELLOW";
+            debugColor << "\033[0m";
+        }
+        debugColorValue << "B:" + std::to_string(similarBlue) + " Y:" + std::to_string(similarYellow);
+        if(i != 4){
+            debugColor << " ";
+            debugColorValue << " | ";
+        }
+        rotation[i] = colorteam != noisetteColor ? true : false;
+    }
+    LOG_DEBUG(debugColor.str());
+    LOG_DEBUG(debugColorValue.str());
+}
+
+bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, Colorsensor* colorsensor){
     FsmTakeNuts nextState = currentState;
     bool bret = false;
 
@@ -79,10 +114,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
 
         case FsmTakeNuts::READ_SENSOR:
-            rotation[0] = 1;//TODO
-            rotation[1] = 0;
-            rotation[2] = 1;
-            rotation[3] = 0;
+            readSensor(rotation, globalState->robotColor, colorsensor);
             nextState = FsmTakeNuts::SORT;
             break;
 
@@ -183,7 +215,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             /* si appel reset*/
             else if(rotate[0] == 0 && rotate[1] == 0 && rotate[2] == 0 && rotate[3] == 0){
                 /*mais que l'état d'avant était déjà reset: on saute*/
-                if(regular == 0){break;}
+                if(regular == 0){return 1;}
                 else{regular = 0;}
             }
             finished = 0; toCopy = 1;
