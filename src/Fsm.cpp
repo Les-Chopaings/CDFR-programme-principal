@@ -202,13 +202,16 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
     return bret;
 }
 
+#define QUIET
 int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
     switch (triCurrentState) {
 
         /*Etat idle, vérification des kapla à retourner*/
         default:{
+#ifndef QUIET
             LOG_DEBUG("idle");
             LOG_DEBUG("verification de la liste initiale= ", rotate[0], rotate[1], rotate[2], rotate[3]);
+#endif
             /* si besoin de retourner des kaplas:*/
             if (rotate[0] == 1 || rotate[1] == 1 || rotate[2] == 1 || rotate[3] == 1){
                 regular = 1;}
@@ -226,7 +229,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         /*case toProcess : gère l'appel des cases 'rotateX' en fonction des bras à retourner*/
         case State::toProcess:{
             /* Des kaplas doivent être retournés, on copie la liste des kaplas */
+#ifndef QUIET
             LOG_DEBUG("toProcess, status regular = ", regular, toCopy);
+#endif
             if (toCopy){
                 for (int i = 0; i <= 3; i++){
                     /* récupère les bras à retourner*/
@@ -237,8 +242,10 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 toCopy = 0;}
 
             // vérification des kaplas à retourner
+#ifndef QUIET
             LOG_DEBUG("verification de la liste en attente = ", servoToRot[0], servoToRot[1], servoToRot[2], servoToRot[3]);
             LOG_DEBUG("vérification de la position des bras = ", servoCurrentRot[0], servoCurrentRot[1], servoCurrentRot[2], servoCurrentRot[3]);
+#endif
             /* déplace les bras pour rotation1 || reset bras 1*/
             if (servoToRot[0] == 1){
                 followupState = State::rotate1;
@@ -260,7 +267,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 servoToRot[3] = 0;}
             /* si plus aucun  kapla a retourner*/
             else {
+#ifndef QUIET
                 LOG_DEBUG("retourne à l'état init");
+#endif
                 servoToMove[0] = 90; servoToMove[1] = 90; servoToMove[2] = 90; servoToMove[3] = 90;
                 finished = 1;}
             if(finished){triCurrentState = State::init;}
@@ -268,7 +277,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             break;}
 
         case State::rotate1:{
+#ifndef QUIET
             LOG_DEBUG("retourne le kapla 1, regular status: ", regular);
+#endif
             arduino->servoMove(servo::rotation1, 180*regular);
             T_start =  millis();
             servoCurrentRot[0] = regular;
@@ -276,7 +287,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             break;}
 
         case State::rotate2:{
+#ifndef QUIET
             LOG_DEBUG("retourne le kapla 2, regular status: ", regular);
+#endif
             arduino->servoMove(servo::rotation2, 180*regular);
             T_start =  millis();
             servoCurrentRot[1] = regular;
@@ -284,7 +297,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             break;}
 
         case State::rotate3:{
+#ifndef QUIET
             LOG_DEBUG("retourne le kapla 3, regular status: ", regular);
+#endif
             arduino->servoMove(servo::rotation3, 180*regular);
             T_start =  millis();
             servoCurrentRot[2] = regular;
@@ -292,7 +307,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             break;}
 
         case State::rotate4:{
+#ifndef QUIET
             LOG_DEBUG("retourne le kapla 4, regular status: ", regular);
+#endif
             arduino->servoMove(servo::rotation4, 180*regular);
             T_start =  millis();
             servoCurrentRot[3] = regular;
@@ -303,7 +320,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         case State::movement:{
             /* bouge le servo 1 si nécessaire*/
             if(servoToMove[0] != servoCurrentPos[0]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 1 à ", servoToMove[0]);
+#endif
                 arduino->servoMove(servo::slider1, servoToMove[0]);
                 servoCurrentPos[0] = servoToMove[0];
                 T_start =  millis();
@@ -311,7 +330,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             }
             /* bouge le servo 2 si nécessaire*/
             else if(servoToMove[1] != servoCurrentPos[1]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 2 à ", servoToMove[1]);
+#endif
                 arduino->servoMove(servo::slider2, servoToMove[1]);
                 servoCurrentPos[1] = servoToMove[1];
                 T_start =  millis();
@@ -319,7 +340,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             }
             /* bouge le servo 3 si nécessaire*/
             else if(servoToMove[2] != servoCurrentPos[2]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 3 à ", servoToMove[2]);
+#endif
                 arduino->servoMove(servo::slider3, servoToMove[2]);
                 servoCurrentPos[2] = servoToMove[2];
                 T_start =  millis();
@@ -327,7 +350,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
             }
             /* bouge le servo 4 si nécessaire*/
             else if(servoToMove[3] != servoCurrentPos[3]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 4 à ", servoToMove[3]);
+#endif
                 arduino->servoMove(servo::slider4, servoToMove[3]);
                 servoCurrentPos[3] = servoToMove[3];
                 T_start =  millis();
@@ -341,7 +366,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         case State::wait:{
             int fs = millis() - T_start;
             if(fs > TIMESLIDER){
+#ifndef QUIET
                 LOG_DEBUG("wait ", TIMESLIDER, " ms");
+#endif
                 if (toCopy || finished){triCurrentState = State::init;}
                 else{triCurrentState = State::movement;}
             }
@@ -350,7 +377,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         case State::rotwait:{
             int fs = millis() - T_start;
             if(fs > TIMEROTATE){
+#ifndef QUIET
                 LOG_DEBUG("wait ", TIMEROTATE, " ms");
+#endif
                 triCurrentState = State::toProcess;
             }
         break;}
@@ -358,35 +387,43 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         case State::init:{
             /*On commence par le servo 4, puis 3 ,2 et 1*/
             if(servoToMove[3] != servoCurrentPos[3]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 4 à ", servoToMove[3]);
+#endif
                 arduino->servoMove(servo::slider4, servoToMove[3]);
                 servoCurrentPos[3] = servoToMove[3];
                 T_start =  millis();
                 triCurrentState = State::wait;
             }
             else if(servoToMove[2] != servoCurrentPos[2]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 3 à ", servoToMove[2]);
+#endif
                 arduino->servoMove(servo::slider3, servoToMove[2]);
                 servoCurrentPos[2] = servoToMove[2];
                 T_start =  millis();
                 triCurrentState = State::wait;
             }
             else if(servoToMove[1] != servoCurrentPos[1]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 2 à ", servoToMove[1]);
+#endif
                 arduino->servoMove(servo::slider2, servoToMove[1]);
                 servoCurrentPos[1] = servoToMove[1];
                 T_start =  millis();
                 triCurrentState = State::wait;
             }
             else if(servoToMove[0] != servoCurrentPos[0]){
+#ifndef QUIET
                 LOG_DEBUG("bouge servo 1 à ", servoToMove[0]);
+#endif
                 arduino->servoMove(servo::slider1, servoToMove[0]);
                 servoCurrentPos[0] = servoToMove[0];
                 T_start =  millis();
                 triCurrentState = State::wait;
             }
             else if(finished){
-                LOG_DEBUG("---Tri fini---");
+                LOG_GREEN_INFO("---Tri fini---");
                 triCurrentState = State::idle;
                 /*finished = 1*/
                 return(finished);
