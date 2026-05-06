@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 inline unsigned long millis() {
     struct timespec ts;
@@ -56,6 +57,10 @@ inline void setProgramPriority(int val = 99) // Max priority
 template<typename T>
 inline T clip(T x, T lo, T hi) {
     return x < lo ? lo : (x > hi ? hi : x);
+}
+
+inline std::filesystem::path getExecutableDir(char* argv0) {
+    return std::filesystem::canonical(argv0).parent_path();
 }
 
 

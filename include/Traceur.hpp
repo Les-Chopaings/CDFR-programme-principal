@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include <sstream>
 
 class Traceur {
 public:
@@ -66,6 +67,45 @@ public:
                 y1 += sy;
             }
         }
+    }
+
+    std::string getString() {
+        std::ostringstream oss;
+        for (int y = height-1 ; y >=0 ; y--) {
+            for (int x = 0; x < width; x++) {
+                switch (data[y][x])
+                {
+                case 0:
+                    oss << "..";
+                    break;
+                case 1:
+                    oss << "##";
+                    break;
+
+                case 2:
+                    oss << "##";
+                    break;
+
+                case 3:
+                     oss << "##";
+                    break;
+
+                case 4:
+                     oss << "SS";
+                    break;
+
+                case 5:
+                     oss << "EE";
+                    break;
+
+                default:
+                    oss << "..";
+                    break;
+                }
+            }
+            oss << "\n";
+        }
+        return oss.str();
     }
 
     // Affichage simple (debug)

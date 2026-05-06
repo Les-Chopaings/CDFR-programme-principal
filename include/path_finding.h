@@ -65,9 +65,9 @@ public:
 
     path_t find_path_between_points(pose_t start_point, pose_t end_point, bool remove_coax_nodes = true);
 
-    void print_Map(void);
+    std::string get_Map(int scale = 50);
 
-    void print_Path(path_t path);
+    void print_Path(path_t path, int scale = 50);
 
     path_t removeLast(path_t result_path);
 };

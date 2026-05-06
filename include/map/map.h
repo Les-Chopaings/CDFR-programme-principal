@@ -126,8 +126,8 @@ typedef struct {
 {9, {2500, 1200}},  /*corner*/ \
 {10, {1850, 1200}}, /*middle*/\
 {11, {1150, 1200}}, /*middle*/\
-{12, {400, 400}},   /*acces 0*/\
-{13, {2600, 400}},  /*acces 0*/\
+{12, {500, 400}},   /*acces 0*/\
+{13, {2500, 400}},  /*acces 0*/\
 {14, {STOCK_X_P0_0, STOCK_Y_P0_0}},  /*stock 0*/\
 {15, {STOCK_X_P0_1, STOCK_Y_P0_1}},  /*stock 1*/\
 {16, {STOCK_X_P0_2, STOCK_Y_P0_2}},  /*stock 2*/\

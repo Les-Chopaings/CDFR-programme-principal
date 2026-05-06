@@ -143,6 +143,19 @@ int main(int argc, char *argv[]) {
     globalState.map = PathFindingMap();
     globalState.map.update_base_map();
 
+#ifdef EMULATE
+    // PRINT MAP (only for debug purpose)
+    std::string content = globalState.map.get_Map(10);
+    std::filesystem::path exeDir = getExecutableDir(argv[0]);
+    std::filesystem::path filePath = exeDir / "map_output.txt";
+    std::ofstream file(filePath);
+    if (!file) {
+        std::cerr << "Erreur ouverture fichier\n";
+        return 1;
+    }
+    file << content;
+#endif
+
     // TEST
     // asserv.go_to_point(1000, 0, 0);
 

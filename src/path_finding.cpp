@@ -261,18 +261,18 @@ path_t PathFindingMap::removeLast(path_t result_path){
     return result_path;
 }
 
-void PathFindingMap::print_Map(void){
-    Traceur mat(3000, 2000, 50);
+std::string PathFindingMap::get_Map(int scale){
+    Traceur mat(3000, 2000, scale);
 
     for (edge_out_t &edge: get_edge_map()) {
         mat.drawLine(edge.start_point.x, edge.start_point.y, edge.end_point.x, edge.end_point.y, edge.enabled+1);
     }
 
-    mat.print();
+    return mat.getString();
 }
 
-void PathFindingMap::print_Path(path_t path){
-    Traceur mat(3000, 2000, 50);
+void PathFindingMap::print_Path(path_t path, int scale){
+    Traceur mat(3000, 2000, scale);
     for (edge_out_t &edge: get_edge_map()) {
         mat.drawLine(edge.start_point.x, edge.start_point.y, edge.end_point.x, edge.end_point.y, edge.enabled+1);
     }
