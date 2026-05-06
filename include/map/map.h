@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdint>
 #include <vector>
+#include <array>
 
 typedef struct {
     float x;
@@ -193,8 +194,9 @@ public:
 
     std::vector<node_t>* get_node_arry();
     std::vector<edge_t>* get_edge_arry();
+    std::array<std::vector<point_t>, 9> deposeCoord;
 
 private:
     point_t point_at_distance(float x1, float y1, float x2, float y2, float dist);
-    void add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0);
+    point_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0);
 };

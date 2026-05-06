@@ -96,37 +96,6 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
         return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
 
-    takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock0bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock1->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock2->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock3->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock4->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock5->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock6->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock7->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-    takeStock7bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        return 1;
-    });
-
     takeStock0->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
         globalState->commande = RobotStatus::full;
     });
@@ -227,6 +196,34 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
 
     listeAction.push_back(temperatureYellow);
     listeAction.push_back(temperatureBlue);
+
+    map creatMap;
+    for(int i = 0; i < creatMap.deposeCoord.size(); i++){
+        for (size_t j = 0; j < creatMap.deposeCoord[i].size(); ++j) {
+            const point_t& p = creatMap.deposeCoord[i][j];
+            Action* deposeAction = new Action("deposeAction",globalState,asserv,arduino);
+            deposeAction->setStartPoint (p.x, p.y, Direction::FORWARD);
+
+            deposeAction->setFunctGoodEnd([i](GlobalState* globalState){
+                globalState->zoneDepose[i] = ControlOwner::Friendly;
+            });
+
+            deposeAction->setFunctCostAction([i](GlobalState* globalState){
+                return globalState->zoneDepose[i]==ControlOwner::None && globalState->robotStatus == RobotStatus::full ? 1 : -1;
+            });
+
+            deposeAction->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+                return globalState->robotStatus != RobotStatus::full;
+            });
+
+            deposeAction->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+                globalState->commande = RobotStatus::empty;
+            });
+
+            listeAction.push_back(deposeAction);
+        }
+    }
+
 }
 
 int ActionContainer::actionContainerRun(void){

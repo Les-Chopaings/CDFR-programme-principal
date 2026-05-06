@@ -184,7 +184,7 @@ int Action::goToStart(void){
             {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
         );
         mGlobalState->map.print_Path(mpath);
-        if(mpath.length < 2){
+        if(mpath.v.size() < 2){
             LOG_WARNING("Path not find");
             deplacementreturn = -1;
         }

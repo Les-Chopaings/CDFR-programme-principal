@@ -153,7 +153,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 arduino->controlePompe(pompe::pompe4,0);
             }
             if(startTime < millis()){
-                nextState = FsmTakeNuts::PUT_STOP_POMPE;
+                nextState = FsmTakeNuts::PUT_PIVOT_90;
             }
             break;
 

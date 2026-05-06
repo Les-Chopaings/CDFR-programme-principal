@@ -204,11 +204,6 @@ path_t PathFindingMap::find_path_between_points(const pose_t start_point, const 
                 }
             }
 
-            result_path.length = 0.0f;
-            for (size_t i = 1; i < result_path.v.size(); ++i) {
-                result_path.length += distance(&result_path.v[i - 1].point, &result_path.v[i].point);
-            }
-
             result_path.v.push_back(start_point);
             std::reverse(result_path.v.begin(), result_path.v.end());
 
@@ -257,6 +252,12 @@ path_t PathFindingMap::removeLast(path_t result_path){
     if (result_path.v.size() >= 2) {
         result_path.v.erase(result_path.v.end() - 2);
     }
+
+    result_path.length = 0.0f;
+    for (size_t i = 1; i < result_path.v.size(); ++i) {
+        result_path.length += distance(&result_path.v[i - 1].point, &result_path.v[i].point);
+    }
+
     return result_path;
 }
 
