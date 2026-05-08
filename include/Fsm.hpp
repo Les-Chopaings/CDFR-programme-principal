@@ -20,6 +20,7 @@ DECLARE_ENUM_CLASS(FsmTakeNuts,
     SORT,           // nathan job
     WAIT_PUT,
     PUT_PIVOT_45,
+    PUT_DOWN,
     PUT_STOP_POMPE,
     PUT_PIVOT_90,   //<-- end : robot empty
     RESET_SORT,     // nathan job

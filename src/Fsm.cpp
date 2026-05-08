@@ -72,7 +72,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         case FsmTakeNuts::TAKE_LEFT :
             if(initStat){
-                startTime = millis()+1000;
+                startTime = millis()+2000;
                 arduino->servoMove(servo::rotation1,10);
                 arduino->servoMove(servo::rotation2,10);
                 arduino->servoMove(servo::rotation3,10);
@@ -84,7 +84,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         case FsmTakeNuts::TAKE_RIGHT :
             if(initStat){
-                startTime = millis()+1000;
+                startTime = millis()+2000;
                 arduino->servoMove(servo::rotation1,0);
                 arduino->servoMove(servo::rotation2,0);
                 arduino->servoMove(servo::rotation3,0);
@@ -139,6 +139,16 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 arduino->servoMove(servo::bascule,90);
             }
             if(startTime < millis()){
+                nextState = FsmTakeNuts::PUT_DOWN;
+            }
+            break;
+
+        case FsmTakeNuts::PUT_DOWN :
+            if(initStat){
+                startTime = millis()+500;
+                arduino->stepperMove(700);
+            }
+            if(startTime < millis()){
                 nextState = FsmTakeNuts::PUT_STOP_POMPE;
             }
             break;
@@ -146,7 +156,6 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::PUT_STOP_POMPE :
             if(initStat){
                 startTime = millis()+1500;
-                arduino->servoMove(servo::bascule,90);
                 arduino->controlePompe(pompe::pompe1,0);
                 arduino->controlePompe(pompe::pompe2,0);
                 arduino->controlePompe(pompe::pompe3,0);
@@ -160,7 +169,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::PUT_PIVOT_90 :
             if(initStat){
                 startTime = millis()+500;
-                arduino->servoMove(servo::bascule,90);
+                arduino->servoMove(servo::bascule,180);
             }
             if(startTime < millis()){
                 nextState = FsmTakeNuts::RESET_SORT;
@@ -170,6 +179,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
 
         case FsmTakeNuts::RESET_SORT :{
             bool rot[4] = {0,0,0,0};
+            if(initStat){
+                arduino->servoMove(servo::bascule,0);
+            }
             if(TriNoisette(rot, arduino)){
                 nextState = FsmTakeNuts::RESET_DOWN; //TODO Nathan
             }

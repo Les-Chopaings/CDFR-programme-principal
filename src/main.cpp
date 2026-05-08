@@ -162,6 +162,11 @@ int main(int argc, char *argv[]) {
     // Demo path finding
     // test_path_finder();
 
+    //arduino.controlePompe(pompe::pompe1,1);
+    //arduino.controlePompe(pompe::pompe2,1);
+    //arduino.controlePompe(pompe::pompe3,1);
+    //arduino.controlePompe(pompe::pompe4,1);
+
     while (1) {
 
         LOG_SCOPE("Main");
