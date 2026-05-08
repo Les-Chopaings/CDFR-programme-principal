@@ -168,6 +168,7 @@ int main(int argc, char *argv[]) {
 
         //Aquistion
         int16_t x, y, theta;
+        bool dataValid = false;
         asserv.get_coordinates(x, y, theta);
         globalState.robotPosition.x = x;
         globalState.robotPosition.y = y;
@@ -175,21 +176,27 @@ int main(int argc, char *argv[]) {
 
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
-            int distance;
-            position_t position = {x,y,theta,0};
             rotateLidarData(lidarData, count, -45);
-            convertAngularToAxial(lidarData,count,position);
+            convertAngularToAxial(lidarData,count,globalState.robotPosition);
+            dataValid = true;
+        }
+        #ifdef EMULATE
+        {
+            position_t enemyPosition = {500,500,theta,0};
+            globalState.enemyPosition = enemyPosition;
+            placeVirtualEnemy(lidarData,count,globalState.robotPosition,enemyPosition);
+            dataValid = true;
+        }
+        #endif
+
+        if(dataValid){
+            int distance;
             if(ctrl_z_pressed){
                 ctrl_z_pressed = false;
-                pixelArtPrint(lidarData,count,50,50,100,position);
+                pixelArtPrint(lidarData,count,3000,2000,50,globalState.robotPosition);
             }
-            distance = -200;
-            globalState.collideDistance =  collide(lidarData,count,distance);
-            bool collide = globalState.collideDistance<0;
-            if(collide != prev_collide){
-              prev_collide = collide;
-              LOG_DEBUG("COLLIDE : ", collide);
-            }
+            int direction = asserv.get_braking_distance()<0 ? -1 : 1;
+            globalState.collideDistance =  collide(lidarData,count,direction);
         }
 
         switch (currentState) {

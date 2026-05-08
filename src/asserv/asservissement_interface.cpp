@@ -77,6 +77,7 @@ void asservissement_interface::set_coordinates(int16_t x, int16_t y, int16_t the
 void asservissement_interface::stop(){
     #ifdef EMULATE
         emulate_nextValid = false;
+        emeulate_pause = false;
         enumate_actionQueue.clear();
     #endif
     LOG_DEBUG("stop");
@@ -86,6 +87,11 @@ void asservissement_interface::stop(){
 }
 
 void asservissement_interface::pause(){
+    #ifdef EMULATE
+        emulate_nextValid = false;
+        emulate_nextTimePop = 0;
+        emeulate_pause = true;
+    #endif
     LOG_DEBUG("pause");
     uint8_t* data = nullptr;
     int length = 0;
@@ -93,6 +99,9 @@ void asservissement_interface::pause(){
 }
 
 void asservissement_interface::resume(){
+    #ifdef EMULATE
+        emeulate_pause = false;
+    #endif
     LOG_DEBUG("resume");
     uint8_t* data = nullptr;
     int length = 0;
@@ -500,6 +509,9 @@ void asservissement_interface::run_emulate(void){
         return sqrtf((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     };
 
+    if(emeulate_pause)
+        return;
+
     if(emulate_nextTimePop < millis()){
         if(emulate_nextValid == true){
             emulate_action action = enumate_actionQueue.front();
@@ -512,8 +524,24 @@ void asservissement_interface::run_emulate(void){
             emulate_action action = enumate_actionQueue.front();
             int time = distance2p(emulate_x, emulate_y, action.m_x, action.m_y)*5;
             LOG_DEBUG("Deplacement Time : ",time);
+            emulate_start_time = millis();
             emulate_nextTimePop = millis() + time;
             emulate_nextValid = true;
+            emulate_start_emulate_x = emulate_x;
+            emulate_start_emulate_y = emulate_y;
+            emulate_next_emulate_x = action.m_x;
+            emulate_next_emulate_y = action.m_y;
+        }
+    }
+    else{
+        if(emulate_nextValid == true){
+            unsigned long  now = millis();
+            unsigned long  elapsed = now - emulate_start_time;
+            unsigned long  duration = (emulate_nextTimePop - emulate_start_time);
+            float t = (float)elapsed / (float)duration;
+            emulate_x = emulate_start_emulate_x + (emulate_next_emulate_x - emulate_start_emulate_x) * t;
+            emulate_y = emulate_start_emulate_y + (emulate_next_emulate_y - emulate_start_emulate_y) * t;
+            //LOG_DEBUG("emulate_x : ",emulate_x," emulate_y : ",emulate_y);
         }
     }
 }

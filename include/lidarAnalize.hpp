@@ -14,6 +14,8 @@ void rotateLidarData(lidarAnalize_t* data, int count, int angle);
 
 void convertAngularToAxial(lidarAnalize_t* data, int count, position_t position);
 
+void placeVirtualEnemy(lidarAnalize_t* data, int count, position_t robotPosition, position_t ennemyPosition);
+
 bool collideFordward(lidarAnalize_t* data, int count);
 
 bool collideBackward(lidarAnalize_t* data, int count);

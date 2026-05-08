@@ -85,6 +85,12 @@ private:
         int emulate_theta = 0;
         unsigned long emulate_nextTimePop = 0;
         bool emulate_nextValid = false;
+        bool emeulate_pause = false;
+        int emulate_start_emulate_x = 0;
+        int emulate_start_emulate_y = 0;
+        int emulate_next_emulate_x = 0;
+        int emulate_next_emulate_y = 0;
+        unsigned long emulate_start_time;
         std::deque<emulate_action> enumate_actionQueue;
         void run_emulate(void);
     #endif

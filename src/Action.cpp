@@ -210,9 +210,9 @@ int Action::goToStart(void){
         break;
 
     case FsmGoToStart::WAIT :
-        if(mGlobalState->collideDistance<0){
+        if(mGlobalState->collideDistance<200){
             nextState = FsmGoToStart::COLIDE;
-            mStartColide = millis() + 5000;
+            mStartColide = millis() + 1000000;
             mAsserv->pause();
         }
         else if(mAsserv->get_moving_is_done() && mAsserv->get_command_buffer_size() == 0){
@@ -222,7 +222,7 @@ int Action::goToStart(void){
         break;
 
     case FsmGoToStart::COLIDE :
-        if(mGlobalState->collideDistance>50){
+        if(mGlobalState->collideDistance>250){
             nextState = FsmGoToStart::WAIT;
             mAsserv->resume();
         }
