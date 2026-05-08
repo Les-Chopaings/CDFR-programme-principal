@@ -264,12 +264,12 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 servoToRot[0] = 0;}
             /* déplace les bras pour rotation2*/
             else if (servoToRot[1] == 1){
-                servoToMove[0] = 0; servoToMove[1] = 40; servoToMove[2] = 180; servoToMove[3] = 180;
+                servoToMove[0] = 0; servoToMove[1] = 60; servoToMove[2] = 180; servoToMove[3] = 180;
                 followupState = State::rotate2;
                 servoToRot[1] = 0;}
             /* déplace les bras pour rotation3*/
             else if (servoToRot[2] == 1){
-                servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 40; servoToMove[3] = 180;
+                servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 60; servoToMove[3] = 180;
                 followupState = State::rotate3;
                 servoToRot[2] = 0;}
             /* déplace les bras pour rotation4*/
