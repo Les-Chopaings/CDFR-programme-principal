@@ -186,7 +186,7 @@ int main(int argc, char *argv[]) {
         }
         #ifdef EMULATE
         {
-            position_t enemyPosition = {500,500,theta,0};
+            position_t enemyPosition = {5000,5000,theta,0};
             globalState.enemyPosition = enemyPosition;
             placeVirtualEnemy(lidarData,count,globalState.robotPosition,enemyPosition);
             dataValid = true;

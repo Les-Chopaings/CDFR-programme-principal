@@ -187,14 +187,24 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 arduino->servoMove(servo::bascule,0);
             }
             if(TriNoisette(rot, arduino)){
-                nextState = FsmTakeNuts::RESET_DOWN; //TODO Nathan
+                nextState = FsmTakeNuts::RESET_WAIT_DOWN;
+            }
+            break;
+        }
+
+        case FsmTakeNuts::RESET_WAIT_DOWN :{
+            if(initStat){
+                startTime = millis()+500;
+            }
+            if(startTime < millis() && asserv->get_command_buffer_size() <= 2){
+                nextState = FsmTakeNuts::RESET_DOWN;
             }
             break;
         }
 
         case FsmTakeNuts::RESET_DOWN :{
             if(initStat){
-                startTime = millis()+2000;
+                startTime = millis()+1500;
                 arduino->stepperMove(150);
             }
             if(startTime < millis()){
@@ -208,7 +218,6 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             globalState->robotStatus = RobotStatus::empty;
             break;}
     }
-
     initStat = false;
     if(nextState != currentState){
         LOG_STATE(FsmTakeNuts_to_string(nextState));
@@ -513,7 +522,7 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
             break;
 
         case FsmTemp::WAIT :
-            if(globalState->collideDistance<0){
+            if(globalState->collideDistance<400){
                 nextState = FsmTemp::COLIDE;
                 startTime = millis() + 5000;
                 asserv->pause();
@@ -525,7 +534,7 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
             break;
 
         case FsmTemp::COLIDE :
-            if(globalState->collideDistance>50){
+            if(globalState->collideDistance>450){
                 nextState = FsmTemp::WAIT;
                 asserv->resume();
             }
@@ -549,4 +558,78 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
     }
     currentState = nextState;
     return bret;
+}
+
+
+
+int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y){
+    static FsmTakeForaward currentState = FsmTakeForaward::INIT;
+    static int initStat = false;
+    static unsigned long startTime = 0;
+    FsmTakeForaward nextState = currentState;
+    int deplacementreturn = 0;
+
+    switch (currentState){
+        case FsmTakeForaward::INIT :
+            nextState = FsmTakeForaward::WAIT_FORWARD;
+            break;
+
+        case FsmTakeForaward::WAIT_FORWARD :
+            // wait end reseting
+            if(globalState->robotStatus == RobotStatus::empty){
+                nextState = FsmTakeForaward::FORWARD;
+            }
+            break;
+
+        case FsmTakeForaward::FORWARD :
+            asserv->go_to_point(x, y, Rotation::SHORTEST ,Direction::FORWARD);
+            nextState = FsmTakeForaward::WAIT;
+            break;
+
+        case FsmTakeForaward::WAIT :
+            if(globalState->collideDistance<400){
+                nextState = FsmTakeForaward::COLIDE;
+                startTime = millis() + 5000;
+                asserv->pause();
+            }
+            else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
+                nextState = FsmTakeForaward::WAIT_TAKE;
+            }
+            break;
+
+        case FsmTakeForaward::COLIDE :
+            if(globalState->collideDistance>450){
+                nextState = FsmTakeForaward::WAIT;
+                asserv->resume();
+            }
+            else if(startTime<millis()){
+                nextState = FsmTakeForaward::INIT;
+                asserv->stop();
+                deplacementreturn = -1;
+            }
+            break;
+
+        case FsmTakeForaward::WAIT_TAKE :
+            if(initStat){
+                globalState->commande = RobotStatus::full;
+            }
+            if(globalState->robotStatus == RobotStatus::full){
+                nextState = FsmTakeForaward::INIT;
+                deplacementreturn = 1;
+            }
+            break;
+
+        default:
+            nextState = FsmTakeForaward::INIT;
+            break;
+    }
+
+
+    initStat = false;
+    if(nextState != currentState){
+        LOG_STATE(FsmTakeForaward_to_string(nextState));
+        initStat = true;
+    }
+    currentState = nextState;
+    return deplacementreturn;
 }

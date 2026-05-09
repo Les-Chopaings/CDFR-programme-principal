@@ -23,16 +23,16 @@ ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Ardui
 void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
     // TAKE_STOCK_0
 
-    takeStock0->setStartPoint    (STOCK_X_P0_0, STOCK_Y_P0_0, STOCK_T_P0_0, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock0bis->setStartPoint (STOCK_X_P1_0, STOCK_Y_P1_0, STOCK_T_P1_0, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock1->setStartPoint    (STOCK_X_P0_1, STOCK_Y_P0_1, STOCK_T_P0_1, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock2->setStartPoint    (STOCK_X_P0_2, STOCK_Y_P0_2, STOCK_T_P0_2, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock3->setStartPoint    (STOCK_X_P0_3, STOCK_Y_P0_3, STOCK_T_P0_3, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock4->setStartPoint    (STOCK_X_P0_4, STOCK_Y_P0_4, STOCK_T_P0_4, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock5->setStartPoint    (STOCK_X_P0_5, STOCK_Y_P0_5, STOCK_T_P0_5, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock6->setStartPoint    (STOCK_X_P0_6, STOCK_Y_P0_6, STOCK_T_P0_6, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock7->setStartPoint    (STOCK_X_P0_7, STOCK_Y_P0_7, STOCK_T_P0_7, Direction::FORWARD,Rotation::SHORTEST);
-    takeStock7bis->setStartPoint (STOCK_X_P1_7, STOCK_Y_P1_7, STOCK_T_P1_7, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock0->setStartPoint    (1850, 1200, STOCK_T_P0_0, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock0bis->setStartPoint (1850, 500, STOCK_T_P1_0, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock1->setStartPoint    (2500, 1200, STOCK_T_P0_1, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock2->setStartPoint    (2500, 400, STOCK_T_P0_2, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock3->setStartPoint    (1900, 500, STOCK_T_P0_3, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock4->setStartPoint    (1100, 500, STOCK_T_P0_4, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock5->setStartPoint    (500, 400, STOCK_T_P0_5, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock6->setStartPoint    (500, 1200, STOCK_T_P0_6, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock7->setStartPoint    (1150, 1200, STOCK_T_P0_7, Direction::FORWARD,Rotation::SHORTEST);
+    takeStock7bis->setStartPoint (1150, 500, STOCK_T_P1_7, Direction::FORWARD,Rotation::SHORTEST);
 
     takeStock0->setFunctGoodEnd([](GlobalState* globalState){
         globalState->zoneStock[0] = ControlOwner::Friendly;
@@ -96,66 +96,35 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
         return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
 
-    takeStock0->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock0bis->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock1->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock2->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock3->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock4->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock5->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock6->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock7->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-    takeStock7bis->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-        globalState->commande = RobotStatus::full;
-    });
-
     takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_0, STOCK_Y_P0_0);
     });
     takeStock0bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P1_0, STOCK_Y_P1_0);
     });
     takeStock1->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_1, STOCK_Y_P0_1);
     });
     takeStock2->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_2, STOCK_Y_P0_2);
     });
     takeStock3->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_3, STOCK_Y_P0_3);
     });
     takeStock4->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_4, STOCK_Y_P0_4);
     });
     takeStock5->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_5, STOCK_Y_P0_5);
     });
     takeStock6->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_6, STOCK_Y_P0_6);
     });
     takeStock7->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_7, STOCK_Y_P0_7);
     });
     takeStock7bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return globalState->robotStatus == RobotStatus::full;
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P1_7, STOCK_Y_P1_7);
     });
 
     listeAction.push_back(takeStock0);

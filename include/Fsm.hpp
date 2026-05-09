@@ -25,6 +25,7 @@ DECLARE_ENUM_CLASS(FsmTakeNuts,
     PUT_STOP_POMPE,
     PUT_PIVOT_90,   //<-- end : robot empty
     RESET_SORT,     // nathan job
+    RESET_WAIT_DOWN,
     RESET_DOWN      //<-- end : robot ready
 )
 
@@ -35,6 +36,15 @@ DECLARE_ENUM_CLASS(FsmTemp,
     RETRACT,
     WAIT,
     COLIDE
+)
+
+DECLARE_ENUM_CLASS(FsmTakeForaward,
+    INIT,
+    WAIT_FORWARD,
+    FORWARD,
+    WAIT,
+    COLIDE,
+    WAIT_TAKE
 )
 
 DECLARE_ENUM_CLASS( State,
@@ -83,5 +93,6 @@ private:
 };
 
 int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
+int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y);
 
 
