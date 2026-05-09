@@ -73,10 +73,10 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::TAKE_LEFT :
             if(initStat){
                 startTime = millis()+2000;
-                arduino->servoMove(servo::rotation1,10);
-                arduino->servoMove(servo::rotation2,10);
-                arduino->servoMove(servo::rotation3,10);
-                arduino->servoMove(servo::rotation4,10);
+                arduino->servoMove(servo::rotation1,15);
+                arduino->servoMove(servo::rotation2,15);
+                arduino->servoMove(servo::rotation3,15);
+                arduino->servoMove(servo::rotation4,15);
             }
             if(startTime < millis()){
                 nextState = FsmTakeNuts::TAKE_RIGHT;
