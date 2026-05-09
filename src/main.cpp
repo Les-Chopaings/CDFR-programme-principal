@@ -127,7 +127,6 @@ int main(int argc, char *argv[]) {
     }
     bool emulate = false;
 #endif
-    bool prev_collide = false;
     lidarAnalize_t lidarData[SIZEDATALIDAR];
     GlobalState globalState;
     ActionContainer actionContainer(&globalState, &asserv, &arduino);
@@ -195,13 +194,20 @@ int main(int argc, char *argv[]) {
         #endif
 
         if(dataValid){
-            int distance;
             if(ctrl_z_pressed){
                 ctrl_z_pressed = false;
                 pixelArtPrint(lidarData,count,3000,2000,50,globalState.robotPosition);
             }
-            int direction = asserv.get_braking_distance()<0 ? -1 : 1;
-            globalState.collideDistance =  collide(lidarData,count,direction);
+            Direction asservDir = asserv.get_direction_side();
+            int direction = asservDir==Direction::FORWARD ? 1 : (asservDir==Direction::BACKWARD ? -1 : 0);
+            direction = getDirection(direction);
+            globalState.collideDistance = collide(lidarData,count,direction);
+            if(direction == 1){
+                globalState.collideDistance = globalState.collideDistance - 220;
+            }
+            else{
+                globalState.collideDistance = globalState.collideDistance - 120;
+            }
         }
 
         switch (currentState) {
@@ -212,7 +218,7 @@ int main(int argc, char *argv[]) {
                     LOG_STATE("INIT");
                     //TODO
                 }
-                if(arduino.readButton(button::magnet) || emulate){
+                if(arduino.readButton(button::magnet) || 1 || emulate){
                     nextState = MainState::INITIALIZE;
                 }
                 break;

@@ -157,13 +157,37 @@ bool collideBackward(lidarAnalize_t* data, int count){
     return false;
 }
 
-int collide(lidarAnalize_t* data, int count ,int distanceStop){
+int getDirection(int distanceStop){
+    static int PreviousDistanceStop  = 0;
+
+    //keep direction
+    if(distanceStop!=0){
+        if(distanceStop >= 0){
+            if(PreviousDistanceStop == -1){
+                LOG_DEBUG("FORWARD");
+            }
+            PreviousDistanceStop = 1;
+        }
+        else{
+            if(PreviousDistanceStop == 1){
+                LOG_DEBUG("BACKWARD");
+            }
+            PreviousDistanceStop = -1 ;
+        }
+    }
+    else{
+        distanceStop = PreviousDistanceStop;
+    }
+    return PreviousDistanceStop;
+}
+
+int collide(lidarAnalize_t* data, int count ,int direction){
     #ifdef EMULATE
     {
         int iRet = 12000;
         for(int i = 0; i <count; i++){
             if(data[i].valid && data[i].onTable){
-                if(distanceStop >= 0){
+                if(direction >= 0){
                     if(data[i].dist < iRet){
                         iRet = data[i].dist;
                     }
@@ -179,26 +203,10 @@ int collide(lidarAnalize_t* data, int count ,int distanceStop){
     }
     #endif
 
-
-    static int PreviousDistanceStop  = 0;
-
-    //keep direction
-    if(distanceStop!=0){
-        if(distanceStop >= 0){
-            PreviousDistanceStop = 1;
-        }
-        else{
-            PreviousDistanceStop = -1 ;
-        }
-    }
-    else{
-        distanceStop = PreviousDistanceStop;
-    }
-
     int iRet = 12000; //maximum capation distance for lidar
     for(int i = 0; i <count; i++){
         if(data[i].valid && data[i].onTable){
-            if(distanceStop >= 0){
+            if(direction >= 0){
                 if(data[i].angle <45 || data[i].angle>(360-45)){
                     if(data[i].dist < iRet){
                         iRet = data[i].dist;

@@ -64,7 +64,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 arduino->controlePompe(pompe::pompe2,1);
                 arduino->controlePompe(pompe::pompe3,1);
                 arduino->controlePompe(pompe::pompe4,1);
-                arduino->stepperMove(25);
+                arduino->stepperMove(35);
             }
             if(startTime < millis()){
                 nextState = FsmTakeNuts::TAKE_LEFT;

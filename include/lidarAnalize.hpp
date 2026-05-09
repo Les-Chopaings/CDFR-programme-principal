@@ -20,7 +20,9 @@ bool collideFordward(lidarAnalize_t* data, int count);
 
 bool collideBackward(lidarAnalize_t* data, int count);
 
-int collide(lidarAnalize_t* data, int count ,int distanceStop);
+int collide(lidarAnalize_t* data, int count ,int direction);
+
+int getDirection(int distanceStop);
 
 void printLidarAxial(lidarAnalize_t* data, int count);
 

@@ -143,13 +143,17 @@ typedef struct {
 {26, {TEMP_X_BLUE_SART, TEMP_Y}},    /*temp */\
 {27, {TEMP_X_BLUE_END, TEMP_Y}},     /*temp */\
 {28, {TEMP_X_YELLOW_END,500}},       /*middle*/\
-{29, {TEMP_X_BLUE_SART,500}}         /*middle*/
+{29, {TEMP_X_BLUE_SART,500}},        /*middle*/\
+{30, {START_X_YELLOW, START_Y-50}},   /*yellow start*/ \
+{31, {START_X_BLUE, START_Y-50}}  /*blue start*/
 
-#define LAST_POINT 29
+#define LAST_POINT 31
 
 #define STANDARD_EDGES_ARRAY \
-{0, 2},\
-{1, 9},\
+{0, 30},\
+{1, 31},\
+{30, 2},\
+{31, 9},\
 {2, 3},\
 {3, 28},\
 {28, 4},\
