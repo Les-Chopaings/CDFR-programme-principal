@@ -177,6 +177,10 @@ int main(int argc, char *argv[]) {
         globalState.robotPosition.x = x;
         globalState.robotPosition.y = y;
         globalState.robotPosition.theta = theta;
+        LOG_SET_COORD(x, y, theta);
+        if(globalState.startTimestamp !=0){
+            LOG_SET_TIME((millis() - globalState.startTimestamp)/1000);
+        }
 
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){

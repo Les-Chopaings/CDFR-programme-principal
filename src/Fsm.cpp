@@ -150,7 +150,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::PUT_DOWN :{
             if(initStat){
                 startTime = millis()+500;
-                arduino->stepperMove(700);
+                arduino->stepperMove(600);
             }
             if(startTime < millis()){
                 nextState = FsmTakeNuts::PUT_STOP_POMPE;
@@ -159,7 +159,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
 
         case FsmTakeNuts::PUT_STOP_POMPE :{
             if(initStat){
-                startTime = millis()+1500;
+                startTime = millis()+1000;
                 arduino->controlePompe(pompe::pompe1,0);
                 arduino->controlePompe(pompe::pompe2,0);
                 arduino->controlePompe(pompe::pompe3,0);
@@ -204,7 +204,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
 
         case FsmTakeNuts::RESET_DOWN :{
             if(initStat){
-                startTime = millis()+1500;
+                startTime = millis()+1000;
                 arduino->stepperMove(150);
             }
             if(startTime < millis()){
