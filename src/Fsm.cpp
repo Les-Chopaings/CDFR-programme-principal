@@ -94,7 +94,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 nextState = FsmTakeNuts::TAKE_UP;
             }
             break;
-        case FsmTakeNuts::TAKE_UP :
+        case FsmTakeNuts::TAKE_UP :{
             if(initStat){
                 startTime = millis()+2000;
                 arduino->stepperMove(1150);
@@ -102,8 +102,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(startTime < millis()){
                 nextState = FsmTakeNuts::TAKE_PIVOT_90;
             }
-            break;
-        case FsmTakeNuts::TAKE_PIVOT_90 :
+            break;}
+
+        case FsmTakeNuts::TAKE_PIVOT_90 :{
             if(initStat){
                 startTime = millis()+2000;
                 arduino->servoMove(servo::bascule,180);
@@ -111,14 +112,18 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(startTime < millis()){
                 nextState = FsmTakeNuts::READ_SENSOR;
             }
-            break;
+            break;}
 
         case FsmTakeNuts::READ_SENSOR:
             readSensor(rotation, globalState->robotColor, colorsensor);
+            rotation[0]=1;
+            rotation[1]=1;
+            rotation[2]=0;
+            rotation[3]=0;
             nextState = FsmTakeNuts::SORT;
             break;
 
-        case FsmTakeNuts::SORT :
+        case FsmTakeNuts::SORT :{
             if(initStat){
                 globalState->robotStatus = RobotStatus::full;
             }
@@ -131,9 +136,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(globalState->commande==RobotStatus::empty){
                 nextState = FsmTakeNuts::PUT_PIVOT_45;
             }
-            break;
+            break;}
 
-        case FsmTakeNuts::PUT_PIVOT_45 :
+        case FsmTakeNuts::PUT_PIVOT_45 :{
             if(initStat){
                 startTime = millis()+200;
                 arduino->servoMove(servo::bascule,90);
@@ -141,9 +146,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(startTime < millis()){
                 nextState = FsmTakeNuts::PUT_DOWN;
             }
-            break;
+            break;}
 
-        case FsmTakeNuts::PUT_DOWN :
+        case FsmTakeNuts::PUT_DOWN :{
             if(initStat){
                 startTime = millis()+500;
                 arduino->stepperMove(700);
@@ -151,9 +156,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(startTime < millis()){
                 nextState = FsmTakeNuts::PUT_STOP_POMPE;
             }
-            break;
+            break;}
 
-        case FsmTakeNuts::PUT_STOP_POMPE :
+        case FsmTakeNuts::PUT_STOP_POMPE :{
             if(initStat){
                 startTime = millis()+1500;
                 arduino->controlePompe(pompe::pompe1,0);
@@ -164,9 +169,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             if(startTime < millis()){
                 nextState = FsmTakeNuts::PUT_PIVOT_90;
             }
-            break;
+            break;}
 
-        case FsmTakeNuts::PUT_PIVOT_90 :
+        case FsmTakeNuts::PUT_PIVOT_90 :{
             if(initStat){
                 startTime = millis()+500;
                 arduino->servoMove(servo::bascule,180);
@@ -175,7 +180,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 nextState = FsmTakeNuts::RESET_SORT;
                 globalState->robotStatus = RobotStatus::reseting;
             }
-            break;
+            break;}
 
         case FsmTakeNuts::RESET_SORT :{
             bool rot[4] = {0,0,0,0};
@@ -188,7 +193,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         }
 
-        case FsmTakeNuts::RESET_DOWN :
+        case FsmTakeNuts::RESET_DOWN :{
             if(initStat){
                 startTime = millis()+2000;
                 arduino->stepperMove(150);
@@ -202,7 +207,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         default:
             nextState = FsmTakeNuts::INIT;
             globalState->robotStatus = RobotStatus::empty;
-            break;
+            break;}
     }
 
     initStat = false;
@@ -282,10 +287,11 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
 #ifndef QUIET
                 LOG_DEBUG("retourne à l'état init");
 #endif
-                servoToMove[0] = 90; servoToMove[1] = 90; servoToMove[2] = 90; servoToMove[3] = 90;
-                finished = 1;}
-            if(finished){triCurrentState = State::init;}
-            else{triCurrentState = State::movement;}
+                servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 0; servoToMove[3] = 180;
+                finished = 1;
+            }
+
+            triCurrentState = State::movement;
             break;}
 
         case State::rotate1:{
@@ -370,6 +376,11 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 T_start =  millis();
                 triCurrentState = State::wait;
             }
+            /* si finished, on recale les bras */
+            else if (finished){
+                servoToMove[0] = 90; servoToMove[1] = 90; servoToMove[2] = 90; servoToMove[3] = 90;
+                triCurrentState = State::init;
+            }
             else{
                 triCurrentState = followupState;
             }
@@ -381,8 +392,17 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
 #ifndef QUIET
                 LOG_DEBUG("wait ", TIMESLIDER, " ms");
 #endif
-                if (toCopy || finished){triCurrentState = State::init;}
-                else{triCurrentState = State::movement;}
+                triCurrentState = State::movement;
+            }
+        break;}
+        /*case waitinit : attente liée au déplacement d'un bras, mais pour init*/
+        case State::waitinit:{
+            int fs = millis() - T_start;
+            if(fs > TIMESLIDER){
+#ifndef QUIET
+                LOG_DEBUG("waitinit ", TIMESLIDER, " ms");
+#endif
+                triCurrentState = State::init;
             }
         break;}
         /*case rotwait : attente liée à la rotation d'un bras*/
@@ -405,7 +425,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 arduino->servoMove(servo::slider4, servoToMove[3]);
                 servoCurrentPos[3] = servoToMove[3];
                 T_start =  millis();
-                triCurrentState = State::wait;
+                triCurrentState = State::waitinit;
             }
             else if(servoToMove[2] != servoCurrentPos[2]){
 #ifndef QUIET
@@ -414,7 +434,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 arduino->servoMove(servo::slider3, servoToMove[2]);
                 servoCurrentPos[2] = servoToMove[2];
                 T_start =  millis();
-                triCurrentState = State::wait;
+                triCurrentState = State::waitinit;
             }
             else if(servoToMove[1] != servoCurrentPos[1]){
 #ifndef QUIET
@@ -423,7 +443,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 arduino->servoMove(servo::slider2, servoToMove[1]);
                 servoCurrentPos[1] = servoToMove[1];
                 T_start =  millis();
-                triCurrentState = State::wait;
+                triCurrentState = State::waitinit;
             }
             else if(servoToMove[0] != servoCurrentPos[0]){
 #ifndef QUIET
@@ -432,7 +452,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
                 arduino->servoMove(servo::slider1, servoToMove[0]);
                 servoCurrentPos[0] = servoToMove[0];
                 T_start =  millis();
-                triCurrentState = State::wait;
+                triCurrentState = State::waitinit;
             }
             else if(finished){
                 LOG_GREEN_INFO("---Tri fini---");

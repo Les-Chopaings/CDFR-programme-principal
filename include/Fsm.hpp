@@ -46,6 +46,7 @@ DECLARE_ENUM_CLASS( State,
     toProcess,
     movement,
     wait,
+    waitinit,
     rotwait,
     init
 )
