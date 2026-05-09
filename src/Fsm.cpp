@@ -114,14 +114,11 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             }
             break;}
 
-        case FsmTakeNuts::READ_SENSOR:
+        case FsmTakeNuts::READ_SENSOR:{
             readSensor(rotation, globalState->robotColor, colorsensor);
-            rotation[0]=1;
-            rotation[1]=1;
-            rotation[2]=0;
-            rotation[3]=0;
             nextState = FsmTakeNuts::SORT;
             break;
+        }
 
         case FsmTakeNuts::SORT :{
             if(initStat){
@@ -131,12 +128,14 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 nextState = FsmTakeNuts::WAIT_PUT;
             }
             break;
+        }
 
-        case FsmTakeNuts::WAIT_PUT:
+        case FsmTakeNuts::WAIT_PUT:{
             if(globalState->commande==RobotStatus::empty){
                 nextState = FsmTakeNuts::PUT_PIVOT_45;
             }
-            break;}
+            break;
+        }
 
         case FsmTakeNuts::PUT_PIVOT_45 :{
             if(initStat){
