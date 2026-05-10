@@ -11,6 +11,7 @@
 
 DECLARE_ENUM_CLASS(FsmTakeNuts,
     INIT,
+    TAKE_WAIT,
     TAKE_ALIGN,
     TAKE_DOWN,
     TAKE_LEFT,

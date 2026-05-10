@@ -16,36 +16,19 @@ class Action
 {
 private:
 
-    enum class FsmGoToStart{
+    DECLARE_ENUM_CLASS(FsmGoToStart,
         INIT,
         WAIT,
         COLIDE
-    };
-    const char* FsmGoToStart_to_string(FsmGoToStart p) {
-        switch (p) {
-            case FsmGoToStart::INIT : return "INIT";
-            case FsmGoToStart::WAIT : return "WAIT";
-            case FsmGoToStart::COLIDE : return "COLIDE";
-            default:     return "inconnu";
-        }
-    }
+    )
 
-    enum class FsmAction{
+    DECLARE_ENUM_CLASS(FsmAction,
         INIT,
         MOVESTART,
         STARTACTION,
         ACTION,
         MOVEEND
-    };
-    const char* fsmAction_to_string(FsmAction p) {
-        switch (p) {
-            case FsmAction::INIT : return "INIT";
-            case FsmAction::MOVESTART : return "MOVESTART";
-            case FsmAction::ACTION : return "ACTION";
-            case FsmAction::MOVEEND : return "MOVEEND";
-            default:     return "inconnu";
-        }
-    }
+    )
 
 private:
     GlobalState* mGlobalState;

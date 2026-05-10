@@ -13,8 +13,8 @@ GlobalState::GlobalState(/* args */){
         zone = ControlOwner::None;
     }
     termometre = false;
-    robotStatus = RobotStatus::empty;
-    commande = RobotStatus::empty;
+    robotStatus = RobotStatus::reseting;
+    commande = RobotStatus::reseting;
     robotPosition = {0,0,0,0};
     robotColor = ColorTeam::NONE;
     enemyPosition = {0,0,0,0};

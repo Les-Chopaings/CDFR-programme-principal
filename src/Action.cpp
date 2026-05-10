@@ -101,7 +101,7 @@ int Action::runAction(void){
     }
 
     if(nextState != currentState){
-        LOG_STATE(fsmAction_to_string(nextState));
+        LOG_STATE(FsmAction_to_string(nextState));
     }
     currentState = nextState;
     return ireturn;

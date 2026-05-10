@@ -186,7 +186,7 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
             });
 
             deposeAction->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-                globalState->commande = RobotStatus::empty;
+                globalState->commande = RobotStatus::reseting;
             });
 
             listeAction.push_back(deposeAction);

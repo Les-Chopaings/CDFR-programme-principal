@@ -253,7 +253,9 @@ int main(int argc, char *argv[]) {
             case MainState::SETHOME:{
                 if(initStat){
                     LOG_STATE("SETHOME");
-                    arduino.stepperMove(150);
+                    arduino.stepperMove(700);
+                    usleep(500000);
+                    arduino.servoMove(servo::bascule,180);
                 }
                 nextState = MainState::WAITSTART;
                 break;
