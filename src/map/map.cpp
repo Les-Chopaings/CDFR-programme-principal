@@ -23,6 +23,18 @@ map::map(/* args */)
     m_Edges->push_back({5,(uint8_t)(start+11)});
 
     m_Edges->push_back({24,19}); //YELLOW shortcut
+
+    //BLUE shortcut
+    deposeCoord[3].push_back(add_a_point(15,DEPOSE_X_3,DEPOSE_Y_3,start+12,OFFSET_DEPOSE));
+    m_Edges->push_back({33,(uint8_t)(start+12)});
+
+    deposeCoord[4].push_back(add_a_point(8,DEPOSE_X_4,DEPOSE_Y_4,start+13,OFFSET_DEPOSE));
+    m_Edges->push_back({27,(uint8_t)(start+13)});
+    m_Edges->push_back({13,(uint8_t)(start+13)});
+
+    m_Edges->push_back({17,26});
+    m_Edges->push_back({13,27});
+
 }
 
 map::~map()

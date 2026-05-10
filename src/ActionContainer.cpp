@@ -68,16 +68,16 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     });
 
     takeStock0->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
+        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotStatus != RobotStatus::full && globalState->termometre == true ? 1 : -1;
     });
     takeStock0bis->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
+        return globalState->zoneStock[0]==ControlOwner::None && globalState->robotStatus != RobotStatus::full && globalState->termometre == true ? 1 : -1;
     });
     takeStock1->setFunctCostAction([](GlobalState* globalState){
         return globalState->zoneStock[1]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock2->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[2]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
+        return globalState->zoneStock[2]==ControlOwner::None && globalState->robotStatus != RobotStatus::full && globalState->termometre == true? 1 : -1;
     });
     takeStock3->setFunctCostAction([](GlobalState* globalState){
         return globalState->zoneStock[3]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
@@ -155,7 +155,7 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
         return globalState->termometre == false && globalState->robotColor==ColorTeam::YELLOW ? 1 : -1;
     });
     temperatureBlue->setFunctCostAction([](GlobalState* globalState){
-        return globalState->termometre == false && globalState->robotColor==ColorTeam::BLUE ? 1 : -1;
+        return globalState->termometre == false && globalState->robotColor==ColorTeam::BLUE ? ((globalState->zoneStock[3]==ControlOwner::Friendly)?2:1) : -1;
     });
 
     temperatureYellow->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {

@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
             case MainState::INITIALIZE:{
                 if(initStat){
                     LOG_STATE("INITIALIZE");
-                    if(arduino.readButton(button::color)){
+                    if(!arduino.readButton(button::color)){
                         globalState.robotColor = ColorTeam::BLUE;
                         asserv.set_coordinates(START_X_BLUE,START_Y,90);
                     }
