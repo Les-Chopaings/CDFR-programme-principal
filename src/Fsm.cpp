@@ -518,7 +518,7 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
         case FsmTemp::WAIT :
             if(globalState->collideDistance<400){
                 nextState = FsmTemp::COLIDE;
-                startTime = millis() + 5000;
+                startTime = millis() + 3000;
                 asserv->pause();
             }
             else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
@@ -526,6 +526,14 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
                 deplacementreturn = 1;
             }
             break;
+
+        case FsmTemp::WAIT_COLIDE :{
+            if(startTime<millis()){
+                nextState = FsmTemp::COLIDE;
+                startTime = millis() + 1000000;
+            }
+            break;
+        }
 
         case FsmTemp::COLIDE :
             if(globalState->collideDistance>450){
@@ -584,13 +592,21 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
         case FsmTakeForaward::WAIT :
             if(globalState->collideDistance<400){
                 nextState = FsmTakeForaward::COLIDE;
-                startTime = millis() + 5000;
+                startTime = millis() + 3000;
                 asserv->pause();
             }
             else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
                 nextState = FsmTakeForaward::WAIT_TAKE;
             }
             break;
+
+        case FsmTakeForaward::WAIT_COLIDE :{
+                if(startTime<millis()){
+                    nextState = FsmTakeForaward::COLIDE;
+                    startTime = millis() + 1000000;
+                }
+                break;
+            }
 
         case FsmTakeForaward::COLIDE :
             if(globalState->collideDistance>450){

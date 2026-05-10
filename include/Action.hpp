@@ -19,6 +19,7 @@ private:
     DECLARE_ENUM_CLASS(FsmGoToStart,
         INIT,
         WAIT,
+        WAIT_COLIDE,
         COLIDE
     )
 

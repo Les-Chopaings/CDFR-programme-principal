@@ -36,6 +36,7 @@ DECLARE_ENUM_CLASS(FsmTemp,
     FORWARD,
     RETRACT,
     WAIT,
+    WAIT_COLIDE,
     COLIDE
 )
 
@@ -44,6 +45,7 @@ DECLARE_ENUM_CLASS(FsmTakeForaward,
     WAIT_FORWARD,
     FORWARD,
     WAIT,
+    WAIT_COLIDE,
     COLIDE,
     WAIT_TAKE
 )
