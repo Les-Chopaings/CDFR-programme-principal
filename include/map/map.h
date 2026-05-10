@@ -144,8 +144,8 @@ typedef struct {
 {27, {TEMP_X_BLUE_END, TEMP_Y}},     /*temp */\
 {28, {TEMP_X_YELLOW_END,500}},       /*middle*/\
 {29, {TEMP_X_BLUE_SART,500}},        /*middle*/\
-{30, {START_X_YELLOW, START_Y-50}},  /*yellow start*/ \
-{31, {START_X_BLUE, START_Y-50}},    /*blue start*/\
+{30, {START_X_YELLOW, 1550}},        /*yellow start*/ \
+{31, {START_X_BLUE, 1550}},          /*blue start*/\
 {32, {500,800}},                     /*middle*/\
 {33, {2500,800}}                     /*middle*/
 
