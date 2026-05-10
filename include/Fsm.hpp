@@ -88,9 +88,9 @@ public:
     Fsm(/* args */);
     ~Fsm();
     bool takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, Colorsensor* colorsensor);
+    void readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor);
 private:
     int TriNoisette(bool* rotate, Arduino* arduino);
-    void readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor);
 };
 
 int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);

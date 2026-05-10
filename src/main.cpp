@@ -167,6 +167,8 @@ int main(int argc, char *argv[]) {
     //arduino.controlePompe(pompe::pompe4,1);
 
     while (1) {
+        //bool rotation[4];
+        //fsm.readSensor(rotation,ColorTeam::YELLOW,&colorsensor);
 
         LOG_SCOPE("Main");
 

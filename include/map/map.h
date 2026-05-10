@@ -39,7 +39,7 @@ typedef struct {
 #define STOCK_Y_7 800
 
 #define OFFSET_STOCK 220
-#define OFFSET_DEPOSE 100
+#define OFFSET_DEPOSE 300
 
 #define STOCK_X_P0_0 STOCK_X_0
 #define STOCK_Y_P0_0 STOCK_Y_0+OFFSET_STOCK
@@ -144,17 +144,19 @@ typedef struct {
 {27, {TEMP_X_BLUE_END, TEMP_Y}},     /*temp */\
 {28, {TEMP_X_YELLOW_END,500}},       /*middle*/\
 {29, {TEMP_X_BLUE_SART,500}},        /*middle*/\
-{30, {START_X_YELLOW, START_Y-50}},   /*yellow start*/ \
-{31, {START_X_BLUE, START_Y-50}}  /*blue start*/
+{30, {START_X_YELLOW, START_Y-50}},  /*yellow start*/ \
+{31, {START_X_BLUE, START_Y-50}},    /*blue start*/\
+{32, {500,800}}                      /*middle*/
 
-#define LAST_POINT 31
+#define LAST_POINT 32
 
 #define STANDARD_EDGES_ARRAY \
 {0, 30},\
 {1, 31},\
 {30, 2},\
 {31, 9},\
-{2, 3},\
+{2, 32},\
+{32, 3},\
 {3, 28},\
 {28, 4},\
 {4, 5},\

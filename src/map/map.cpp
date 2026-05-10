@@ -6,7 +6,7 @@ map::map(/* args */)
     m_Nodes = new std::vector<node_t>{STANDARD_NODES_ARRAY};
     m_Edges = new std::vector<edge_t>{STANDARD_EDGES_ARRAY};
     deposeCoord[7].push_back(add_a_point(20,DEPOSE_X_7,DEPOSE_Y_7,start+1,OFFSET_DEPOSE));
-    m_Edges->push_back({3,(uint8_t)(start+1)});
+    m_Edges->push_back({32,(uint8_t)(start+1)});
 
     //Midle Depose
     deposeCoord[8].push_back(add_a_point(21,DEPOSE_X_8,DEPOSE_Y_8,start+2,OFFSET_DEPOSE));
