@@ -27,6 +27,9 @@ private:
     Action* temperatureYellow;
     Action* temperatureBlue;
 
+    Action* returnToHomeYellow;
+    Action* returnToHomeBleu;
+
     std::vector<Action*> listeAction;
     Action* currentAction = nullptr;
 

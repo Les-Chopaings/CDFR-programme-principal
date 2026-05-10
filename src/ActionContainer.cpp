@@ -16,6 +16,8 @@ ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Ardui
     takeStock7bis = new Action("takeStock7bis",globalState,asserv,arduino);
     temperatureYellow = new Action("temperatureYellow",globalState,asserv,arduino);
     temperatureBlue = new Action("temperatureBlue",globalState,asserv,arduino);
+    returnToHomeYellow = new Action("returnToHomeYellow",globalState,asserv,arduino);
+    returnToHomeBleu = new Action("returnToHomeBleu",globalState,asserv,arduino);
     currentAction = nullptr;
     initAction(globalState, asserv, arduino);
 
@@ -192,6 +194,53 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
             listeAction.push_back(deposeAction);
         }
     }
+
+    returnToHomeYellow->setStartPoint(START_X_YELLOW, START_Y-200, Direction::SHORTEST);
+    returnToHomeBleu->setStartPoint(START_X_BLUE, START_Y-200, Direction::SHORTEST);
+
+    returnToHomeYellow->setFunctCostAction([](GlobalState* globalState){
+        if(globalState->robotColor==ColorTeam::YELLOW){
+            if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
+                return 10000;
+            }
+            else if((millis() - globalState->startTimestamp) > 85000){
+                return 10000;
+            }
+        }
+        return -1;
+    });
+    returnToHomeBleu->setFunctCostAction([](GlobalState* globalState){
+        if(globalState->robotColor==ColorTeam::BLUE){
+            if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
+                return 10000;
+            }
+            else if((millis() - globalState->startTimestamp) > 85000){
+                return 10000;
+            }
+        }
+        return -1;
+    });
+
+    returnToHomeYellow->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        if(globalState->robotStatus==RobotStatus::full){
+            globalState->commande = RobotStatus::reseting;
+        }
+    });
+    returnToHomeBleu->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+        if(globalState->robotStatus==RobotStatus::full){
+            globalState->commande = RobotStatus::reseting;
+        }
+    });
+
+    returnToHomeYellow->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return 0; //never finishing
+    });
+    returnToHomeBleu->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+        return 0; //never finishing
+    });
+
+    listeAction.push_back(returnToHomeYellow);
+    listeAction.push_back(returnToHomeBleu);
 
 }
 
