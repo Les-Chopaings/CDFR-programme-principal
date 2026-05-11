@@ -54,6 +54,7 @@ public:
     ControlOwner zoneStockEstrade[2];
     ControlOwner zoneDepose[9];
     bool termometre;
+    bool isSorted;
 
     //robot
     RobotStatus commande = RobotStatus::reseting;

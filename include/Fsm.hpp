@@ -9,6 +9,9 @@
 #define TIMESLIDER 500
 #define TIMEROTATE 1000
 
+#define TIMERESETSLIDER 250
+#define TIMERESETROTATE 500
+
 DECLARE_ENUM_CLASS(FsmTakeNuts,
     INIT,
     TAKE_WAIT,
@@ -16,6 +19,8 @@ DECLARE_ENUM_CLASS(FsmTakeNuts,
     TAKE_DOWN,
     TAKE_LEFT,
     TAKE_RIGHT,
+    TAKE_LEFT2,
+    TAKE_RIGHT2,
     TAKE_UP,        //<-- end : robot full
     TAKE_PIVOT_90,
     READ_SENSOR,
@@ -64,6 +69,15 @@ DECLARE_ENUM_CLASS( State,
     init
 )
 
+DECLARE_ENUM_CLASS(FsmDepose,
+    INIT,
+    BACKWARD,
+    WAIT,
+    WAIT_COLIDE,
+    COLIDE,
+    DEPOSE
+)
+
 
 class Fsm
 {
@@ -92,9 +106,10 @@ public:
     bool takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, Colorsensor* colorsensor);
     void readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor);
 private:
-    int TriNoisette(bool* rotate, Arduino* arduino);
+    int TriNoisette(bool* rotate, Arduino* arduino, int timeSlider, int timeRotation);
 };
 
+int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y);
 int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
 int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y);
 

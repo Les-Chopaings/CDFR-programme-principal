@@ -83,7 +83,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
                 arduino->controlePompe(pompe::pompe2,1);
                 arduino->controlePompe(pompe::pompe3,1);
                 arduino->controlePompe(pompe::pompe4,1);
-                arduino->stepperMove(35);
+                arduino->stepperMove(40);
             }
             if(startTime < millis()){
                 nextState = FsmTakeNuts::TAKE_LEFT;
@@ -92,7 +92,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_LEFT :{
             if(initStat){
-                startTime = millis()+1000;
+                startTime = millis()+500;
                 arduino->servoMove(servo::rotation1,15);
                 arduino->servoMove(servo::rotation2,15);
                 arduino->servoMove(servo::rotation3,15);
@@ -104,6 +104,32 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         }
         case FsmTakeNuts::TAKE_RIGHT :{
+            if(initStat){
+                startTime = millis()+500;
+                arduino->servoMove(servo::rotation1,0);
+                arduino->servoMove(servo::rotation2,0);
+                arduino->servoMove(servo::rotation3,0);
+                arduino->servoMove(servo::rotation4,0);
+            }
+            if(startTime < millis()){
+                nextState = FsmTakeNuts::TAKE_LEFT2;
+            }
+            break;
+        }
+        case FsmTakeNuts::TAKE_LEFT2 :{
+            if(initStat){
+                startTime = millis()+1000;
+                arduino->servoMove(servo::rotation1,15);
+                arduino->servoMove(servo::rotation2,15);
+                arduino->servoMove(servo::rotation3,15);
+                arduino->servoMove(servo::rotation4,15);
+            }
+            if(startTime < millis()){
+                nextState = FsmTakeNuts::TAKE_RIGHT2;
+            }
+            break;
+        }
+        case FsmTakeNuts::TAKE_RIGHT2 :{
             if(initStat){
                 startTime = millis()+1000;
                 arduino->servoMove(servo::rotation1,0);
@@ -143,8 +169,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         }
         case FsmTakeNuts::SORT :{
-            if(TriNoisette(rotation, arduino)){
+            if(TriNoisette(rotation, arduino, TIMESLIDER, TIMEROTATE)){
                 nextState = FsmTakeNuts::WAIT_PUT;
+                globalState->isSorted = true;
             }
             break;
         }
@@ -200,8 +227,9 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::RESET_SORT :{
             bool rot[4] = {0,0,0,0};
-            if(TriNoisette(rot, arduino)){
+            if(TriNoisette(rot, arduino, TIMERESETSLIDER, TIMERESETROTATE)){
                 nextState = FsmTakeNuts::RESET_WAIT_DOWN;
+                globalState->isSorted = false;
             }
             break;
         }
@@ -220,7 +248,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
 }
 
 #define QUIET
-int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
+int Fsm::TriNoisette(bool* rotate, Arduino* arduino, int timeSlider, int timeRotation){
     switch (triCurrentState) {
 
         /*Etat idle, vérification des kapla à retourner*/
@@ -388,9 +416,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         /*case wait : attente liée au déplacement d'un bras */
         case State::wait:{
             int fs = millis() - T_start;
-            if(fs > TIMESLIDER){
+            if(fs > timeSlider){
 #ifndef QUIET
-                LOG_DEBUG("wait ", TIMESLIDER, " ms");
+                LOG_DEBUG("wait ", timeSlider, " ms");
 #endif
                 triCurrentState = State::movement;
             }
@@ -398,9 +426,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         /*case waitinit : attente liée au déplacement d'un bras, mais pour init*/
         case State::waitinit:{
             int fs = millis() - T_start;
-            if(fs > TIMESLIDER){
+            if(fs > timeSlider){
 #ifndef QUIET
-                LOG_DEBUG("waitinit ", TIMESLIDER, " ms");
+                LOG_DEBUG("waitinit ", timeSlider, " ms");
 #endif
                 triCurrentState = State::init;
             }
@@ -408,9 +436,9 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino){
         /*case rotwait : attente liée à la rotation d'un bras*/
         case State::rotwait:{
             int fs = millis() - T_start;
-            if(fs > TIMEROTATE){
+            if(fs > timeRotation){
 #ifndef QUIET
-                LOG_DEBUG("wait ", TIMEROTATE, " ms");
+                LOG_DEBUG("wait ", timeRotation, " ms");
 #endif
                 triCurrentState = State::toProcess;
             }
@@ -637,6 +665,85 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
     initStat = false;
     if(nextState != currentState){
         LOG_STATE(FsmTakeForaward_to_string(nextState));
+        initStat = true;
+    }
+    currentState = nextState;
+    return deplacementreturn;
+}
+
+
+
+
+int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y){
+    static FsmDepose currentState = FsmDepose::INIT;
+    static int initStat = false;
+    static unsigned long startTime = 0;
+    FsmDepose nextState = currentState;
+    int deplacementreturn = 0;
+
+    switch (currentState){
+        case FsmDepose::INIT :
+            globalState->commande = RobotStatus::empty;
+            nextState = FsmDepose::BACKWARD;
+            break;
+
+        case FsmDepose::BACKWARD :
+            if(globalState->isSorted == true){
+                asserv->go_to_point(x, y, Rotation::SHORTEST ,Direction::BACKWARD);
+                nextState = FsmDepose::WAIT;
+            }
+            break;
+
+        case FsmDepose::WAIT :
+            if(globalState->collideDistance<DISTANCE_COLLIDE){
+                nextState = FsmDepose::COLIDE;
+                startTime = millis() + TIME_BEFORE_RESTART;
+                asserv->pause();
+            }
+            else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
+                nextState = FsmDepose::DEPOSE;
+            }
+            break;
+
+        case FsmDepose::WAIT_COLIDE :{
+                if(startTime<millis()){
+                    nextState = FsmDepose::COLIDE;
+                    startTime = millis() + TIME_BEFORE_ABANDON;
+                }
+                break;
+            }
+
+        case FsmDepose::COLIDE :
+            if(globalState->collideDistance>DISTANCE_DECOLLIDE){
+                nextState = FsmDepose::WAIT;
+                asserv->resume();
+            }
+            else if(startTime<millis()){
+                nextState = FsmDepose::INIT;
+                asserv->stop();
+                deplacementreturn = -1;
+            }
+            break;
+
+        case FsmDepose::DEPOSE :
+            if(initStat){
+                globalState->commande = RobotStatus::reseting;;
+            }
+            if(globalState->robotStatus != RobotStatus::full){
+                nextState = FsmDepose::INIT;
+                deplacementreturn = 1;
+            }
+            break;
+
+        default:
+            nextState = FsmDepose::INIT;
+            break;
+    }
+
+
+    initStat = false;
+    if(nextState != currentState){
+        LOG_STATE(FsmDepose_to_string(nextState));
         initStat = true;
     }
     currentState = nextState;

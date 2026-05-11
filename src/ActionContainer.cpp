@@ -173,6 +173,8 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
         for (size_t j = 0; j < creatMap.deposeCoord[i].size(); ++j) {
             const point_angle_t& p = creatMap.deposeCoord[i][j];
             LOG_DEBUG("depose : ",i," theta ",p.theta," x ",p.x," y ",p.y);
+            int x_bis = p.x_bis;
+            int y_bis = p.y_bis;
             Action* deposeAction = new Action("deposeAction" + std::to_string(i),globalState,asserv,arduino);
             deposeAction->setStartPoint (p.x, p.y, p.theta, Direction::FORWARD, Rotation::SHORTEST);
 
@@ -184,13 +186,13 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
                 return globalState->zoneDepose[i]==ControlOwner::None && globalState->robotStatus == RobotStatus::full ? 1 : -1;
             });
 
-            deposeAction->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-                return globalState->robotStatus != RobotStatus::full;
+            deposeAction->setFunctRunAction([x_bis,y_bis](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+                return depose(globalState, asserv, arduino, x_bis, y_bis);
             });
 
-            deposeAction->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
-                globalState->commande = RobotStatus::reseting;
-            });
+            // deposeAction->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
+            //     globalState->commande = RobotStatus::reseting;
+            // });
 
             listeAction.push_back(deposeAction);
         }
