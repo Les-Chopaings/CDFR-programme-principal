@@ -75,7 +75,11 @@ DECLARE_ENUM_CLASS(FsmDepose,
     WAIT,
     WAIT_COLIDE,
     COLIDE,
-    DEPOSE
+    DEPOSE,
+    BACKWARDEND,
+    WAITEND,
+    WAIT_COLIDEEND,
+    COLIDEEND
 )
 
 
@@ -109,7 +113,7 @@ private:
     int TriNoisette(bool* rotate, Arduino* arduino, int timeSlider, int timeRotation);
 };
 
-int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y);
+int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y, int x_end, int y_end);
 int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
 int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y);
 

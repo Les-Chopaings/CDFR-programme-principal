@@ -6,6 +6,7 @@ Action::Action(std::string name, GlobalState* globalState, Asserv* asserv, Ardui
     mAsserv = asserv;
     mArduino = arduino;
     noEndPoint = true;
+    noEndAngle = true;
     currentState = FsmAction::INIT;
     actionName = name;
 
@@ -154,13 +155,18 @@ void Action::setEndPoint(int x, int y, int theta, Direction Direction, Rotation 
     noEndPoint = false;
 }
 
+void Action::setEndAngle(int theta, Rotation rotation){
+    endPostion.theta = theta;
+    noEndAngle = false;
+}
+
 //*******************************************************
 // execute Function
 //*******************************************************
 int Action::costAction(void){
     int actionCost = costActionPtr(mGlobalState);
     if(actionCost > 0){
-        path_t tmpPath = mGlobalState->map.find_path_between_points(
+        path_t tmpPath = mGlobalState->map->find_path_between_points(
             {(float)mGlobalState->robotPosition.x, (float)mGlobalState->robotPosition.y, 255, 0},
             {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
         );
@@ -179,11 +185,11 @@ int Action::goToStart(void){
     switch (currentStateToStart)
     {
     case FsmGoToStart::INIT :
-        mpath = mGlobalState->map.find_path_between_points(
+        mpath = mGlobalState->map->find_path_between_points(
             {(float)mGlobalState->robotPosition.x, (float)mGlobalState->robotPosition.y, 255, 0},
             {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
         );
-        mGlobalState->map.print_Path(mpath);
+        mGlobalState->map->print_Path(mpath);
         if(mpath.v.size() < 2){
             LOG_WARNING("Path not find");
             deplacementreturn = -1;
@@ -256,7 +262,39 @@ int Action::goToStart(void){
 
 
 int Action::goToEnd(void){
-    //TODO
+    LOG_SCOPE("Action");
+    FsmGoToEnd nextState = currentGoToStart;
+    int deplacementreturn = 0;
+
+    switch (currentGoToStart)
+    {
+    case FsmGoToEnd::INIT :
+        if(noEndAngle == false){
+            nextState = FsmGoToEnd::WAIT;
+            mAsserv->consigne_angulaire(endPostion.theta,Rotation::ANTICLOCKWISE);
+        }
+        else{
+            deplacementreturn = 1;
+        }
+        break;
+
+    case FsmGoToEnd::WAIT :
+        if(mAsserv->get_moving_is_done() && mAsserv->get_command_buffer_size() == 0){
+            nextState = FsmGoToEnd::INIT;
+            deplacementreturn = 1;
+        }
+        break;
+
+    default:
+
+        nextState = FsmGoToEnd::INIT;
+        break;
+    }
+
+    if(nextState != currentGoToStart){
+        LOG_STATE(FsmGoToEnd_to_string(nextState));
+    }
+    currentGoToStart = nextState;
     return 0;
 }
 

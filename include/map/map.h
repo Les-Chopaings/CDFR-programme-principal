@@ -17,6 +17,8 @@ typedef struct {
     int x_bis;
     int y_bis;
     int theta;
+    int x_tris;
+    int y_tris;
 } point_angle_t;
 
 typedef struct {
@@ -48,9 +50,10 @@ typedef struct {
 #define STOCK_X_7 1150
 #define STOCK_Y_7 800
 
-#define OFFSET_STOCK 250
+#define OFFSET_STOCK 270
 #define OFFSET_DEPOSE 250
 #define OFFSET_DEPOSE_BIS 300
+#define OFFSET_DEPOSE_TRIS 400
 
 #define STOCK_X_P0_0 STOCK_X_0
 #define STOCK_Y_P0_0 STOCK_Y_0+OFFSET_STOCK
@@ -122,7 +125,7 @@ typedef struct {
 
 #define START_Y (2000-115)
 #define START_X_YELLOW (600-203)
-#define START_X_BLUE (2400+203-15)
+#define START_X_BLUE (2400+203-20)
 
 #define STANDARD_NODES_ARRAY \
 {0, {START_X_YELLOW, START_Y}},   /*yellow start*/ \
@@ -200,7 +203,9 @@ typedef struct {
 {24,3},\
 {25,28},\
 {26,29},\
-{8,27}
+{8,27},\
+{23,21},\
+{22,14}
 
 
 class map
@@ -218,7 +223,7 @@ public:
     std::array<std::vector<point_angle_t>, 9> deposeCoord;
 
 private:
-    point_angle_t point_at_distance(float x1, float y1, float x2, float y2, float dist, float dist_bis);
-    point_angle_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0, float distBis=0);
+    point_angle_t point_at_distance(float x1, float y1, float x2, float y2, float dist, float dist_bis, float dist_tris);
+    point_angle_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0, float distBis=0, float dist_tris=0);
 };
 

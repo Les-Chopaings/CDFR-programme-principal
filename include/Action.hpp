@@ -23,6 +23,11 @@ private:
         COLIDE
     )
 
+    DECLARE_ENUM_CLASS(FsmGoToEnd,
+        INIT,
+        WAIT
+    )
+
     DECLARE_ENUM_CLASS(FsmAction,
         INIT,
         MOVESTART,
@@ -49,6 +54,7 @@ private:
     Rotation startRotation;
 
     bool noEndPoint = true;
+    bool noEndAngle = true;
     position_t endPostion;
     Direction endDirection;
     Rotation endRotation;
@@ -56,6 +62,7 @@ private:
 
     FsmAction currentState = FsmAction::INIT;
     FsmGoToStart currentStateToStart = FsmGoToStart::INIT;
+    FsmGoToEnd currentGoToStart = FsmGoToEnd::INIT;
     unsigned long mStartColide;
 
     std::string actionName;
@@ -66,6 +73,7 @@ public:
     void setStartPoint(int x, int y, int theta, Direction Direction, Rotation rotation);
     void setStartPoint(int x, int y, Direction Direction);
     void setEndPoint(int x, int y, int theta, Direction Direction, Rotation rotation);
+    void setEndAngle(int theta, Rotation rotation);
     int costAction(void);
     void setFunctRunAction(std::function<int(GlobalState*, Asserv*, Arduino*)> ptr);
     void setFunctStartAction(std::function<void(GlobalState*, Asserv*, Arduino*)> ptr);

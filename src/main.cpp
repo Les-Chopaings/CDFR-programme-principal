@@ -129,6 +129,8 @@ int main(int argc, char *argv[]) {
 #endif
     lidarAnalize_t lidarData[SIZEDATALIDAR];
     GlobalState globalState;
+    globalState.map = new PathFindingMap();
+    globalState.map->update_base_map();
     ActionContainer actionContainer(&globalState, &asserv, &arduino);
     Fsm fsm;
 
@@ -139,12 +141,10 @@ int main(int argc, char *argv[]) {
     MainState currentState = MainState::INIT;
     MainState nextState = currentState;
     bool initStat = true;
-    globalState.map = PathFindingMap();
-    globalState.map.update_base_map();
 
 #ifdef EMULATE
     // PRINT MAP (only for debug purpose)
-    std::string content = globalState.map.get_Map(10);
+    std::string content = globalState.map->get_Map(10);
     std::filesystem::path exeDir = getExecutableDir(argv[0]);
     std::filesystem::path filePath = exeDir / "map_output.txt";
     std::ofstream file(filePath);

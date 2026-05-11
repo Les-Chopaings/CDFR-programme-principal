@@ -65,7 +65,7 @@ public:
     // robot ennemy
     position_t enemyPosition;
 
-    PathFindingMap map;
+    PathFindingMap* map = nullptr;
     int collideDistance;
 
 public:

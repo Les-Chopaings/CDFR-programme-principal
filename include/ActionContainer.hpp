@@ -33,10 +33,13 @@ private:
     std::vector<Action*> listeAction;
     Action* currentAction = nullptr;
 
+    GlobalState* m_globalState = nullptr;
+
 public:
     ActionContainer(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
     void initAction(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
     int actionContainerRun(void);
+    void updateMap(void);
     ~ActionContainer();
 private :
 

@@ -674,7 +674,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
 
 
 
-int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y){
+int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y, int x_end, int y_end){
     static FsmDepose currentState = FsmDepose::INIT;
     static int initStat = false;
     static unsigned long startTime = 0;
@@ -730,8 +730,46 @@ int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, in
                 globalState->commande = RobotStatus::reseting;;
             }
             if(globalState->robotStatus != RobotStatus::full){
+                nextState = FsmDepose::BACKWARDEND;
+            }
+            break;
+
+        case FsmDepose::BACKWARDEND :
+            if(globalState->isSorted == true){
+                asserv->go_to_point(x_end, y_end, Rotation::SHORTEST ,Direction::BACKWARD);
+                nextState = FsmDepose::WAITEND;
+            }
+            break;
+
+        case FsmDepose::WAITEND :
+            if(globalState->collideDistance<DISTANCE_COLLIDE){
+                nextState = FsmDepose::COLIDEEND;
+                startTime = millis() + TIME_BEFORE_RESTART;
+                asserv->pause();
+            }
+            else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
                 nextState = FsmDepose::INIT;
                 deplacementreturn = 1;
+            }
+            break;
+
+        case FsmDepose::WAIT_COLIDEEND :{
+                if(startTime<millis()){
+                    nextState = FsmDepose::COLIDEEND;
+                    startTime = millis() + TIME_BEFORE_ABANDON;
+                }
+                break;
+            }
+
+        case FsmDepose::COLIDEEND :
+            if(globalState->collideDistance>DISTANCE_DECOLLIDE){
+                nextState = FsmDepose::WAITEND;
+                asserv->resume();
+            }
+            else if(startTime<millis()){
+                nextState = FsmDepose::INIT;
+                asserv->stop();
+                deplacementreturn = -1;
             }
             break;
 

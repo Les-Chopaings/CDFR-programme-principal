@@ -20,6 +20,7 @@ ActionContainer::ActionContainer(GlobalState* globalState, Asserv* asserv, Ardui
     returnToHomeBleu = new Action("returnToHomeBleu",globalState,asserv,arduino);
     currentAction = nullptr;
     initAction(globalState, asserv, arduino);
+    m_globalState = globalState;
 
 }
 void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
@@ -92,7 +93,7 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
         return globalState->zoneStock[6]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
     });
     takeStock7->setFunctCostAction([](GlobalState* globalState){
-        return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
+        return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? -1 : -1;
     });
     takeStock7bis->setFunctCostAction([](GlobalState* globalState){
         return globalState->zoneStock[7]==ControlOwner::None && globalState->robotStatus != RobotStatus::full ? 1 : -1;
@@ -161,6 +162,7 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     temperatureYellow->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
         return pushTemp(globalState, asserv, arduino);
     });
+    temperatureYellow->setEndAngle(-90,Rotation::ANTICLOCKWISE);
     temperatureBlue->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
         return pushTemp(globalState, asserv, arduino);;
     });
@@ -175,6 +177,8 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
             LOG_DEBUG("depose : ",i," theta ",p.theta," x ",p.x," y ",p.y);
             int x_bis = p.x_bis;
             int y_bis = p.y_bis;
+            int x_tris = p.x_tris;
+            int y_tris = p.y_tris;
             Action* deposeAction = new Action("deposeAction" + std::to_string(i),globalState,asserv,arduino);
             deposeAction->setStartPoint (p.x, p.y, p.theta, Direction::FORWARD, Rotation::SHORTEST);
 
@@ -186,8 +190,8 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
                 return globalState->zoneDepose[i]==ControlOwner::None && globalState->robotStatus == RobotStatus::full ? 1 : -1;
             });
 
-            deposeAction->setFunctRunAction([x_bis,y_bis](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-                return depose(globalState, asserv, arduino, x_bis, y_bis);
+            deposeAction->setFunctRunAction([x_bis,y_bis,x_tris,y_tris](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
+                return depose(globalState, asserv, arduino, x_bis, y_bis, x_tris, y_tris);
             });
 
             // deposeAction->setFunctStartAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino){
@@ -203,10 +207,10 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
 
     returnToHomeYellow->setFunctCostAction([](GlobalState* globalState){
         if(globalState->robotColor==ColorTeam::YELLOW){
-            if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
-                return 10000;
-            }
-            else if((millis() - globalState->startTimestamp) > 85000){
+            // if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
+            //     return 10000;
+            // }else
+            if((millis() - globalState->startTimestamp) > 85000){
                 return 10000;
             }
         }
@@ -214,10 +218,10 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     });
     returnToHomeBleu->setFunctCostAction([](GlobalState* globalState){
         if(globalState->robotColor==ColorTeam::BLUE){
-            if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
-                return 10000;
-            }
-            else if((millis() - globalState->startTimestamp) > 85000){
+            // if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
+            //     return 10000;
+            // }else
+            if((millis() - globalState->startTimestamp) > 85000){
                 return 10000;
             }
         }
@@ -272,10 +276,28 @@ int ActionContainer::actionContainerRun(void){
 ActionContainer::~ActionContainer(){
 }
 
+void ActionContainer::updateMap(void){
+    m_globalState->map->enable_all_edges();
+    if(m_globalState->zoneStock[0]==ControlOwner::None){
+        for (auto edge: m_globalState->map->found_edges_intersecting_rectangle(1750,725,120,150)) {
+                std::cout << "Removing edge: " << static_cast<int>(edge.start_node_id) << " <-> " << static_cast<int>(edge.end_node_id) << std::endl;
+                m_globalState->map->toggle_edge_between_two_nodes(edge.start_node_id, edge.end_node_id, false);
+        }
+    }
+    if(m_globalState->zoneStock[7]==ControlOwner::None){
+        for (auto edge: m_globalState->map->found_edges_intersecting_rectangle(1050,725,120,150)) {
+                std::cout << "Removing edge: " << static_cast<int>(edge.start_node_id) << " <-> " << static_cast<int>(edge.end_node_id) << std::endl;
+                m_globalState->map->toggle_edge_between_two_nodes(edge.start_node_id, edge.end_node_id, false);
+        }
+    }
+
+    m_globalState->map->update_base_map();
+}
 
 int ActionContainer::choosNextAction(void){
     LOG_GREEN_INFO("CHOOSE NEW ACTION: ");
     int bestCost = -1;
+    updateMap();
     for (Action* elem : listeAction) {
         int cost = elem->costAction();
         if(cost>bestCost){
