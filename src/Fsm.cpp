@@ -92,7 +92,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_LEFT :{
             if(initStat){
-                startTime = millis()+2000;
+                startTime = millis()+1000;
                 arduino->servoMove(servo::rotation1,15);
                 arduino->servoMove(servo::rotation2,15);
                 arduino->servoMove(servo::rotation3,15);
@@ -105,7 +105,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_RIGHT :{
             if(initStat){
-                startTime = millis()+2000;
+                startTime = millis()+1000;
                 arduino->servoMove(servo::rotation1,0);
                 arduino->servoMove(servo::rotation2,0);
                 arduino->servoMove(servo::rotation3,0);
@@ -118,7 +118,8 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_UP :{
             if(initStat){
-                startTime = millis()+2000;
+                globalState->robotStatus = RobotStatus::full;
+                startTime = millis()+1500;
                 arduino->stepperMove(1150);
             }
             if(startTime < millis()){
@@ -128,7 +129,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_PIVOT_90 :{
             if(initStat){
-                startTime = millis()+2000;
+                startTime = millis()+100;
                 arduino->servoMove(servo::bascule,180);
             }
             if(startTime < millis()){
@@ -142,9 +143,6 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
             break;
         }
         case FsmTakeNuts::SORT :{
-            if(initStat){
-                globalState->robotStatus = RobotStatus::full;
-            }
             if(TriNoisette(rotation, arduino)){
                 nextState = FsmTakeNuts::WAIT_PUT;
             }

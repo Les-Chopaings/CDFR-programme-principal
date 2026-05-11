@@ -171,9 +171,10 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     map creatMap;
     for(int i = 0; i < creatMap.deposeCoord.size(); i++){
         for (size_t j = 0; j < creatMap.deposeCoord[i].size(); ++j) {
-            const point_t& p = creatMap.deposeCoord[i][j];
-            Action* deposeAction = new Action("deposeAction",globalState,asserv,arduino);
-            deposeAction->setStartPoint (p.x, p.y, Direction::FORWARD);
+            const point_angle_t& p = creatMap.deposeCoord[i][j];
+            LOG_DEBUG("depose : ",i," theta ",p.theta," x ",p.x," y ",p.y);
+            Action* deposeAction = new Action("deposeAction" + std::to_string(i),globalState,asserv,arduino);
+            deposeAction->setStartPoint (p.x, p.y, p.theta, Direction::FORWARD, Rotation::SHORTEST);
 
             deposeAction->setFunctGoodEnd([i](GlobalState* globalState){
                 globalState->zoneDepose[i] = ControlOwner::Friendly;

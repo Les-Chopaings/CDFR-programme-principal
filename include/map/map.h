@@ -4,11 +4,19 @@
 #include <cstdint>
 #include <vector>
 #include <array>
+#include "config.hpp"
 
 typedef struct {
     float x;
     float y;
 } point_t;
+
+typedef struct {
+    int x;
+    int y;
+    int theta;
+} point_angle_t;
+
 typedef struct {
     uint8_t id;
     point_t point;
@@ -38,7 +46,7 @@ typedef struct {
 #define STOCK_X_7 1150
 #define STOCK_Y_7 800
 
-#define OFFSET_STOCK 220
+#define OFFSET_STOCK 250
 #define OFFSET_DEPOSE 300
 
 #define STOCK_X_P0_0 STOCK_X_0
@@ -106,12 +114,12 @@ typedef struct {
 #define TEMP_Y 200
 #define TEMP_X_YELLOW_SART 175
 #define TEMP_X_YELLOW_END 700
-#define TEMP_X_BLUE_SART 1600
-#define TEMP_X_BLUE_END 2400
+#define TEMP_X_BLUE_SART 1700
+#define TEMP_X_BLUE_END 2335-15
 
 #define START_Y (2000-115)
 #define START_X_YELLOW (600-203)
-#define START_X_BLUE (2400+203)
+#define START_X_BLUE (2400+203-15)
 
 #define STANDARD_NODES_ARRAY \
 {0, {START_X_YELLOW, START_Y}},   /*yellow start*/ \
@@ -202,10 +210,10 @@ public:
 
     std::vector<node_t>* get_node_arry();
     std::vector<edge_t>* get_edge_arry();
-    std::array<std::vector<point_t>, 9> deposeCoord;
+    std::array<std::vector<point_angle_t>, 9> deposeCoord;
 
 private:
-    point_t point_at_distance(float x1, float y1, float x2, float y2, float dist);
-    point_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0);
+    point_angle_t point_at_distance(float x1, float y1, float x2, float y2, float dist);
+    point_angle_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0);
 };
 

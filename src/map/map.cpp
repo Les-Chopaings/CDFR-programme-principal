@@ -41,7 +41,7 @@ map::~map()
 {
 }
 
-point_t map::point_at_distance(
+point_angle_t map::point_at_distance(
     float x1, float y1,
     float x2, float y2,
     float dist)
@@ -54,15 +54,23 @@ point_t map::point_at_distance(
     // éviter division par zéro
     assert(length != 0.0 && "Points identiques: direction indéfinie");
 
-    point_t p;
+    point_angle_t p;
     p.x = x1 + (dx / length) * dist;
     p.y = y1 + (dy / length) * dist;
 
+    // angle de la direction (en radians)
+    p.theta = static_cast<int>((-std::atan2(dy, dx) * RAD_TO_DEG)+180);
+
+    if (p.theta < 0)
+        p.theta += 360;
+
+    p.theta %= 360;
+
     return p;
 }
-
-point_t map::add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist){
+point_angle_t map::add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist){
     point_t newPoint;
+    point_angle_t returnPoint;
     if(dist == 0){
         newPoint.x = x1;
         newPoint.y = y1;
@@ -79,13 +87,15 @@ point_t map::add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t point
                 break;
             }
         }
-        newPoint = point_at_distance(x1,y1,firstPoint.x,firstPoint.y,dist);
+        returnPoint = point_at_distance(x1,y1,firstPoint.x,firstPoint.y,dist);
+        newPoint.x = returnPoint.x;
+        newPoint.y = returnPoint.y;
         node_t newNode = {pointId1,newPoint};
         m_Nodes->push_back(newNode);
         edge_t edges = {firstPointId,pointId1};
         m_Edges->push_back(edges);
     }
-    return newPoint;
+    return returnPoint;
 }
 
 std::vector<node_t>* map::get_node_arry(){
