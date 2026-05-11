@@ -10,6 +10,11 @@
     #define EMULATE
 #endif
 
+#define DISTANCE_COLLIDE 300
+#define DISTANCE_DECOLLIDE 350
+#define TIME_BEFORE_RESTART 1500
+#define TIME_BEFORE_ABANDON 1000000
+
 typedef struct
 {
     int   x;

@@ -104,14 +104,14 @@ typedef struct {
 #define DEPOSE_Y_9 1450
 
 #define TEMP_Y 200
-#define TEMP_X_YELLOW_SART 200
-#define TEMP_X_YELLOW_END 800
+#define TEMP_X_YELLOW_SART 175
+#define TEMP_X_YELLOW_END 700
 #define TEMP_X_BLUE_SART 1600
 #define TEMP_X_BLUE_END 2400
 
-#define START_Y (1800-120)
-#define START_X_YELLOW 400
-#define START_X_BLUE 2600
+#define START_Y (2000-115)
+#define START_X_YELLOW (600-203)
+#define START_X_BLUE (2400+203)
 
 #define STANDARD_NODES_ARRAY \
 {0, {START_X_YELLOW, START_Y}},   /*yellow start*/ \
@@ -146,8 +146,8 @@ typedef struct {
 {29, {TEMP_X_BLUE_SART,500}},        /*middle*/\
 {30, {START_X_YELLOW, 1550}},        /*yellow start*/ \
 {31, {START_X_BLUE, 1550}},          /*blue start*/\
-{32, {500,800}},                     /*middle*/\
-{33, {2500,800}}                     /*middle*/
+{32, {500,1000}},                     /*middle*/\
+{33, {2500,1000}}                     /*middle*/
 
 #define LAST_POINT 33
 
@@ -208,3 +208,4 @@ private:
     point_t point_at_distance(float x1, float y1, float x2, float y2, float dist);
     point_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0);
 };
+

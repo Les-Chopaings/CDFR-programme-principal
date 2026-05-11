@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, ctrlc);
     signal(SIGTERM, ctrlc);
     signal(SIGTSTP, ctrlz);
-    usleep(100000);
+    usleep(300000);
     MainState currentState = MainState::INIT;
     MainState nextState = currentState;
     bool initStat = true;

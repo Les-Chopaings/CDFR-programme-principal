@@ -87,7 +87,7 @@ lidar-arm:
 #  Déploiement Raspberry Pi
 # ======================
 PI_USER := ubuntu
-PI_HOST := 192.168.1.99
+PI_HOST := 192.168.43.13
 PI_DIR  := /home/$(PI_USER)/CDFR_PROG
 
 install: arm
