@@ -50,7 +50,7 @@ typedef struct {
 #define STOCK_X_7 1150
 #define STOCK_Y_7 800
 
-#define OFFSET_STOCK 270
+#define OFFSET_STOCK 260
 #define OFFSET_DEPOSE 250
 #define OFFSET_DEPOSE_BIS 300
 #define OFFSET_DEPOSE_TRIS 400
@@ -124,7 +124,7 @@ typedef struct {
 #define TEMP_X_BLUE_END 2335-15
 
 #define START_Y (2000-115)
-#define START_X_YELLOW (600-203)
+#define START_X_YELLOW (600-203-10)
 #define START_X_BLUE (2400+203-20)
 
 #define STANDARD_NODES_ARRAY \

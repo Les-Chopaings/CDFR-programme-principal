@@ -171,6 +171,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::SORT :{
             if(TriNoisette(rotation, arduino, TIMESLIDER, TIMEROTATE)){
                 nextState = FsmTakeNuts::WAIT_PUT;
+                LOG_DEBUG("globalState->isSorted = true;");
                 globalState->isSorted = true;
             }
             break;
@@ -228,7 +229,8 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::RESET_SORT :{
             bool rot[4] = {0,0,0,0};
             if(TriNoisette(rot, arduino, TIMERESETSLIDER, TIMERESETROTATE)){
-                nextState = FsmTakeNuts::RESET_WAIT_DOWN;
+                nextState = FsmTakeNuts::INIT;
+                LOG_DEBUG("globalState->isSorted = false;");
                 globalState->isSorted = false;
             }
             break;
@@ -297,12 +299,12 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino, int timeSlider, int timeRot
                 servoToRot[0] = 0;}
             /* déplace les bras pour rotation2*/
             else if (servoToRot[1] == 1){
-                servoToMove[0] = 0; servoToMove[1] = 80; servoToMove[2] = 180; servoToMove[3] = 180;
+                servoToMove[0] = 0; servoToMove[1] = 70; servoToMove[2] = 180; servoToMove[3] = 180;
                 followupState = State::rotate2;
                 servoToRot[1] = 0;}
             /* déplace les bras pour rotation3*/
             else if (servoToRot[2] == 1){
-                servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 80; servoToMove[3] = 180;
+                servoToMove[0] = 0; servoToMove[1] = 0; servoToMove[2] = 70; servoToMove[3] = 180;
                 followupState = State::rotate3;
                 servoToRot[2] = 0;}
             /* déplace les bras pour rotation4*/
@@ -590,7 +592,7 @@ int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino){
 
 
 
-int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y){
+int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y, int theta){
     static FsmTakeForaward currentState = FsmTakeForaward::INIT;
     static int initStat = false;
     static unsigned long startTime = 0;
@@ -611,7 +613,8 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             break;
 
         case FsmTakeForaward::FORWARD :
-            asserv->go_to_point(x, y, Rotation::SHORTEST ,Direction::FORWARD);
+            asserv->set_linear_max_speed(100,600,600);
+            asserv->go_to_point(x, y, theta, Rotation::SHORTEST ,Direction::FORWARD);
             nextState = FsmTakeForaward::WAIT;
             break;
 
@@ -622,6 +625,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
                 asserv->pause();
             }
             else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
+                asserv->set_linear_max_speed(500,600,600);
                 nextState = FsmTakeForaward::WAIT_TAKE;
             }
             break;
@@ -642,6 +646,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             else if(startTime<millis()){
                 nextState = FsmTakeForaward::INIT;
                 asserv->stop();
+                asserv->set_linear_max_speed(500,600,600);
                 deplacementreturn = -1;
             }
             break;

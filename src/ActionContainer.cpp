@@ -100,34 +100,34 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
     });
 
     takeStock0->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_0, STOCK_Y_P0_0);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_0, STOCK_Y_P0_0, STOCK_T_P0_0);
     });
     takeStock0bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P1_0, STOCK_Y_P1_0);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P1_0, STOCK_Y_P1_0, STOCK_T_P1_0);
     });
     takeStock1->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_1, STOCK_Y_P0_1);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_1, STOCK_Y_P0_1, STOCK_T_P0_1);
     });
     takeStock2->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_2, STOCK_Y_P0_2);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_2, STOCK_Y_P0_2, STOCK_T_P0_2);
     });
     takeStock3->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_3, STOCK_Y_P0_3);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_3, STOCK_Y_P0_3, STOCK_T_P0_3);
     });
     takeStock4->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_4, STOCK_Y_P0_4);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_4, STOCK_Y_P0_4, STOCK_T_P0_4);
     });
     takeStock5->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_5, STOCK_Y_P0_5);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_5, STOCK_Y_P0_5, STOCK_T_P0_5);
     });
     takeStock6->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_6, STOCK_Y_P0_6);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_6, STOCK_Y_P0_6, STOCK_T_P0_6);
     });
     takeStock7->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_7, STOCK_Y_P0_7);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P0_7, STOCK_Y_P0_7, STOCK_T_P0_7);
     });
     takeStock7bis->setFunctRunAction([](GlobalState* globalState, Asserv* asserv, Arduino* arduino) {
-        return takeForaward(globalState, asserv, arduino, STOCK_X_P1_7, STOCK_Y_P1_7);
+        return takeForaward(globalState, asserv, arduino, STOCK_X_P1_7, STOCK_Y_P1_7, STOCK_T_P1_7);
     });
 
     listeAction.push_back(takeStock0);
@@ -210,7 +210,7 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
             // if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
             //     return 10000;
             // }else
-            if((millis() - globalState->startTimestamp) > 85000){
+            if((millis() - globalState->startTimestamp) > 80000){
                 return 10000;
             }
         }
@@ -221,7 +221,7 @@ void ActionContainer::initAction(GlobalState* globalState, Asserv* asserv, Ardui
             // if((millis() - globalState->startTimestamp) > 65000 && globalState->robotStatus==RobotStatus::full){
             //     return 10000;
             // }else
-            if((millis() - globalState->startTimestamp) > 85000){
+            if((millis() - globalState->startTimestamp) > 80000){
                 return 10000;
             }
         }

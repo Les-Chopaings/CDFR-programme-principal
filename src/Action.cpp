@@ -195,6 +195,7 @@ int Action::goToStart(void){
             deplacementreturn = -1;
         }
         else{
+            mAsserv->stop();
             for (size_t i = 0; i < mpath.v.size(); ++i) {
                 auto [point, node_id, theta] = mpath.v[i];
 

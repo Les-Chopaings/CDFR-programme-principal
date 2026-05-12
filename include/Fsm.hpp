@@ -6,8 +6,8 @@
 #include "logger.hpp"
 #include "Colorsensor.hpp"
 
-#define TIMESLIDER 500
-#define TIMEROTATE 1000
+#define TIMESLIDER 400
+#define TIMEROTATE 800
 
 #define TIMERESETSLIDER 250
 #define TIMERESETROTATE 500
@@ -31,7 +31,6 @@ DECLARE_ENUM_CLASS(FsmTakeNuts,
     PUT_STOP_POMPE,
     PUT_PIVOT_90,   //<-- end : robot empty
     RESET_SORT,     // nathan job
-    RESET_WAIT_DOWN,
     RESET_DOWN      //<-- end : robot ready
 )
 
@@ -115,6 +114,6 @@ private:
 
 int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y, int x_end, int y_end);
 int pushTemp(GlobalState* globalState, Asserv* asserv, Arduino* arduino);
-int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y);
+int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, int y, int theta);
 
 
