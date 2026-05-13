@@ -15,7 +15,7 @@
 #define TIME_BEFORE_RESTART 1500
 #define TIME_BEFORE_ABANDON 1000000
 
-#define DEFAULT_ANGLE 100
+#define DEFAULT_ANGLE 130
 #define SLIDER_OFFSET_1_POS(offset) (offset+10)
 #define SLIDER_OFFSET_2_POS(offset) (offset+3)
 #define SLIDER_OFFSET_3_POS(offset) (offset-3)
