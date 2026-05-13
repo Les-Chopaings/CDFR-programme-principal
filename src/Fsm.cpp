@@ -58,7 +58,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::RESET_DOWN :{
             if(initStat){
                 startTime = millis()+1000;
-                arduino->stepperMove(150);
+                arduino->stepperMove(125);
                 arduino->servoMove(servo::bascule,0);
             }
             if(startTime < millis()){
@@ -614,7 +614,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             break;
 
         case FsmTakeForaward::FORWARD :
-            asserv->set_linear_max_speed(100,600,600);
+            asserv->set_linear_max_speed(70,600,600);
             asserv->go_to_point(x, y, theta, Rotation::SHORTEST ,Direction::FORWARD);
             nextState = FsmTakeForaward::WAIT;
             needCalibrate = true;
@@ -630,7 +630,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
                 asserv->set_linear_max_speed(500,600,600);
                 nextState = FsmTakeForaward::WAIT_TAKE;
             }
-            if(globalState->distanceKappla > 0 && globalState->distanceKappla < 60 && needCalibrate == true){
+            if(globalState->distanceKappla > 0 && globalState->distanceKappla < 55 && needCalibrate == true){
                 int distance = DEFAULT_ANGLE + (globalState->distanceKappla - 45)*3.7;
                 needCalibrate = false;
                 LOG_DEBUG("distance Kappla : ",distance);
@@ -755,10 +755,8 @@ int depose(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int x, in
             break;
 
         case FsmDepose::BACKWARDEND :
-            if(globalState->isSorted == true){
-                asserv->go_to_point(x_end, y_end, Rotation::SHORTEST ,Direction::BACKWARD);
-                nextState = FsmDepose::WAITEND;
-            }
+            asserv->go_to_point(x_end, y_end, Rotation::SHORTEST ,Direction::BACKWARD);
+            nextState = FsmDepose::WAITEND;
             break;
 
         case FsmDepose::WAITEND :

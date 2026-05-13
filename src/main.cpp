@@ -185,7 +185,9 @@ int main(int argc, char *argv[]) {
         if(globalState.startTimestamp !=0){
             LOG_SET_TIME((millis() - globalState.startTimestamp)/1000);
         }
+#ifndef EMULATE
         globalState.distanceKappla = esp.getLastValue();
+#endif
         //LOG_DEBUG("DISTANCE : ",globalState.distanceKappla);
 
         int count = SIZEDATALIDAR;
