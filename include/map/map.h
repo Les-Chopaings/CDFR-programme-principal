@@ -224,6 +224,6 @@ public:
 
 private:
     point_angle_t point_at_distance(float x1, float y1, float x2, float y2, float dist, float dist_bis, float dist_tris);
-    point_angle_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0, float distBis=0, float dist_tris=0);
+    point_angle_t add_a_point(uint8_t firstPointId, float x1, float y1, uint8_t pointId1, float dist = 0, float distBis=0, float dist_tris=0, uint8_t pointIdtris = 0);
 };
 

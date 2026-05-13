@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
 
 #ifdef EMULATE
     // PRINT MAP (only for debug purpose)
-    std::string content = globalState.map->get_Map(10);
+    std::string content = globalState.map->get_Map(5);
     std::filesystem::path exeDir = getExecutableDir(argv[0]);
     std::filesystem::path filePath = exeDir / "map_output.txt";
     std::ofstream file(filePath);
@@ -234,7 +234,7 @@ int main(int argc, char *argv[]) {
             case MainState::INITIALIZE:{
                 if(initStat){
                     LOG_STATE("INITIALIZE");
-                    if(arduino.readButton(button::color)){
+                    if(!arduino.readButton(button::color)){
                         globalState.robotColor = ColorTeam::BLUE;
                         asserv.set_coordinates(START_X_BLUE,START_Y,90);
                     }

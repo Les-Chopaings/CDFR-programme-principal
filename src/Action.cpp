@@ -189,7 +189,7 @@ int Action::goToStart(void){
             {(float)mGlobalState->robotPosition.x, (float)mGlobalState->robotPosition.y, 255, 0},
             {(float)startPostion.x, (float)startPostion.y, 255, -M_PI}
         );
-        mGlobalState->map->print_Path(mpath);
+        mGlobalState->map->print_Path(mpath,15);
         if(mpath.v.size() < 2){
             LOG_WARNING("Path not find");
             deplacementreturn = -1;
