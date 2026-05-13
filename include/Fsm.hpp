@@ -6,8 +6,8 @@
 #include "logger.hpp"
 #include "Colorsensor.hpp"
 
-#define TIMESLIDER 400
-#define TIMEROTATE 800
+#define TIMESLIDER 300
+#define TIMEROTATE 700
 
 #define TIMERESETSLIDER 250
 #define TIMERESETROTATE 500

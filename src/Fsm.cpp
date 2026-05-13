@@ -58,7 +58,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::RESET_DOWN :{
             if(initStat){
                 startTime = millis()+1000;
-                arduino->stepperMove(125);
+                arduino->stepperMove(130);
                 arduino->servoMove(servo::bascule,0);
             }
             if(startTime < millis()){
@@ -118,7 +118,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_LEFT2 :{
             if(initStat){
-                startTime = millis()+1000;
+                startTime = millis()+500;
                 arduino->servoMove(servo::rotation1,15);
                 arduino->servoMove(servo::rotation2,15);
                 arduino->servoMove(servo::rotation3,15);
@@ -131,7 +131,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::TAKE_RIGHT2 :{
             if(initStat){
-                startTime = millis()+1000;
+                startTime = millis()+500;
                 arduino->servoMove(servo::rotation1,0);
                 arduino->servoMove(servo::rotation2,0);
                 arduino->servoMove(servo::rotation3,0);
@@ -204,7 +204,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::PUT_STOP_POMPE :{
             if(initStat){
-                startTime = millis()+1000;
+                startTime = millis()+500;
                 arduino->controlePompe(pompe::pompe1,0);
                 arduino->controlePompe(pompe::pompe2,0);
                 arduino->controlePompe(pompe::pompe3,0);
@@ -217,7 +217,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         }
         case FsmTakeNuts::PUT_PIVOT_90 :{
             if(initStat){
-                startTime = millis()+500;
+                startTime = millis()+300;
                 arduino->servoMove(servo::bascule,180);
             }
             if(startTime < millis()){
@@ -614,7 +614,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             break;
 
         case FsmTakeForaward::FORWARD :
-            asserv->set_linear_max_speed(70,600,600);
+            asserv->set_linear_max_speed(100,600,600);
             asserv->go_to_point(x, y, theta, Rotation::SHORTEST ,Direction::FORWARD);
             nextState = FsmTakeForaward::WAIT;
             needCalibrate = true;
