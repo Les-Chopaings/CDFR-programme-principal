@@ -16,6 +16,11 @@
 #define TIME_BEFORE_ABANDON 1000000
 
 #define DEFAULT_ANGLE 100
+#define SLIDER_OFFSET_1_POS(offset) (offset+10)
+#define SLIDER_OFFSET_2_POS(offset) (offset+3)
+#define SLIDER_OFFSET_3_POS(offset) (offset-3)
+#define SLIDER_OFFSET_4_POS(offset) (offset-15)
+
 #define SLIDER_1_POS (DEFAULT_ANGLE+10)
 #define SLIDER_2_POS (DEFAULT_ANGLE+3)
 #define SLIDER_3_POS (DEFAULT_ANGLE-3)

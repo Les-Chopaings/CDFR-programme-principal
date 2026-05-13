@@ -10,6 +10,7 @@
 #include "Traceur.hpp"
 #include "ActionContainer.hpp"
 #include "Fsm.hpp"
+#include "espSerial.hpp"
 
 #include "path_finding.h"
 #include <chrono>
@@ -121,6 +122,7 @@ int main(int argc, char *argv[]) {
     Arduino arduino(0x64);
     Colorsensor colorsensor(TCS34725_ADDRESS, TCAADDR);
     Asserv asserv(42);
+    ESPSerial esp("/dev/ttyUSB1");
     if(!lidarSetup("/dev/ttyUSB0",460800)){
         LOG_ERROR("cannot find the lidar");
         return -1;
@@ -183,6 +185,8 @@ int main(int argc, char *argv[]) {
         if(globalState.startTimestamp !=0){
             LOG_SET_TIME((millis() - globalState.startTimestamp)/1000);
         }
+        globalState.distanceKappla = esp.getLastValue();
+        //LOG_DEBUG("DISTANCE : ",globalState.distanceKappla);
 
         int count = SIZEDATALIDAR;
         if(getlidarData(lidarData,count)){
@@ -234,7 +238,7 @@ int main(int argc, char *argv[]) {
             case MainState::INITIALIZE:{
                 if(initStat){
                     LOG_STATE("INITIALIZE");
-                    if(!arduino.readButton(button::color)){
+                    if(arduino.readButton(button::color)){
                         globalState.robotColor = ColorTeam::BLUE;
                         asserv.set_coordinates(START_X_BLUE,START_Y,90);
                     }

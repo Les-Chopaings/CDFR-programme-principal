@@ -67,6 +67,7 @@ public:
 
     PathFindingMap* map = nullptr;
     int collideDistance;
+    int distanceKappla;
 
 public:
     GlobalState(/* args */);

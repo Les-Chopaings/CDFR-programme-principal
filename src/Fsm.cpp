@@ -598,6 +598,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
     static unsigned long startTime = 0;
     FsmTakeForaward nextState = currentState;
     int deplacementreturn = 0;
+    static bool needCalibrate = false;
 
     switch (currentState){
         case FsmTakeForaward::INIT :
@@ -616,6 +617,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             asserv->set_linear_max_speed(100,600,600);
             asserv->go_to_point(x, y, theta, Rotation::SHORTEST ,Direction::FORWARD);
             nextState = FsmTakeForaward::WAIT;
+            needCalibrate = true;
             break;
 
         case FsmTakeForaward::WAIT :
@@ -627,6 +629,19 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             else if(asserv->get_moving_is_done() && asserv->get_command_buffer_size() == 0){
                 asserv->set_linear_max_speed(500,600,600);
                 nextState = FsmTakeForaward::WAIT_TAKE;
+            }
+            if(globalState->distanceKappla > 0 && globalState->distanceKappla < 55 && needCalibrate == true){
+                int distance = DEFAULT_ANGLE + (globalState->distanceKappla - 50)*3.6;
+                needCalibrate = false;
+                LOG_DEBUG("distance Kappla : ",distance);
+                arduino->servoMove(servo::slider1,0);
+                arduino->servoMove(servo::slider2,0);
+                arduino->servoMove(servo::slider3,0);
+                arduino->servoMove(servo::slider4,0);
+                arduino->servoMove(servo::slider4,SLIDER_OFFSET_4_POS(distance));
+                arduino->servoMove(servo::slider3,SLIDER_OFFSET_3_POS(distance));
+                arduino->servoMove(servo::slider2,SLIDER_OFFSET_2_POS(distance));
+                arduino->servoMove(servo::slider1,SLIDER_OFFSET_1_POS(distance));
             }
             break;
 
