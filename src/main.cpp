@@ -256,6 +256,14 @@ int main(int argc, char *argv[]) {
                 if(initStat){
                     LOG_STATE("SETHOME");
                     arduino.stepperMove(700);
+                    arduino.servoMove(servo::slider1,0);
+                    arduino.servoMove(servo::slider2,0);
+                    arduino.servoMove(servo::slider3,0);
+                    arduino.servoMove(servo::slider4,0);
+                    arduino.servoMove(servo::slider4,SLIDER_4_POS);
+                    arduino.servoMove(servo::slider3,SLIDER_3_POS);
+                    arduino.servoMove(servo::slider2,SLIDER_2_POS);
+                    arduino.servoMove(servo::slider1,SLIDER_1_POS);
                     usleep(500000);
                     arduino.servoMove(servo::bascule,180);
                 }

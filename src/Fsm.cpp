@@ -408,7 +408,7 @@ int Fsm::TriNoisette(bool* rotate, Arduino* arduino, int timeSlider, int timeRot
             }
             /* si finished, on recale les bras */
             else if (finished){
-                servoToMove[0] = 90; servoToMove[1] = 90; servoToMove[2] = 90; servoToMove[3] = 90;
+                servoToMove[0] = SLIDER_1_POS; servoToMove[1] = SLIDER_2_POS; servoToMove[2] = SLIDER_3_POS; servoToMove[3] = SLIDER_4_POS;
                 triCurrentState = State::init;
             }
             else{
