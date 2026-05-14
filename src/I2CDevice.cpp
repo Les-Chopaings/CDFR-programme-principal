@@ -14,6 +14,7 @@ extern "C" {
 I2CDevice::I2CDevice(int slave_address){
     int adapter_nr = 1; /* probably dynamically determined */
     char filename[20];
+    mslave_address = slave_address;
 
     if (slave_address == -1) // I2C Emulation
     {
@@ -39,7 +40,7 @@ I2CDevice::I2CDevice(int slave_address){
 I2CDevice::~I2CDevice(){
     if (i2cFile >= 0) {
         close(i2cFile);
-        LOG_INFO("I2C file closed successfully");
+        LOG_INFO("I2C ",mslave_address," file closed successfully");
     }
 }
 
@@ -55,7 +56,7 @@ int I2CDevice::I2cSendData (uint8_t command, uint8_t* data, int length, int trie
                     return 0;
             }
         }
-        LOG_ERROR("I2C Send Data failed after ", tries, " tries");
+        LOG_ERROR("I2C ",mslave_address," Send Data failed after ", tries, " tries");
         return -1;
     }
     else
@@ -74,7 +75,7 @@ int I2CDevice::I2cReceiveData (uint8_t command, uint8_t* data, int length, int t
                 continue;
             return 0;
         }
-        LOG_ERROR("I2C Send Data failed after ", tries, " tries");
+        LOG_ERROR("I2C ",mslave_address," Send Data failed after ", tries, " tries");
         return -1;
     }
     else{
@@ -102,7 +103,7 @@ int I2CDevice::I2cSendBlockReceiveData (uint8_t command, uint8_t* data, int leng
                 continue;
             return 0;
         }
-        LOG_ERROR("I2C Send Data failed after ", tries, " tries");
+        LOG_ERROR("I2C ",mslave_address," Send Data failed after ", tries, " tries");
         return -1;
     }
     else{

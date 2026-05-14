@@ -5,6 +5,7 @@
 class I2CDevice {
 protected:
     int i2cFile;
+    int mslave_address;
 
 public:
 

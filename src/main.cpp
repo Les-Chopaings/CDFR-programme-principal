@@ -122,8 +122,8 @@ int main(int argc, char *argv[]) {
     Arduino arduino(0x64);
     Colorsensor colorsensor(TCS34725_ADDRESS, TCAADDR);
     Asserv asserv(42);
-    ESPSerial esp("/dev/ttyUSB1");
-    if(!lidarSetup("/dev/ttyUSB0",460800)){
+    ESPSerial esp("/dev/ttyUSB0");
+    if(!lidarSetup("/dev/ttyUSB1",460800)){
         LOG_ERROR("cannot find the lidar");
         return -1;
     }

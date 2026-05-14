@@ -124,8 +124,8 @@ typedef struct {
 #define TEMP_X_BLUE_END 2335-15
 
 #define START_Y (2000-115)
-#define START_X_YELLOW (600-203-10)
-#define START_X_BLUE (2400+203-20)
+#define START_X_YELLOW (600-203+5)
+#define START_X_BLUE (2400+203+15)
 
 #define STANDARD_NODES_ARRAY \
 {0, {START_X_YELLOW, START_Y}},   /*yellow start*/ \

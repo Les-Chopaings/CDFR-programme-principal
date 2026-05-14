@@ -4,7 +4,28 @@
 #include <string>
 #include <iomanip>
 #include <stack>
+#include <chrono>
+#include <ctime>
+#include <exception>
+#include <fcntl.h>
+#include <unistd.h>
+#include <map>
+#include <filesystem>
+#include <sys/stat.h>
+#include <deque>
+#include <vector>
+#include <optional>
+#include <initializer_list>
+#include <fstream>
+#include "config.hpp"
 
+
+#ifdef EMULATE
+    #define LOG_PATH "log/"
+#else
+    #define LOG_PATH "log/"
+#endif
+static constexpr size_t MAX_LINES = 40;
 enum class LogLevel { DEBUG, INFO, WARNING, ERROR, GREENINFO};
 
 
@@ -48,45 +69,25 @@ private:
     int m_y = 0;
     int m_theta = 0;
     bool logError = false;
+    int fileDescriptor = -1;
+    std::deque<std::string> lines;
 
 private:
-    std::string getPosition(void){
-        std::ostringstream returnstring;
-        returnstring << "[" << std::setw(5) << m_x << " " << std::setw(5) << m_y << " " << std::setw(4) << m_theta <<"]";
-        return returnstring.str();
-    }
+    std::string getPosition(void);
+    std::string getTime(void);
+    int getLogFileDescriptor();
+    void logToFile(const std::string& message, bool forceSync = false);
+    std::string getExecutablePath();
+    std::string resolveLogPath(const std::string& path);
+    int getLogNumber();
+    static int globalLogNum;
+    int readAndIncrementLogNum(const std::string& fullPath);
+    void ensureLogDirectoryAndNumFile(const std::string& logDir, const std::string& numLogFile);
+    void logToOutput(const std::string& message);
+    void addLine(const std::string& line);
 
-    std::string getTime(void){
-        std::ostringstream returnstring;
-        returnstring << "[" << std::setw(4) << m_matchTime <<"]";
-        return returnstring.str();
-    }
 public:
-    void initLog(void){
-        std::cout << "\033[1;31m";
-        std::cout << "  /$$$$$$  /$$                                     /$$                              " << std::endl;
-        std::cout << " /$$__  $$| $$                                    |__/                              " << std::endl;
-        std::cout << "| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$   /$$$$$$  /$$ /$$$$$$$   /$$$$$$   /$$$$$$$" << std::endl;
-        std::cout << "| $$      | $$__  $$ /$$__  $$ /$$__  $$ |____  $$| $$| $$__  $$ /$$__  $$ /$$_____/" << std::endl;
-        std::cout << "| $$      | $$  \\ $$| $$  \\ $$| $$  \\ $$  /$$$$$$$| $$| $$  \\ $$| $$  \\ $$|  $$$$$$ " << std::endl;
-        std::cout << "| $$    $$| $$  | $$| $$  | $$| $$  | $$ /$$__  $$| $$| $$  | $$| $$  | $$ \\____  $$" << std::endl;
-        std::cout << "|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/|  $$$$$$$| $$| $$  | $$|  $$$$$$$ /$$$$$$$/" << std::endl;
-        std::cout << " \\______/ |__/  |__/ \\______/ | $$____/  \\_______/|__/|__/  |__/ \\____  $$|_______/ " << std::endl;
-        std::cout << "                              | $$                               /$$  \\ $$          " << std::endl;
-        std::cout << "                              | $$                              |  $$$$$$/          " << std::endl;
-        std::cout << "                              |__/                               \\______/           " << std::endl;
-        std::cout << "\033[0m";
-
-        std::cout << "LesChopiangs" << std::endl;
-        std::cout << "PROGRAM ROBOT CDFR 2026" << std::endl;
-        time_t temps;
-        struct tm date;
-        char tempsFormate[80];
-        time(&temps);
-        date = *localtime(&temps);
-        strftime(tempsFormate, sizeof(tempsFormate), "%Y-%m-%d %H:%M:%S", &date);
-        std::cout << "Start Time : " << tempsFormate << std::endl;
-    }
+    void initLog(void);
 
     static Logger& getInstance() {
         static Logger instance;
@@ -97,50 +98,40 @@ public:
     void log(LogLevel level, const std::string& message, Args... args) {
         std::ostringstream oss;
         appendMessage(oss, message, args...);
-
+        std::ostringstream formatted;
         switch (level) {
             case LogLevel::DEBUG:
-                std::cout << "[DEBUG]" << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation() << " " << oss.str() << std::endl;
+                formatted << "[DEBUG]" << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation() << " " << oss.str() << std::endl;
                 break;
             case LogLevel::INFO:
-                std::cout << "[INFO] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " " << oss.str() << std::endl;
+                formatted << "[INFO] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " " << oss.str() << std::endl;
                 break;
             case LogLevel::WARNING:
-                std::cout << "\033[33m";
-                std::cout << "[WARNING] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
-                std::cout << "\033[0m";
+                formatted << "\033[33m";
+                formatted << "[WARNING] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                formatted << "\033[0m";
                 break;
             case LogLevel::ERROR:
                 logError = true;
-                std::cout << "\033[1;31m";
-                std::cout << "[ERROR] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
-                std::cout << "\033[0m";
+                formatted << "\033[1;31m";
+                formatted << "[ERROR] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                formatted << "\033[0m";
                 break;
             case LogLevel::GREENINFO:
-                std::cout << "\033[32m";
-                std::cout << "[INFO] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
-                std::cout << "\033[0m";
+                formatted << "\033[32m";
+                formatted << "[INFO] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
+                formatted << "\033[0m";
                 break;
 
             default:
                 break;
         }
+        logToOutput(formatted.str());
+        logToFile(formatted.str());
     }
-
-    void setTime(unsigned long time){
-        m_matchTime = time;
-    }
-
-    bool getLogError(){
-        return logError;
-    }
-
-
-    void setCoord(int x, int y, int theta){
-        m_x = x;
-        m_y = y;
-        m_theta = theta;
-    }
+    void setTime(unsigned long time);
+    bool getLogError();
+    void setCoord(int x, int y, int theta);
 
 private:
     Logger() {}
