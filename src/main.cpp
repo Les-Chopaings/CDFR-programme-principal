@@ -143,6 +143,8 @@ int main(int argc, char *argv[]) {
     MainState currentState = MainState::INIT;
     MainState nextState = currentState;
     bool initStat = true;
+    bool ledToggle = false;
+    unsigned long timeLedToggle = 0;
 
 #ifdef EMULATE
     // PRINT MAP (only for debug purpose)
@@ -173,6 +175,17 @@ int main(int argc, char *argv[]) {
         //fsm.readSensor(rotation,ColorTeam::YELLOW,&colorsensor);
 
         LOG_SCOPE("Main");
+
+        if(timeLedToggle < millis()){
+            if(LOG_GET_ERROR()){
+                timeLedToggle = millis()+250;
+            }
+            else{
+                timeLedToggle = millis()+1000;
+            }
+            ledToggle = !ledToggle;
+            arduino.ledEnable(ledToggle);
+        }
 
         //Aquistion
         int16_t x, y, theta;

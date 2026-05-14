@@ -7,6 +7,7 @@
 #define STEPPER_MOVE_TO 20
 #define STEPPER_ENABLE 21
 #define SERVO_ENABLE 50
+#define LED_ENABLE 40
 
 enum class servo{
     bascule = 1,
@@ -69,4 +70,5 @@ public:
     void stepperEnable(bool enable);
     void stepperMove(int position);
     bool readButton(button buttonNum);
+    void ledEnable(bool enable);
 };

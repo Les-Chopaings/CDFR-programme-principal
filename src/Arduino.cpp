@@ -42,6 +42,15 @@ void Arduino::stepperEnable(bool enable){
     I2cSendData(STEPPER_ENABLE, message, 2);
 }
 
+void Arduino::ledEnable(bool enable){
+    if (i2cFile == -1) return; // Emulation
+    uint8_t message [2];
+    uint8_t *ptr = message;
+    WriteUInt16(&ptr, enable);
+    I2cSendData(LED_ENABLE, message, 2);
+}
+
+
 void Arduino::stepperMove(int position){
     LOG_DEBUG("stepper move to ", position);
     if (i2cFile == -1) return; // Emulation

@@ -47,6 +47,7 @@ private:
     int m_x = 0;
     int m_y = 0;
     int m_theta = 0;
+    bool logError = false;
 
 private:
     std::string getPosition(void){
@@ -110,6 +111,7 @@ public:
                 std::cout << "\033[0m";
                 break;
             case LogLevel::ERROR:
+                logError = true;
                 std::cout << "\033[1;31m";
                 std::cout << "[ERROR] " << getTime() << getPosition() << std::setw(25)  <<  std::left << ScopeLogger::logIndentation()  << " "  << oss.str() << std::endl;
                 std::cout << "\033[0m";
@@ -127,6 +129,10 @@ public:
 
     void setTime(unsigned long time){
         m_matchTime = time;
+    }
+
+    bool getLogError(){
+        return logError;
     }
 
 
@@ -153,6 +159,7 @@ private:
 
 
 // Macros for easier logging
+#define LOG_GET_ERROR() Logger::getInstance().getLogError()
 #define LOG_SET_TIME(time) Logger::getInstance().setTime(time)
 #define LOG_SET_COORD(x, y, theta) Logger::getInstance().setCoord(x, y, theta)
 #define LOG_DEBUG(message, ...) Logger::getInstance().log(LogLevel::DEBUG, message, ##__VA_ARGS__)
