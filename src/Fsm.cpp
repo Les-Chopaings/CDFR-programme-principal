@@ -613,7 +613,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
             break;
 
         case FsmTakeForaward::FORWARD :
-            asserv->set_linear_max_speed(100,600,600);
+            asserv->set_linear_max_speed(60,600,600);
             asserv->go_to_point(x, y, theta, Rotation::SHORTEST ,Direction::FORWARD);
             nextState = FsmTakeForaward::WAIT;
             needCalibrate = true;
