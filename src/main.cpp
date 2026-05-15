@@ -120,12 +120,12 @@ int main(int argc, char *argv[]) {
 #else
     Arduino arduino(0x64);
     Asserv asserv(42);
-    ESPSerial esp("/dev/ttyUSB0");
-    if(!lidarSetup("/dev/ttyUSB1",460800)){
+    ESPSerial esp("/dev/ttyESP");
+    if(!lidarSetup("/dev/ttyLIDAR",460800)){
         LOG_ERROR("cannot find the lidar");
         return -1;
     }
-    ArduinoSerial colorsensor("/dev/ttyUSB2");
+    ArduinoSerial colorsensor("/dev/ttyARDUINO");
     bool emulate = false;
 #endif
     lidarAnalize_t lidarData[SIZEDATALIDAR];
