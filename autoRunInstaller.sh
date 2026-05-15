@@ -31,7 +31,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=$program_path
-Restart=always
+Restart=no
 RestartSec=3
 User=root
 AmbientCapabilities=CAP_SYS_NICE CAP_NET_BIND_SERVICE
