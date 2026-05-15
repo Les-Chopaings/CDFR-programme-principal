@@ -39,7 +39,7 @@ void Fsm::readSensor(bool* rotation, ColorTeam colorteam, ArduinoSerial* colorse
         }
         rotation[i] = colorteam != noisetteColor ? true : false;
     }
-    rotation[1] = !(rotation[0] ^ rotation[2] ^ rotation[3]); // fix for captor 1
+    rotation[1] = (rotation[0] ^ rotation[2] ^ rotation[3]); // fix for captor 1
     LOG_DEBUG(debugColor.str());
     LOG_DEBUG(debugColorValue.str());
 }
