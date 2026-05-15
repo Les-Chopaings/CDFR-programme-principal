@@ -58,7 +58,7 @@ bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino
         case FsmTakeNuts::RESET_DOWN :{
             if(initStat){
                 startTime = millis()+1000;
-                arduino->stepperMove(130);
+                arduino->stepperMove(100);
                 arduino->servoMove(servo::bascule,0);
             }
             if(startTime < millis()){
