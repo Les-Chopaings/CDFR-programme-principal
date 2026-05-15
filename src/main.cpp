@@ -49,8 +49,6 @@ void stopAndRest(Asserv* asserv, Arduino* arduino){
     arduino->controlePompe(pompe::pompe2,0);
     arduino->controlePompe(pompe::pompe3,0);
     arduino->controlePompe(pompe::pompe4,0);
-    arduino->stepperEnable(false);
-    arduino->stepperMove(0);
     arduino->servoMove(servo::bascule,0);
     arduino->servoMove(servo::temp,0);
     arduino->servoAllEnable(false);
