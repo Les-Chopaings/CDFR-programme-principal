@@ -4,7 +4,7 @@
 #include "asserv/asserv.h"
 #include "GlobalState.h"
 #include "logger.hpp"
-#include "Colorsensor.hpp"
+#include "arduinoSerial.hpp"
 
 #define TIMESLIDER 300
 #define TIMEROTATE 700
@@ -106,8 +106,8 @@ private:
 public:
     Fsm(/* args */);
     ~Fsm();
-    bool takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, Colorsensor* colorsensor);
-    void readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor);
+    bool takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, ArduinoSerial* colorsensor);
+    void readSensor(bool* rotation, ColorTeam colorteam, ArduinoSerial* colorsensor);
 private:
     int TriNoisette(bool* rotate, Arduino* arduino, int timeSlider, int timeRotation);
 };

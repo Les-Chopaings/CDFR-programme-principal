@@ -3,7 +3,6 @@
 #include "lidarAnalize.hpp"
 #include "lidar.hpp"
 #include "Arduino.hpp"
-#include "Colorsensor.hpp"
 #include "asserv/asserv.h"
 #include "utils.h"
 #include "GlobalState.h"
@@ -11,6 +10,7 @@
 #include "ActionContainer.hpp"
 #include "Fsm.hpp"
 #include "espSerial.hpp"
+#include "arduinoSerial.hpp"
 
 #include "path_finding.h"
 #include <chrono>
@@ -116,17 +116,16 @@ int main(int argc, char *argv[]) {
 #ifdef EMULATE
     Arduino arduino(-1);
     Asserv asserv(-1);
-    Colorsensor colorsensor(-1, -1);
     bool emulate = true;
 #else
     Arduino arduino(0x64);
-    Colorsensor colorsensor(TCS34725_ADDRESS, TCAADDR);
     Asserv asserv(42);
     ESPSerial esp("/dev/ttyUSB0");
     if(!lidarSetup("/dev/ttyUSB1",460800)){
         LOG_ERROR("cannot find the lidar");
         return -1;
     }
+    ArduinoSerial colorsensor("/dev/ttyUSB2");
     bool emulate = false;
 #endif
     lidarAnalize_t lidarData[SIZEDATALIDAR];
@@ -171,8 +170,8 @@ int main(int argc, char *argv[]) {
     //arduino.controlePompe(pompe::pompe4,1);
 
     while (1) {
-        //bool rotation[4];
-        //fsm.readSensor(rotation,ColorTeam::YELLOW,&colorsensor);
+        // bool rotation[4];
+        // fsm.readSensor(rotation,ColorTeam::YELLOW,&colorsensor);
 
         LOG_SCOPE("Main");
 

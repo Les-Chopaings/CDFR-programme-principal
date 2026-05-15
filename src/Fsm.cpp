@@ -9,13 +9,12 @@ Fsm::~Fsm()
 }
 
 
-void Fsm::readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsensor){
+void Fsm::readSensor(bool* rotation, ColorTeam colorteam, ArduinoSerial* colorsensor){
     RGBColor blue = {38,85,132};
     RGBColor yellow = {110,103,42};
     float similarBlue;
     float similarYellow;
     ColorTeam noisetteColor;
-    colorsensor->readAllSensor();
     std::ostringstream debugColor;
     std::ostringstream debugColorValue;
     for (int i = 0; i < 4; i++){
@@ -44,7 +43,7 @@ void Fsm::readSensor(bool* rotation, ColorTeam colorteam, Colorsensor* colorsens
     LOG_DEBUG(debugColorValue.str());
 }
 
-bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, Colorsensor* colorsensor){
+bool Fsm::takeNutsRun(GlobalState* globalState, Asserv* asserv, Arduino* arduino, ArduinoSerial* colorsensor){
     FsmTakeNuts nextState = currentState;
     bool bret = false;
 
