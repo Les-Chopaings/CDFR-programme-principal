@@ -133,9 +133,10 @@ int main(int argc, char *argv[]) {
     ActionContainer actionContainer(&globalState, &asserv, &arduino);
     Fsm fsm;
 
-    signal(SIGINT, ctrlc);
+    signal(SIGINT,  ctrlc);
     signal(SIGTERM, ctrlc);
     signal(SIGTSTP, ctrlz);
+    signal(SIGHUP,  ctrlc);
     usleep(300000);
     MainState currentState = MainState::INIT;
     MainState nextState = currentState;

@@ -38,6 +38,8 @@ AmbientCapabilities=CAP_SYS_NICE CAP_NET_BIND_SERVICE
 StandardOutput=journal
 StandardError=journal
 WorkingDirectory=$SCRIPT_DIR
+StandardInput=null
+SendSIGHUP=no
 [Install]
 WantedBy=multi-user.target
 "
