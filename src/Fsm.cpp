@@ -630,7 +630,7 @@ int takeForaward(GlobalState* globalState, Asserv* asserv, Arduino* arduino, int
                 asserv->set_linear_max_speed(500,600,600);
                 nextState = FsmTakeForaward::WAIT_TAKE;
             }
-            if(globalState->distanceKappla > 0 && globalState->distanceKappla < 55 && needCalibrate == true){
+            if(globalState->distanceKappla > 0 && globalState->distanceKappla < 50 && needCalibrate == true){
                 int distance = DEFAULT_ANGLE + (globalState->distanceKappla - 45)*3.7;
                 needCalibrate = false;
                 LOG_DEBUG("distance Kappla : ",distance);
